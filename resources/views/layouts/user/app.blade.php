@@ -23,6 +23,10 @@
             @yield('content')
 
             @include('layouts.user.footer');
+
+            @include('layouts.user.login')
+
+            @include('layouts.user.register')
         </div>
     </body>
 </html>
@@ -32,3 +36,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="{{ asset('js/script.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        //enseña el modal de login si hubo un error
+        if($('#loginerror').length > 0){
+            $('#loginModal').modal('show');
+        }
+    });
+</script>

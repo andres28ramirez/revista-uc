@@ -4,7 +4,7 @@
         <div class="col-sm">
             <ul id="social-media">
                 <div class="social-media-title">
-                    <p><b>@lang('data.redes_sociales')</p></b>
+                    <p><b>{{ __('Siguenos en') }}</p></b>
                 </div>
                 <div class="social-icons">
                     <a href="http://www.facebook.com/univ.demargarita/" class="social__icon--link"><i class="fab fa-facebook-f"></i></a>
@@ -17,7 +17,7 @@
         <!------------------------------------------------- BLANC SPACE ------------------------------------------------------------>
         <div class="col-sm" id="unimarlogo">
             <div class="unimar-link">
-                <a href="http://www.unimar.edu.ve/unimarportal/index.php">
+                <a href="https://portalunimar.unimar.edu.ve/">
                     <img src="{{ asset('/images/unimar-white-logo.png') }}" alt="logo blanco">
                 </a>
             </div>
@@ -34,6 +34,6 @@
 
     </div>
     <div class="footer-copy" style="align:center">
-        <p><b> Universidad de Margarita 2021 Copyright &copy @lang('data.derechos')</b></p>
+        <p><b> Universidad de Margarita 2021 Copyright &copy {{__('Todos los derechos reservados')}}</b></p>
     </div>
 </div>
