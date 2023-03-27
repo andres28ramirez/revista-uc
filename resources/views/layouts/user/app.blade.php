@@ -28,6 +28,14 @@
 
             @include('layouts.user.register')
         </div>
+
+        <!-- Input para los errores del login o del registro -->
+        @if($errors->any())
+            <input type="hidden" id="loginerror" value=1>
+        @endif
+        @if($errors->register->any())
+            <input type="hidden" id="registererror" value=1>
+        @endif
     </body>
 </html>
 
@@ -42,6 +50,10 @@
         //enseña el modal de login si hubo un error
         if($('#loginerror').length > 0){
             $('#loginModal').modal('show');
+        }
+
+        if($('#registererror').length > 0){
+            $('#singinModal').modal('show');
         }
     });
 </script>

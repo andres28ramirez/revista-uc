@@ -39,7 +39,6 @@
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
-                            <input type="hidden" id="loginerror" value=1>
                         @enderror
                     </div>
 
