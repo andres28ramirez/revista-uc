@@ -22,12 +22,12 @@
                         <h6>{{__('Nombre')}}:</h6>
                         <div class="form-group">
                             <i class="fa fa-user"></i>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="{{__('Nombre')}}">
-                                @error('name')
+                            <input id="name" type="text" class="form-control {{ $errors->register->first('name') ? 'is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="{{__('Nombre')}}">
+                                @if($errors->register->first('name'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{{ __($errors->register->first('name')) }}</strong>
                                     </span>
-                                @enderror
+                                @endif
                         </div>
                     </div>
 
@@ -35,12 +35,12 @@
                         <h6>{{__('Apellido')}}:</h6>
                         <div class="form-group">
                             <i class="fa fa-user"></i>
-                            <input id="lastname" type="text" class="form-control @error('lastname') is-invalid @enderror" name="lastname" value="{{ old('lastname') }}" required autocomplete="lastname" autofocus placeholder="{{__('Apellido')}}">
-                                @error('lastname')
+                            <input id="lastname" type="text" class="form-control {{$errors->register->first('lastname') ? 'is-invalid' : ''}} " name="lastname" value="{{ old('lastname') }}" required autocomplete="lastname" autofocus placeholder="{{__('Apellido')}}">
+                                @if($errors->register->first('lastname'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{{ __($errors->register->first('lastname')) }}</strong>
                                     </span>
-                                @enderror
+                                @endif
                         </div>
                     </div>
                     
@@ -57,26 +57,39 @@
                             </select>
                         </div>
                         <div class="col">
-                            <input id="telephone" type="text" class="form-control @error('telephone') is-invalid @enderror" name="telephone" value="{{ old('telephone') }}" autofocus placeholder="{{__('Teléfono')}}">
+                            <input id="telephone" type="text" class="form-control {{$errors->register->first('telephone') ? 'is-invalid' : ''}}" name="telephone" value="{{ old('telephone') }}" autofocus placeholder="{{__('Teléfono')}}">
                         </div>
                         <div class="col-12">
-                            @error('telephone')
+                            @if($errors->register->first('telephone'))
                                 <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
+                                    <strong>{{ __($errors->register->first('telephone')) }}</strong>
                                 </span>
-                            @enderror
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div class="tipo">
+                        <h6>{{__('Tipo de Usuario')}}:</h6>
+                        <div class="form-group">
+                            <i class="fas fa-solid fa-users"></i>
+                            <select id="user_tipo" type="text" class="form-control" name="user_tipo" required>
+                                <?php $type_users = \App\Models\Usuario_Tipo::orderBy('nombre', 'asc')->get() ?>
+                                @foreach($type_users as $type)
+                                    <option value="{{ $type->id_tipo }}" {{ old('user_tipo') == $type->id_tipo ? "selected" : ""}}>{{ $type->nombre }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
                     <div class="direccion">
                         <h6>{{__('Dirección')}} *Opcional:</h6>
                         <div class="form-group">
-                            <textarea class="form-control p-0 @error('address') is-invalid @enderror" id="" name="address" required>{{ old('address') }}</textarea>
-                                @error('address')
+                            <textarea class="form-control p-0 {{$errors->register->first('address') ? 'is-invalid' : ''}}" id="" name="address">{{ old('address') }}</textarea>
+                                @if($errors->register->first('address'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{{ __($errors->register->first('address')) }}</strong>
                                     </span>
-                                @enderror
+                                @endif
                         </div>
                     </div>
 
@@ -84,10 +97,11 @@
                         <h6>{{__('Correo Electrónico')}}:</h6>
                         <div class="form-group">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" id="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{__('Correo Electrónico')}}">
+                            <input type="email" id="email" 
+                                class="form-control {{ $errors->register->first('email') ? 'is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{__('Correo Electrónico')}}">
                                 @if($errors->register->first('email'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->register->first('email') }}</strong>
+                                        <strong>{{ __($errors->register->first('email')) }}</strong>
                                     </span>
                                 @endif
                         </div>
@@ -97,12 +111,12 @@
                         <h6>{{__('Contraseña')}}:</h6>
                         <div class="form-group">
                             <i class="fa fa-lock"></i>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" autofocus placeholder="{{__('Contraseña')}}">
-                                @error('password')
+                            <input id="password" type="password" class="form-control {{$errors->register->first('password') ? 'is-invalid' : ''}}" name="password" required autocomplete="new-password" autofocus placeholder="{{__('Contraseña')}}">
+                                @if($errors->register->first('password'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{{ __($errors->register->first('password')) }}</strong>
                                     </span>
-                                @enderror
+                                @endif
                         </div>
                     </div>
 
@@ -110,12 +124,12 @@
                         <h6>{{__('Confirmación de Contraseña')}}:</h6>
                         <div class="form-group">
                             <i class="fa fa-lock"></i>
-                            <input id="password-confirm" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password" autofocus placeholder="{{__('Confirmación de Contraseña')}}">
-                            @error('password_confirmation')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                            <input id="password-confirm" type="password" class="form-control {{$errors->register->first('password_confirmation') ? 'is-invalid' : ''}}" name="password_confirmation" required autocomplete="new-password" autofocus placeholder="{{__('Confirmación de Contraseña')}}">
+                                @if($errors->register->first('password_confirmation'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ __($errors->register->first('password_confirmation')) }}</strong>
+                                    </span>
+                                @endif
                         </div>
                     </div>
 

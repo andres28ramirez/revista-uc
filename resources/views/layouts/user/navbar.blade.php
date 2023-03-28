@@ -85,23 +85,20 @@
 
                     <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="dropdownSingUp">
 
-                        @hasrole('Admin')
-                            <a class="dropdown-item" href="{{ route('admin') }}">{{__('Panel Administrativo')}}</a>
-                        @endhasrole
+                        @if(Auth::user()->urol->rol->nombre == "Administrador")
+                            <a class="dropdown-item" href="{{ route('dashboard') }}">{{__('Panel Administrativo')}}</a>
+                        @endif
 
-                        @hasrole('comment_admin')
-                            <a class="dropdown-item" href="{{ route('admin') }}">{{__('Panel Administrativo')}}</a>
-                        @endhasrole
+                        <!-- LOGOUT -->
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
+                            {{ __('Cerrar Sesión') }}
+                        </a>
 
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
-                                {{ __('Cerrar Sesión') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     </div>
                 </li>
             @endguest

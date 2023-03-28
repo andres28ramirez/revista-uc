@@ -51,7 +51,21 @@
     "Resumen": "Summary",
     "Siguenos en": "Follow us on",
     "Teléfono": "Telephone",
+    "Tipo de Usuario": "User type",
     "Todos los derechos reservados": "All rights reserved",
     "Ver más": "See more",
-    "¿Olvidó su contraseña?": "Forgot your password?"
+    "¿Olvidó su contraseña?": "Forgot your password?",
+
+    "El dato es requerido": "The data is required",
+    "El dato debe poseer caracteres alfanúmericos": "The data must have alphanumeric characters",
+    "El dato solo debe poseer datos númericos": "The data must only have numerical data",
+    "El dato puede viajar vacio": "The data can travel empty",
+    "El dato debe poseer menos de 255 caracteres": "The data must have less than 255 characters",
+    "El nombre debe poseer al menos 3 caracteres": "The name must have at least 3 characters",
+    "El apellido debe poseer al menos 3 caracteres": "Last name must have at least 3 characters",
+    "El teléfono debe tener una longitud entre 5 y 15 caracteres": "The phone number must be between 5 and 15 characters long",
+    "La contraseña debe poseer al menos 5 caracteres": "Password must have at least 5 characters",
+    "La confirmación no coincide con la contraseña": "Confirmation does not match password",
+    "El dato enviado ya se encuentra registrado": "The data sent is already registered",
+    "El dato debe ser enviado en formato corre (ejemplo@correo.com)": "The data must be sent in email format (example@mail.com)"
 }

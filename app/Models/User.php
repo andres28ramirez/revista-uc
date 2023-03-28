@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -33,8 +32,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne('App\Models\Perfil', 'FK_id_usuario');
     }
 
-    public function rol(){
-        return $this->hasOne('App\Models\Rol', 'FK_id_usuario');
+    public function urol(){
+        return $this->hasOne('App\Models\Usuario_Rol', 'FK_id_usuario');
     }
     
     public function permiso(){
