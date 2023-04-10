@@ -46,7 +46,7 @@
                 <button class="btn dropdown-toggle" type="button" id="dropdownSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-search fa-fw"></i>
                 </button>
-                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="dropdownSearch" style="aling-items: center;">
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="dropdownSearch">
                     <form class="px-4 py-3" type="get" action="">
                         <input class="input" type="text" name="query" placeholder="{{__('Buscar')}}...">
                         <button type="button" class="btn btn-success">{{__('Buscar')}}</button>

@@ -8,7 +8,7 @@
     "Biología": "Biology",
     "Buscar": "Search",
     "Catálogo de Autores": "Authors Catalog",
-    "Cerrar Sesión": "Authors Catalog",
+    "Cerrar Sesión": "Log Out",
     "Comentarios": "Comments",
     "Confirmación de Contraseña": "Password Confirmation",
     "Contacto": "Contact",
@@ -49,6 +49,7 @@
     "Repita su contraseña": "Repeat your password",
     "Resultados": "Results",
     "Resumen": "Summary",
+    "Selecciona un tipo de Usuario": "Select a type of user",
     "Siguenos en": "Follow us on",
     "Teléfono": "Telephone",
     "Tipo de Usuario": "User type",
@@ -67,5 +68,19 @@
     "La contraseña debe poseer al menos 5 caracteres": "Password must have at least 5 characters",
     "La confirmación no coincide con la contraseña": "Confirmation does not match password",
     "El dato enviado ya se encuentra registrado": "The data sent is already registered",
-    "El dato debe ser enviado en formato corre (ejemplo@correo.com)": "The data must be sent in email format (example@mail.com)"
+    "El dato debe ser enviado en formato corre (ejemplo@correo.com)": "The data must be sent in email format (example@mail.com)",
+    
+    "Resetear Contraseña": "Reset Password",
+    "Reiniciar Contraseña": "Reset Password",
+    "Introduce tu nueva contraseña y la confirmación de la misma!": "Enter your new password and confirm it!",
+    "Nueva Contraseña": "New Password",
+    "Confirma tu contraseña": "Confirm your password",
+    "Enviar Correo": "Send Email",
+    "Sólo tienes que introducir tu dirección de correo electrónico a continuación! y te enviaremos un enlace para restablecer su contraseña!": "Just enter your email address below and we'll send you a link to reset your password!",
+    "Crear una Cuenta!": "Create an Account!",
+    "Ya posees una cuenta? Inicia Sesión": "Already have an account? Login!",
+    "Bienvenido de nuevo": "Welcome back",
+    "Reenviar verificación de correo": "Resend Verification Email",
+    "Gracias por registrarte! Antes de comenzar, ¿podría verificar su dirección de correo electrónico haciendo clic en el enlace que le acabamos de enviar? Si no recibiste el correo electrónico, con gusto te enviaremos otro.": "Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you did not receive the email, we will gladly send you another.",
+    "Se ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionó durante el registro.": "A new verification link has been sent to the email address you provided during registration."
 }

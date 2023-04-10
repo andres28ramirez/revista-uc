@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="col-6">
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg font-weight-bold">
                                     {{__('Acceder')}}
                                 </button>
                             </div>

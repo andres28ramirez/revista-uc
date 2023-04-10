@@ -4,11 +4,14 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Panel Web de la Revista Cientifíca de La Universidad de Margarita (UNIMAR)">
+        <meta name="author" content="Universidad de Margarita (UNIMAR)">
+
         <title>Unimar Científica</title>
         <link  rel="icon" href="{{asset('images/rcu-orange-isotype.png')}}" type="image/png"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
         <link rel="stylesheet" href="{{asset('plugins/fontawesome-free/css/all.min.css') }}">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
