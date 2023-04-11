@@ -15,11 +15,12 @@ Route::get('/', function () {
 //RUTAS DE CONTROL Y MODIFICACIONES
 Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->name('change.lang');
 
-//RUTA DEL PANEL ADMINISTRATIVO
+//RUTAS DEL PANEL ADMINISTRATIVO
 Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', [PanelController::class, 'index'])->name('dashboard');
 });
 
+//RUTAS DE AUTENTICACIÓN
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
