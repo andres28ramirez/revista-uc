@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\EdicionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,10 @@ Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->nam
 
 //RUTAS DEL PANEL ADMINISTRATIVO
 Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/dashboard', [PanelController::class, 'index'])->name('dashboard');
+    Route::get('/inicio', [PanelController::class, 'index'])->name('dashboard');
+
+    //EDICIONES
+    Route::get('/edicion/{test?}', [EdicionController::class, 'index'])->name('edicion.index');
 });
 
 //RUTAS DE AUTENTICACIÓN
