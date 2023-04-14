@@ -12,10 +12,11 @@ return new class extends Migration
         Schema::table('edicion', function (Blueprint $table) {
             Schema::create('edicion', function (Blueprint $table) {
                 $table->id('id_edicion');
+                $table->integer('numero');
                 $table->string('titulo',255);
                 $table->text('descripcion');
-                $table->text('ruta_imagen_es')->nullable();
-                $table->text('ruta_imagen_en')->nullable();
+                $table->date('fecha');
+                $table->text('ruta_imagen')->nullable();
                 $table->timestamps();
             });
         });

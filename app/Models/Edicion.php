@@ -13,10 +13,11 @@ class Edicion extends Model
     protected $primaryKey = "id_edicion";
     protected $fillable = [
         "id_edicion",
+        "numero",
         "titulo",
         "descripcion",
-        "ruta_imagen_es",
-        "ruta_imagen_en",
+        "fecha",
+        "ruta_imagen",
     ];
 
     protected $hidden = [

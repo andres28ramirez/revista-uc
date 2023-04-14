@@ -18,10 +18,17 @@ Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->nam
 
 //RUTAS DEL PANEL ADMINISTRATIVO
 Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/inicio', [PanelController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [PanelController::class, 'index'])->name('dashboard');
 
     //EDICIONES
-    Route::get('/edicion/{test?}', [EdicionController::class, 'index'])->name('edicion.index');
+    Route::get('/edicion', [EdicionController::class, 'index'])->name('edicion.index');
+    Route::get('/edicion/create', [EdicionController::class, 'create'])->name('edicion.create');
+    Route::get('/edicion/edit/{id}', [EdicionController::class, 'edit'])->name('edicion.edit');
+    Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('edicion.imagen');
+    
+    Route::post('/edicion/store', [EdicionController::class, 'store'])->name('edicion.store');
+    Route::post('/edicion/update/{id}', [EdicionController::class, 'update'])->name('edicion.update');
+    Route::post('/edicion/delete/{id}', [EdicionController::class, 'destroy'])->name('edicion.delete');
 });
 
 //RUTAS DE AUTENTICACIÓN
