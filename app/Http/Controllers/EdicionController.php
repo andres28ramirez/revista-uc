@@ -169,10 +169,31 @@ class EdicionController extends Controller
             if(!$edicion)
             return redirect()->route('edicion.index')->with('warning', 'La edición no pudo ser eliminada debido a que no pudo ser encontrada');
 
-            //ELIMINAMOS TODO LO QUE ESTA ANCLADO
+            //Elimino los Artículos | Primero Archivos, Respuestas y Comentarios
+                //Recorremos Artículo a Artículo
+                foreach($edicion->articulos as $articulo){
+                    //recorro archivo por archivo y borro
+                    foreach($articulo->archivos as $archivo){
+                        Storage::delete(['public/'.$archivo->ruta_archivo_es]);
+                        Storage::delete(['public/'.$archivo->ruta_archivo_en]);
+                        $archivo->delete();
+                    }
+
+                    //recorro comentarios y consecuentemente sus respuestas y borro
+                    foreach($articulo->comentarios as $comentario){
+                        foreach($comentario->respuestas as $respuesta){
+                            $respuesta->delete();
+                        }
+                        $comentario->delete();
+                    }
+
+                    $articulo->delete();
+                }
             
-            //Elimino los Artículos y Sus Imagenes
-            
+            //Eliminamos finalmente la edición y su imagen preview
+                Storage::delete(['public/'.$edicion->ruta_imagen]);
+                $edicion->delete();
+
             //Aceptamos la eliminación de todo y redireccionamos
             DB::commit();
             return redirect()->route('edicion.index')->with('success', 'La edición fue eliminada de manera exitosa');

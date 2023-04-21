@@ -15,7 +15,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ request()->is('*/inicio') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->is('*/dashboard') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Panel Inicial</span></a>
@@ -40,25 +40,26 @@
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->is('*/edicion') ? 'active' : '' }}" href="{{ route('edicion.index') }}">Ver Ediciones</a>
-                <a class="collapse-item {{ request()->is('*/edicion/create') ? 'active' : '' }}" href="cards.html">Crear Nueva Edición</a>
+                <a class="collapse-item {{ request()->is('*/edicion/create') ? 'active' : '' }}" href="{{ route('edicion.create') }}">Crear Nueva Edición</a>
                 <a class="collapse-item {{ request()->is('*/edicion/stats') ? 'active' : '' }}" href="cards.html">Estadísticas</a>
-                <a class="collapse-item {{ request()->is('*/edicion/conocimiento') ? 'active' : '' }}" href="cards.html">Area de Conocimiento</a>
+                <a class="collapse-item {{ request()->is('*/edicion/conocimiento') ? 'active' : '' }}" href="{{ route('edicion.conocimiento') }}">Area de Conocimiento</a>
             </div>
         </div>
     </li>
 
     <!-- Nav Item - Artículos -->
-    <li class="nav-item">
+    <li class="nav-item {{ request()->is('*/articulos') || request()->is('*/articulos/*') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
             aria-expanded="true" aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-solid fa-newspaper"></i>
             <span>Artículos</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+        <div id="collapseUtilities" class="collapse {{ request()->is('*/articulos') || request()->is('*/articulos/*') ? 'show' : '' }}" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="utilities-color.html">Ver Artículos</a>
-                <a class="collapse-item" href="utilities-border.html">Crear Artículo</a>
+                <a class="collapse-item {{ request()->is('*/articulos') ? 'active' : '' }}" href="{{ route('articulo.index') }}">Ver Artículos</a>
+                <a class="collapse-item {{ request()->is('*/articulos/create') ? 'active' : '' }}" href="{{ route('articulo.create') }}">Crear Artículo</a>
+                <a class="collapse-item" href="utilities-animation.html">Autores</a>
                 <a class="collapse-item" href="utilities-animation.html">Estadísticas</a>
                 <a class="collapse-item" href="utilities-animation.html">Ultimos Comentarios</a>
                 <a class="collapse-item" href="utilities-other.html">Documentos o Archivos</a>
@@ -101,7 +102,6 @@
         <div id="collapseConfig" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="login.html">Roles</a>
-                <a class="collapse-item" href="login.html">Areas de Conocimiento</a>
                 <a class="collapse-item" href="login.html">Tipos de Usuario</a>
                 <a class="collapse-item" href="login.html">Módulos</a>
                 <a class="collapse-item" href="register.html">Información Editable</a>

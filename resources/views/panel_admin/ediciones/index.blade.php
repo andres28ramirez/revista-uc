@@ -15,7 +15,7 @@
         <!-- CREAR NUEVA EDICIÓN -->
         <div class="card-header py-3" style="border-bottom: 0px;">
             <a href="{{ route('edicion.create') }}" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50">
+                <span class="icon text-white-50" style="padding: 0.75rem 0.75rem;">
                     <i class="fas fa-plus"></i>
                 </span>
                 <span class="text">Crear una nueva edición</span>
@@ -65,15 +65,26 @@
                                 {{ date_format(date_create($edicion->fecha), "F j, Y") }}
                             </td>
                             <td class="align-middle">
-                                {{ $edicion->articulos->count() }}
+                                <a href="#" class="btn btn-warning btn-icon-split">
+                                    <span class="icon text-white font-weight-bold">
+                                        {{ $edicion->articulos->count() }}
+                                    </span>
+                                    <span class="text">Ver</span>
+                                </a>
                             </td>
                             <td class="align-middle">
                                 <a href="{{ route('edicion.edit', $edicion->id_edicion) }}" class="btn btn-info btn-circle btn-sm">
                                     <i class="fas fa-pencil"></i>
                                 </a>
-                                <a href="{{ route('edicion.delete', $edicion->id_edicion) }}" class="btn btn-danger btn-circle btn-sm">
+
+                                <!-- Boton de Eliminar -->
+                                <button name="{{ $edicion->id_edicion }}"
+                                    class="btn btn-danger btn-circle btn-sm btn-delete">
                                     <i class="fas fa-trash"></i>
-                                </a>
+                                </button>
+                                <form id="delete-edicion-{{ $edicion->id_edicion }}" action="{{ route('edicion.delete', $edicion->id_edicion) }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </td>
                         </tr>
                         @endforeach
@@ -85,3 +96,36 @@
 
 </div>
 @endsection
+
+<script src="{{ asset('jquery/jquery.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        
+        $('.btn-delete').click(function(){
+            var id = $(this).attr('name');
+
+            Swal.fire({
+                title: 'Estas seguro de elimnar la edición?',
+                text: "No podras revertir esta elección, esto borrara todos los artículos anclados a la edición!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#084456',
+                cancelButtonColor: '#bbbbbb',
+                confirmButtonText: 'Si, eliminalo!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Eliminando!',
+                        'La edición sera procesada para ser eliminada de los registros.',
+                        'success'
+                    );
+                    setTimeout(function() { 
+                        $( "#delete-edicion-"+id ).submit();
+                    }, 2000);
+                }
+            });
+        });
+    });
+</script>
