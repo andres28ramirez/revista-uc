@@ -48,10 +48,18 @@ class ConocimientoController extends Controller
     public function index(){
         $areas = Conocimiento::all();
         $articulos = Articulo::all();
-        $grouped = DB::table('articulo')->select(DB::raw('FK_id_conocimiento as total'))
-                    ->groupBy('FK_id_conocimiento')->orderBy('total', 'desc')->first();
-        
-        return view('panel_admin.ediciones.areas', compact('areas', 'articulos', 'grouped'));
+        $maximo = 0;
+        $max_area = null;
+
+        //Calculo de Conocimiento con más artículos
+            foreach($areas as $area){
+                $cantidad = $area->articulos->count();
+
+                if($cantidad > $maximo )
+                    $max_area = $area;
+            }
+
+        return view('panel_admin.ediciones.areas', compact('areas', 'articulos', 'max_area'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR

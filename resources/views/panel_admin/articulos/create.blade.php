@@ -1,13 +1,15 @@
 @extends('layouts.admin.app')
 
 @section('content')
+<link  rel="stylesheet" href="{{asset('css/input_files.css')}}"/>
+
 <div class="container-fluid">
     
     <!-- TABLA -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                "Crear un nuevo Artículo"
+                Crear un nuevo Artículo
             </h6>
         </div>
 
@@ -46,12 +48,12 @@
 
                         <!-- Contenido del Artículo -->
                         <div class="form-group">
-                            <label for="descripcion">Contenido:</label>
-                            <textarea class="form-control @error('descripcion') is-invalid @enderror"
-                                name="descripcion" id="descripcion" required
-                                cols="30" rows="5">{{ old('descripcion') }}</textarea>
+                            <label for="contenido">Contenido:</label>
+                            <textarea class="form-control @error('contenido') is-invalid @enderror"
+                                name="contenido" id="contenido" required
+                                cols="30" rows="5">{{ old('contenido') }}</textarea>
                             
-                            @error('descripcion')
+                            @error('contenido')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -61,10 +63,10 @@
                         <!-- edición del artículo -->
                         <div class="form-group">
                             <label for="edicion">¿A que edición pertence el artículo?</label>
-                            <select id="edicion" class="form-control @error('edicion') is-invalid @enderror" name="edicion">
+                            <select id="edicion" class="form-control @error('FK_id_edicion') is-invalid @enderror" name="FK_id_edicion" required>
                                 <option value="">Selecciona una Edición...</option>
                                 @foreach($ediciones as $edicion)
-                                    <option value="{{ $edicion->id_edicion }}" {{ old('edicion') == $edicion->id_edicion ? "selected" : ""}}>{{ $edicion->titulo }}</option>
+                                    <option value="{{ $edicion->id_edicion }}" {{ old('FK_id_edicion') == $edicion->id_edicion ? "selected" : ""}}>{{ $edicion->titulo }}</option>
                                 @endforeach
                             </select>
                             
@@ -77,16 +79,15 @@
 
                         <!-- Autor del Artículo -->
                         <div class="form-group">
-                            <label for="autor">Autor del Artículo:</label>
-                            <select id="autor" class="form-control @error('autor') is-invalid @enderror" name="autor">
+                            <label for="autor">Autor del Artículo: Opcional*</label>
+                            <select id="autor" class="form-control @error('FK_id_autor') is-invalid @enderror" name="FK_id_autor">
                                 <option value="">Selecciona un Autor...</option>
                                 @foreach($autores as $autor)
-                                    <option value="{{ $autor->id_autor }}" {{ old('autor') == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
+                                    <option value="{{ $autor->id_autor }}" {{ old('FK_id_autor') == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
                                 @endforeach
-                                <option value="null">No posee Autor</option>
                             </select>
                             
-                            @error('autor')
+                            @error('FK_id_autor')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -95,15 +96,15 @@
 
                         <!-- Area de Conocimiento del Artículo -->
                         <div class="form-group">
-                            <label for="area">Area de Conocimiento:</label>
-                            <select id="area" class="form-control @error('area') is-invalid @enderror" name="area">
+                            <label for="area">Area de Conocimiento: Opcional*</label>
+                            <select id="area" class="form-control @error('FK_id_conocimiento') is-invalid @enderror" name="FK_id_conocimiento">
                                 <option value="">Selecciona un Area de Conocimiento...</option>
                                 @foreach($areas as $area)
-                                    <option value="{{ $area->id_conocimiento }}" {{ old('area') == $area->id_conocimiento ? "selected" : ""}}>{{ $area->nombre }}</option>
+                                    <option value="{{ $area->id_conocimiento }}" {{ old('FK_id_conocimiento') == $area->id_conocimiento ? "selected" : ""}}>{{ $area->nombre }}</option>
                                 @endforeach
                             </select>
                             
-                            @error('area')
+                            @error('FK_id_conocimiento')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -126,9 +127,26 @@
                             </div>
                         </div>
 
-                        <!-- Archivos del Artículo Anclados que se vayan a cargar -->
+                        <!-- Documentos del Artículo -->
+                        <div class="form-group">
+                            <label for="ruta_imagen_es">Archivos Adjuntos al Artículo:</label>
+
+                            <div class="form-group files">
+                                <input type="file" class="form-control @error('archivos.*') is-invalid @enderror" 
+                                    name="archivos[]" multiple="" id="archivos">
+                                @error('archivos.*')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div id="files_names">
+
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-success mt-2">
-                            {{ $edicion ? "Editar Edición" : "Crear Edición" }}
+                            Crear Artículo
                         </button>
                     </form>
                 </div>
@@ -140,18 +158,40 @@
                     </div>
                     
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <img id="preImagen" 
-                                    src="{{ $edicion ? route('edicion.imagen', ['filename' => basename($edicion->ruta_imagen)]) : asset('images/nodisponible.png') }}" 
-                                    class="img-fluid" height="300" width="300">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary" id="preTitulo">
+                                    {{ old("titulo", "Título") }}
+                                </h6>
                             </div>
-                            <div class="col-12">
-                                <div class="card-body">
-                                    <h6 class="font-weight-bold" id="preTitulo">{{ $edicion ? $edicion->titulo : "Título de la Edición" }}</h6>
-                                    <p><b>Fecha de Publicación: </b> <span id="preFecha">{{ $edicion ? date_format(date_create($edicion->fecha), "Y-m-d") : date('Y-m-d')}}</span></p>
-                                    <p id="preDescrip">{{ $edicion ? $edicion->descripcion : "Texto con la descripción" }}</p>
-                                    <a href="#" type="button" class="btn btn-outline-dark">Edición Completa</a>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" width="100%" height="100%"
+                                        src="{{ asset('images/nodisponible.png') }}" id="preImagen">
+                                </div>
+                                <div class="text-center">
+                                    <h6 class="text-dark">
+                                        <span id="preAutor">{{ old("autor", "Autor") }}</span> - 
+                                        <span id="preArea" class="badge badge-pill badge-primary">{{ old("area", "Area") }}</span>
+                                    </h6>
+                                </div>
+                                <h6 class="text-dark">
+                                    <span class="font-weight-bold">Edición</span>:
+                                    <span id="preEdicion">{{ old("edicion", "Nombre") }}</span>
+                                </h6>
+                                <p id="preDescrip" class="text-justify">
+                                    Resumen...
+                                </p>
+                                <div class="d-block">
+                                    <button class="btn btn-info btn-circle">
+                                        <i class="fas fa-comment"></i>
+                                    </button>
+                                    0 Comentarios
+                                </div>
+                                <div class="d-block text-center">
+                                    <a target="_blank" rel="nofollow" href="#">
+                                        Abrir Artículo &rarr;
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +200,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <input type="hidden" id="imagenPreview" value="{{ asset('images/nodisponible.png') }}">
@@ -170,47 +209,61 @@
 <script>
     $(document).ready(function() {
         //Edicion de la previsualizacion
-        $('#titulo').change(function() {
-            $('#preTitulo').text($(this).val());
-        });
+            $('#titulo').change(function() {
+                $('#preTitulo').text($(this).val());
+            });
 
-        $('#fecha').change(function() {
-            $('#preFecha').text($(this).val());
-        });
-
-        $('#descripcion').change(function() {
-            $('#preDescrip').text($(this).val());
-        });
-        
-        $('#numero').change(function() {
-            var numero = $(this).val();
-
-            if(numero < 1){
-                $(this).val(null);
-            }
-        });
-
-        function readImage(input){
-            var url = input.value;
-            var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+            $('#contenido').change(function() {
+                $('#preDescrip').text($(this).val());
+            });
             
-            if(input.files && input.files[0] && (ext == "png" || ext == "jpeg" || ext == "jpg")){
-                var reader = new FileReader();
+            $('#edicion').change(function() {
+                let texto = $( "#edicion option:selected" ).text();
+                $('#preEdicion').text(texto);
+            });
+            
+            $('#autor').change(function() {
+                let texto = $( "#autor option:selected" ).text();
+                $('#preAutor').text(texto);
+            });
+            
+            $('#area').change(function() {
+                let texto = $( "#area option:selected" ).text();
+                $('#preArea').text(texto);
+            });
 
-                reader.onload = function(e) {
-                    $('#preImagen').attr('src', e.target.result);
+        //previsualizacion de imagenes
+            function readImage(input){
+                var url = input.value;
+                var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+                
+                if(input.files && input.files[0] && (ext == "png" || ext == "jpeg" || ext == "jpg")){
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('#preImagen').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    var src = $('#imagenPreview').val();
+                    $('#preImagen').attr('src', src);
+                    input.value = null;
                 }
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                var src = $('#imagenPreview').val();
-                $('#preImagen').attr('src', src);
-                input.value = null;
             }
-        }
 
-        $('#archivo').change(function() {
-            readImage(this);
-        });
+            $('#archivo').change(function() {
+                readImage(this);
+            });
+
+        //recoger nombre de los archivos
+            $('#archivos').change(function() {
+                var files = $('#archivos').get(0).files;
+
+                $('#files_names').empty();
+                $.each(files, function(_, file) {
+                    $('#files_names').append('<label class="d-block">'+file.name+'</label>');
+                });
+            });
     });
 </script>

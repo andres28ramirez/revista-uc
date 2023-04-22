@@ -57,7 +57,7 @@
         <div id="collapseUtilities" class="collapse {{ request()->is('*/articulos') || request()->is('*/articulos/*') ? 'show' : '' }}" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->is('*/articulos') ? 'active' : '' }}" href="{{ route('articulo.index') }}">Ver Artículos</a>
+                <a class="collapse-item {{ request()->is('*/articulos') || request()->is('*/articulos/todos') ? 'active' : '' }}" href="{{ route('articulo.index') }}">Ver Artículos</a>
                 <a class="collapse-item {{ request()->is('*/articulos/create') ? 'active' : '' }}" href="{{ route('articulo.create') }}">Crear Artículo</a>
                 <a class="collapse-item" href="utilities-animation.html">Autores</a>
                 <a class="collapse-item" href="utilities-animation.html">Estadísticas</a>

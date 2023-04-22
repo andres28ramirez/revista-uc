@@ -7,9 +7,27 @@
 
     <!-- TABLA -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Artículos y Ediciones cargadas en sistema</h6>
-        </div>
+        @if(!$nombre)
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Artículos y Ediciones cargadas en sistema</h6>
+            </div>
+        @else
+            <div class="card-header py-3 text-center">
+                <h4 class="m-0 font-weight-bold text-primary">{{ $nombre }}</h4>
+            </div>
+        @endif
+
+        <!-- BOTON DE VOLVER -->
+        @if($nombre)
+            <div class="card-header" style="border-bottom: 0px; margin-bottom: -1%">
+                <a href="{{ route('articulo.index') }}" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-rotate-left"></i>
+                    </span>
+                    <span class="text">Volver al Inicio</span>
+                </a>
+            </div>
+        @endif
 
         <!-- VER TODOS LOS ARTÍCULOS -->
         <div class="card-header" style="border-bottom: 0px; margin-bottom: -1%">
@@ -21,7 +39,7 @@
             </a>
         </div>
 
-        <!-- CREAR NUEVA EDICIÓN -->
+        <!-- CREAR NUEVO ARTICULO -->
         @if($ediciones->count() > 0)
             <div class="card-header" style="border-bottom: 0px;">
                 <a href="{{ route('articulo.create') }}" class="btn btn-success btn-icon-split">
@@ -49,8 +67,8 @@
                     <div id="acordionEdiciones" class="collapse" aria-labelledby="headingOne" data-parent="#acordionEdiciones">
                         @forelse($ediciones as $edicion)
                             <a class="text-dark"
-                                href="{{ route('articulo.all', $edicion->id_edicion) }}">
-                                <div class="card-body border">
+                                href="{{ route('articulo.index', $edicion->id_edicion) }}">
+                                <div class="card-body border {{ $nombre == $edicion->titulo ? 'bg-gray-200' : '' }}">
                                     {{ $edicion->titulo }} - Nro. Artículos en la edicion (<span class="font-weight-bold">{{ $edicion->articulos->count() }}</span>).
                                 </div>
                             </a>
@@ -63,45 +81,67 @@
                 </div>
             </div>
 
-            <!-- Ultimos 6 Artículos Cargados en el sistema -->
+            <!-- Ultimos 6 Artículos o Todos Cargados en el sistema -->
             <div class="py-4">
-                <h6 class="m-0 font-weight-bold text-primary">Ultimos 6 Artículos Cargados</h6>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    {{
+                        $nombre ? "Todos los Artículos de la Edición seleccionada" :
+                        "Ultimos 6 Artículos Cargados"
+                    }}
+                </h6>
             </div>
 
             <div class="row justify-content-center">
 
                 <!-- Artículo -->
-                <div class="col-lg-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Título</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center">
-                                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" width="100%" height="100%"
-                                    src="{{ asset('images/nodisponible.png') }}" alt="...">
+                @forelse($articulos as $articulo)
+                    <div class="col-lg-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    {{ $articulo->titulo }}
+                                </h6>
                             </div>
-                            <h6 class="text-dark">Edición - PRUEBA</h6>
-                            <p>
-                                Add some quality, svg illustrations to your project courtesy of a
-                                constantly updated collection of beautiful svg images that you can use
-                                completely free and without attribution!
-                            </p>
-                            <div class="d-block">
-                                <button class="btn btn-info btn-circle">
-                                    <i class="fas fa-comment"></i>
-                                </button>
-                                25 Comentarios
-                            </div>
-                            <div class="d-block text-center">
-                                <a target="_blank" rel="nofollow" href="#">
-                                    Abrir Artículo &rarr;
-                                </a>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" width="100%" height="100%"
+                                        src="{{ route('articulo.imagen', ['filename' => basename($articulo->ruta_imagen_es)]) }}" alt="...">
+                                </div>
+                                <div class="text-center">
+                                    <h6 class="text-dark">
+                                        <span>{{ $articulo->FK_id_autor ? $articulo->autor->nombre : "Sin Autor" }}</span> - 
+                                        <span class="badge badge-pill badge-primary">
+                                            {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
+                                        </span>
+                                    </h6>
+                                </div>
+                                <h6 class="text-dark">
+                                    <span class="font-weight-bold">Edición</span>:
+                                    <span id="preEdicion">{{ $articulo->edicion->titulo }}</span>
+                                </h6>
+                                <p class="text-justify">
+                                    {{ substr($articulo->contenido, 0, 400) }}...
+                                </p>
+                                <div class="d-block">
+                                    <button class="btn btn-info btn-circle">
+                                        <i class="fas fa-comment"></i>
+                                    </button>
+                                    {{ $articulo->comentarios->count() }} Comentarios
+                                </div>
+                                <div class="d-block text-center">
+                                    <a href="{{ route('articulo.view', $articulo->id_articulo) }}">
+                                        Abrir Artículo &rarr;
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-        </div>
+                @empty
+                    <div class="col-lg-6">
+                        <h6>No hay publicaciones de artículos cargados en el sistema</h6>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
 
@@ -113,30 +153,5 @@
 <script>
     $(document).ready(function() {
         
-        $('.btn-delete').click(function(){
-            var id = $(this).attr('name');
-
-            Swal.fire({
-                title: 'Estas seguro de elimnar la edición?',
-                text: "No podras revertir esta elección, esto borrara todos los artículos anclados a la edición!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#084456',
-                cancelButtonColor: '#bbbbbb',
-                confirmButtonText: 'Si, eliminalo!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Eliminando!',
-                        'La edición sera procesada para ser eliminada de los registros.',
-                        'success'
-                    );
-                    setTimeout(function() { 
-                        $( "#delete-edicion-"+id ).submit();
-                    }, 2000);
-                }
-            });
-        });
     });
 </script>

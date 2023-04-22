@@ -59,7 +59,7 @@
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                         Area con más Artículos</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $grouped ? $grouped->conocimiento->nombre : "Sin artículos" }}
+                                        {{ $max_area ? $max_area->nombre : "Sin artículos" }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -96,8 +96,8 @@
                                     class="float-right">{{ $area->articulos->count() }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-gradient-danger" role="progressbar" 
-                                    style="width: <?php $articulos->count() ? $area->articulos->count() * 100 / $articulos->count() : 0 ?>%"
-                                    aria-valuenow="<?php $articulos->count() ? $area->articulos->count() * 100 / $articulos->count() : 0 ?>" 
+                                    style="width: <?php echo $articulos->count() ? $area->articulos->count() * 100 / $articulos->count() : '0' ?>%"
+                                    aria-valuenow="{{ $articulos->count() ? $area->articulos->count() * 100 / $articulos->count() : '0' }}" 
                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @empty

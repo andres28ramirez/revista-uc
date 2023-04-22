@@ -40,10 +40,12 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
 
     //ARTICULOS
     Route::get('/articulos', [ArticuloController::class, 'index'])->name('articulo.index');
-    Route::get('/articulos/todos/{id?}', [ArticuloController::class, 'index'])->name('articulo.all');
+    Route::get('/articulos/todos', [ArticuloController::class, 'all_articles'])->name('articulo.all');
+    Route::get('/articulos/view/{id}', [ArticuloController::class, 'one_article'])->name('articulo.view');
     Route::get('/articulos/create', [ArticuloController::class, 'create'])->name('articulo.create');
     Route::get('/articulos/edit/{id}', [ArticuloController::class, 'edit'])->name('articulo.edit');
     Route::get('/articulos/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('articulo.imagen');
+    Route::get('/articulos/{id?}', [ArticuloController::class, 'index'])->name('articulo.index');
 
     Route::post('/articulos/store', [ArticuloController::class, 'store'])->name('articulo.store');
     Route::post('/articulos/update/{id}', [ArticuloController::class, 'update'])->name('articulo.update');

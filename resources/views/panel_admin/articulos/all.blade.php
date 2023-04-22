@@ -3,22 +3,19 @@
 @section('content')
 <div class="container-fluid">
     
-
-
     <!-- TABLA -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Ediciones Cargadas</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Artículos Cargados</h6>
         </div>
 
-        
         <!-- CREAR NUEVA EDICIÓN -->
         <div class="card-header py-3" style="border-bottom: 0px;">
-            <a href="{{ route('edicion.create') }}" class="btn btn-success btn-icon-split">
+            <a href="{{ route('articulo.create') }}" class="btn btn-success btn-icon-split">
                 <span class="icon text-white-50" style="padding: 0.75rem 0.75rem;">
                     <i class="fas fa-plus"></i>
                 </span>
-                <span class="text">Crear una nueva edición</span>
+                <span class="text">Crear un nuevo Artículo</span>
             </a>
         </div>
 
@@ -27,62 +24,67 @@
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                        <tr><th>Nro. de Publicación</th>
+                        <tr>
                             <th>Imagen</th>
                             <th>Título</th>
-                            <th>Descripción</th>
-                            <th>Fecha de Edición</th>
-                            <th>Nro. de Artículos</th>
+                            <th>Edición</th>
+                            <th>Autor</th>
+                            <th>Area</th>
+                            <th>Fecha de Publicación</th>
+                            <th>Nro. de Comentarios</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($ediciones as $edicion)
+                        @foreach($articulos as $articulo)
                         <tr class="text-center">
                             <td class="align-middle">
-                                {{ $edicion->numero }}.º
-                            </td>
-                            <td class="align-middle">
                                 <div class="text-center m-auto" >
-                                    @if( $edicion->ruta_imagen )
-                                        <img class="img-fluid img-thumbnail" 
-                                        src="{{ route('edicion.imagen', ['filename' => basename($edicion->ruta_imagen)]) }}" 
-                                        alt="previsual de la edición" width="100%" height="100%">
-                                    @else
-                                        <img class="img-fluid img-thumbnail" 
-                                        src="{{ asset('images/nodisponible.png') }}" 
-                                        alt="previsual de la edición" width="100%" height="100%">
-                                    @endif
+                                    <img class="img-fluid img-thumbnail" 
+                                    src="{{ route('articulo.imagen', ['filename' => basename($articulo->ruta_imagen_es)]) }}" 
+                                    alt="previsual de la edición" width="100%" height="100%">
                                 </div>
                             </td>
                             <td class="align-middle">
-                                {{ $edicion->titulo }}
+                                {{ $articulo->titulo }}
                             </td>
                             <td class="align-middle">
-                                {{ $edicion->descripcion }}
+                                {{ $articulo->edicion->titulo }}
                             </td>
                             <td class="align-middle">
-                                {{ date_format(date_create($edicion->fecha), "F j, Y") }}
+                                {{ $articulo->FK_id_autor ? $articulo->autor->nombre : "Sin Autor" }}
                             </td>
                             <td class="align-middle">
-                                <a href="{{ route('articulo.index', $edicion->id_edicion) }}" class="btn btn-warning btn-icon-split">
+                                {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
+                            </td>
+                            <td class="align-middle">
+                                {{ date_format(date_create($articulo->created_at), "F j, Y") }}
+                            </td>
+                            <td class="align-middle">
+                                <a href="#" class="btn btn-warning btn-icon-split">
                                     <span class="icon text-white font-weight-bold">
-                                        {{ $edicion->articulos->count() }}
+                                        {{ $articulo->comentarios->count() }}
                                     </span>
-                                    <span class="text">Ver</span>
+                                    <span class="text">
+                                        <i class="fas fa-comment"></i>
+                                    </span>
                                 </a>
                             </td>
                             <td class="align-middle">
-                                <a href="{{ route('edicion.edit', $edicion->id_edicion) }}" class="btn btn-info btn-circle btn-sm">
+                                <a href="{{ route('articulo.view', $articulo->id_articulo) }}" class="btn btn-success btn-circle btn-sm">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <a href="{{ route('articulo.edit', $articulo->id_articulo) }}" class="btn btn-info btn-circle btn-sm">
                                     <i class="fas fa-pencil"></i>
                                 </a>
 
                                 <!-- Boton de Eliminar -->
-                                <button name="{{ $edicion->id_edicion }}"
+                                <button name="{{ $articulo->id_articulo }}"
                                     class="btn btn-danger btn-circle btn-sm btn-delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
-                                <form id="delete-edicion-{{ $edicion->id_edicion }}" action="{{ route('edicion.delete', $edicion->id_edicion) }}" method="POST" style="display: none;">
+                                <form id="delete-articulo-{{ $articulo->id_articulo }}" action="{{ route('articulo.delete', $articulo->id_articulo) }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
                             </td>
@@ -122,7 +124,7 @@
                         'success'
                     );
                     setTimeout(function() { 
-                        $( "#delete-edicion-"+id ).submit();
+                        $( "#delete-articulo-"+id ).submit();
                     }, 2000);
                 }
             });
