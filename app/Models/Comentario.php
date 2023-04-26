@@ -13,6 +13,7 @@ class Comentario extends Model
     protected $primaryKey = "id_comentario";
     protected $fillable = [
         "id_comentario",
+        "estado",
         "autor",
         "contenido",
         "FK_id_usuario",

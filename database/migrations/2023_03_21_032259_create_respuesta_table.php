@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::table('respuesta', function (Blueprint $table) {
             Schema::create('respuesta', function (Blueprint $table) {
                 $table->id('id_respuesta');
+                $table->string('estado',255)->default('pendiente');
                 $table->string('nombre',255);
                 $table->text('contenido');
                 $table->bigInteger('FK_id_usuario')->nullable()->unsigned();

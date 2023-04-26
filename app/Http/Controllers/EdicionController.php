@@ -187,6 +187,7 @@ class EdicionController extends Controller
                         $comentario->delete();
                     }
 
+                    Storage::delete(['public/'.$articulo->ruta_imagen_es]);
                     $articulo->delete();
                 }
             

@@ -108,8 +108,8 @@
             var id = $(this).attr('name');
 
             Swal.fire({
-                title: 'Estas seguro de elimnar la edición?',
-                text: "No podras revertir esta elección, esto borrara todos los artículos anclados a la edición!",
+                title: 'Estas seguro de elimnar el artículo?',
+                text: "No podras revertir esta elección, esto borrara todos los comentarios y archivos anclados al mismo!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#084456',
@@ -120,7 +120,7 @@
                 if (result.isConfirmed) {
                     Swal.fire(
                         'Eliminando!',
-                        'La edición sera procesada para ser eliminada de los registros.',
+                        'El artículo sera procesado para ser eliminada de los registros.',
                         'success'
                     );
                     setTimeout(function() { 

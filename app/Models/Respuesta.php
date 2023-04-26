@@ -13,6 +13,7 @@ class Respuesta extends Model
     protected $primaryKey = "id_respuesta";
     protected $fillable = [
         "id_respuesta",
+        "estado",
         "nombre",
         "contenido",
         "FK_id_usuario",

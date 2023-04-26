@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::table('comentario', function (Blueprint $table) {
             Schema::create('comentario', function (Blueprint $table) {
                 $table->id('id_comentario');
+                $table->string('estado',255)->default('pendiente');
                 $table->string('autor',255);
                 $table->text('contenido');
                 $table->bigInteger('FK_id_usuario')->nullable()->unsigned();

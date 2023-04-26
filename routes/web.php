@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticuloController;
+use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ConocimientoController;
 use App\Http\Controllers\EdicionController;
@@ -45,11 +46,15 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::get('/articulos/create', [ArticuloController::class, 'create'])->name('articulo.create');
     Route::get('/articulos/edit/{id}', [ArticuloController::class, 'edit'])->name('articulo.edit');
     Route::get('/articulos/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('articulo.imagen');
+    Route::get('/articulos/getArchive/{filename?}', [ArticuloController::class, 'getArchive'])->name('articulo.archivo');
     Route::get('/articulos/{id?}', [ArticuloController::class, 'index'])->name('articulo.index');
 
     Route::post('/articulos/store', [ArticuloController::class, 'store'])->name('articulo.store');
     Route::post('/articulos/update/{id}', [ArticuloController::class, 'update'])->name('articulo.update');
     Route::post('/articulos/delete/{id}', [ArticuloController::class, 'destroy'])->name('articulo.delete');
+
+    //COMENTARIOS
+    Route::get('/comentario/edit/{id}', [ComentarioController::class, 'edit'])->name('comentario.edit');
 });
 
 //RUTAS DE AUTENTICACIÓN

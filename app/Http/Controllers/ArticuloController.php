@@ -103,6 +103,19 @@ class ArticuloController extends Controller
             return redirect()->route('articulo.index')->with('warning', 'No puedes cargar artículos hasta que no haya una edición subida');
     }
 
+    //Visual de Editar Artículo
+    public function edit($id_articulo){
+        $articulo = Articulo::find($id_articulo);
+        $ediciones = Edicion::all();
+        $autores = Autor::all();
+        $areas = Conocimiento::all();
+
+        if(!$articulo)
+            return redirect()->route('articulo.index')->with('warning', 'El artículo seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
+
+        return view('panel_admin.articulos.edit', compact('articulo', 'ediciones', 'autores', 'areas'));
+    }
+
     //APARTADO DEL RUD DEL CONTROLADOR
 
     //Retorno de la Imagen del Storage
@@ -120,6 +133,32 @@ class ArticuloController extends Controller
             $file = Storage::disk('public')->get('crash.png');
 
         return new Response($file, 200);
+    }
+
+    //Retorno del Archivo del Storage
+    public function getArchive($filename = null){
+
+        if($filename){
+            $extension = pathinfo($filename)['extension'];
+
+            $exist = Storage::disk('public')->exists('archivos/'.$filename);
+
+            if(!$exist){
+                $extension = null;
+                $file = storage_path('app/public/crash.png');
+            }
+            else
+                $file = storage_path('app/public/archivos/'.$filename);
+        }
+        else
+            $file = storage_path('app/public/crash.png');
+        
+        $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
+
+        return Response(file_get_contents($file), 200, [
+            'Content-Type' => $extension,
+            'Content-Disposition' => 'inline; filename="'.$file.'"'
+        ]);
     }
 
     //Store de una Nueva Edicion
@@ -165,6 +204,107 @@ class ArticuloController extends Controller
         }catch(QueryException $e){
             DB::rollBack();
             return Redirect::back()->with('bderror', 'El Artículo no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+        }
+    }
+    
+    //Update de un Artículo
+    public function update(Request $request, $id_articulo){
+        
+        DB::beginTransaction();
+        try{
+
+            //Validando datos
+            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            if($validate->fails()){
+                return Redirect::back()->withErrors($validate)->withInput();
+            }
+
+            //Siguio, entonces almacenamos la edición
+            $datos = $request->all();
+            
+            $articulo = Articulo::find($id_articulo);
+            //Envio de la Notificación
+
+            //Almacenamiento de la Imagen
+            if($request->hasFile('ruta_imagen')){
+                Storage::delete(['public/'.$articulo->ruta_imagen_es]);
+                $datos["ruta_imagen_es"] = $request->file('ruta_imagen_es')->store('ediciones', 'public');
+            }
+            else{
+                unset($datos['ruta_imagen_es']);
+            }
+            
+            $articulo->update($datos);
+
+            if($request->editArchive){
+                //Edición o eliminación de los antiguos archivos
+                $archivos = Archivo::whereNotIn('ruta_archivo_es', $request->loaded)->get();
+                foreach($archivos as $archivo){
+                    Storage::delete(['public/'.$archivo->ruta_archivo_es]);
+                    Storage::delete(['public/'.$archivo->ruta_archivo_en]);
+                    $archivo->delete();
+                }
+
+                //Almacenamiento de los nuevos Archivos
+                foreach($request->archivos as $archivo){
+                    $save_archive = new Archivo();
+                    $save_archive->FK_id_articulo  = $articulo->id_articulo;
+                    $save_archive->nombre = $archivo->getClientOriginalName();
+                    $save_archive->tipo = $archivo->extension();
+
+                    //Guardo el Archivo
+                    $save_archive->ruta_archivo_es = $archivo->store('archivos', 'public');
+
+                    $save_archive->save();
+                }
+            }
+            
+            //Aceptamos la creación de todo y redireccionamos
+            DB::commit();
+            return redirect()->route('articulo.index')->with('success', 'El Artículo fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
+
+        }catch(QueryException $e){
+            DB::rollBack();
+            return Redirect::back()->with('bderror', 'El Artículo no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+        }
+    }
+
+    //Destroy de un Artículo
+    public function destroy($id_articulo){
+        
+        DB::beginTransaction();
+        try{
+
+            $articulo = Articulo::find($id_articulo);
+
+            if(!$articulo)
+            return redirect()->route('articulo.index')->with('warning', 'El artículo no pudo ser eliminado debido a que no pudo ser encontrado');
+
+            //recorro archivo por archivo y borro
+            foreach($articulo->archivos as $archivo){
+                Storage::delete(['public/'.$archivo->ruta_archivo_es]);
+                Storage::delete(['public/'.$archivo->ruta_archivo_en]);
+                $archivo->delete();
+            }
+
+            //recorro comentarios y consecuentemente sus respuestas y borro
+            foreach($articulo->comentarios as $comentario){
+                foreach($comentario->respuestas as $respuesta){
+                    $respuesta->delete();
+                }
+                $comentario->delete();
+            }
+
+            Storage::delete(['public/'.$articulo->ruta_imagen_es]);
+            $articulo->delete();
+
+            //Aceptamos la eliminación de todo y redireccionamos
+            DB::commit();
+            return redirect()->route('articulo.index')->with('success', 'El Artículo fue eliminado de manera exitosa');
+
+        }catch(QueryException $e){
+            DB::rollBack();
+            return Redirect::back()->with('bderror', 'El Artículo no pudo ser eliminado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 }

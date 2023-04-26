@@ -66,10 +66,11 @@
                         <div class="card-footer">
                             <label for="">Archivos del Artículo:</label>
                             <div class="row">
-                                @forelse($articulo->archivos as $archivo)
-                                    <div class="col-12 mb-1">
-                                        <a href="#" class="btn btn-light btn-icon-split col-12">
-                                            <span class="icon text-gray-600">
+                                <div class="col-12">
+                                    @forelse($articulo->archivos as $archivo)
+                                        <a href="{{ route('articulo.archivo', ['filename' => basename($archivo->ruta_archivo_es)]) }}" target="_blank" 
+                                            class="btn btn-light btn-icon-split mb-1">
+                                            <span class="icon text-gray-600" style="width: 50px;">
                                                 @switch($archivo->tipo)
                                                     @case('pdf')<i class="fas fa-file-pdf"></i>@break
                                                     @default <i class="fas fa-image"></i>
@@ -77,10 +78,10 @@
                                             </span>
                                             <span class="text">{{ $archivo->nombre }}</span>
                                         </a>
-                                    </div>
-                                @empty
-                                    No posee archivos linkeados...
-                                @endforelse
+                                    @empty
+                                        No posee archivos linkeados...
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,29 +92,15 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">
-                                {{ $articulo->titulo }}
+                                COMENTARIOS
                             </h6>
                         </div>
                         <div class="card-body">
-                            <div class="text-center">
-                                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" width="100%" height="100%"
-                                    src="{{ route('articulo.imagen', ['filename' => basename($articulo->ruta_imagen_es)]) }}" alt="...">
-                            </div>
-                            <div class="text-center">
-                                <h6 class="text-dark">
-                                    <span>{{ $articulo->FK_id_autor ? $articulo->autor->nombre : "Sin Autor" }}</span> - 
-                                    <span class="badge badge-pill badge-primary">
-                                        {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
-                                    </span>
-                                </h6>
-                            </div>
-                            <h6 class="text-dark">
-                                <span class="font-weight-bold">Edición</span>:
-                                <span id="preEdicion">{{ $articulo->edicion->titulo }}</span>
-                            </h6>
-                            <p class="text-justify">
-                                {{ substr($articulo->contenido, 0, 400) }}...
-                            </p>
+                            @if($articulo->comentarios->count() > 0)
+                                @include(('layouts.comments'))
+                            @else
+                                No hay comentarios cargados en el artículo
+                            @endif
                         </div>
                     </div>
                 </div>

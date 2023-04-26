@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
+
+.card_comment {
+    font-family: 'Source Sans Pro', sans-serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+}
+
+.media img{
+    width: 60px;
+    height: 60px;
+}
+
+.reply a {
+    text-decoration: none;
+}
