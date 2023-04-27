@@ -9,14 +9,45 @@
             <h6 class="m-0 font-weight-bold text-primary">Artículos Cargados</h6>
         </div>
 
+        <!-- REINICIAR FILTROS DE BUSQUEDA -->
+        @if($filtrado)
+        <div class="card-header pb-0" style="border-bottom: 0px;">
+            <a href="{{ route('articulo.all') }}" class="btn btn-secondary btn-sm btn-icon-split">
+                <span class="icon text-white-50" style="padding: 0.75rem 0.75rem;">
+                    <i class="fas fa-rotate-left"></i>
+                </span>
+                <span class="text">Eliminar filtros de busqueda</span>
+            </a>
+        </div>
+        @endif
+
         <!-- CREAR NUEVA EDICIÓN -->
-        <div class="card-header py-3" style="border-bottom: 0px;">
-            <a href="{{ route('articulo.create') }}" class="btn btn-success btn-icon-split">
+        <div class="card-header pb-0" style="border-bottom: 0px;">
+            <a href="{{ route('articulo.create') }}" class="btn btn-success btn-sm btn-icon-split">
                 <span class="icon text-white-50" style="padding: 0.75rem 0.75rem;">
                     <i class="fas fa-plus"></i>
                 </span>
                 <span class="text">Crear un nuevo Artículo</span>
             </a>
+        </div>
+
+        <!-- FILTRO DE BUSQUEDA -->
+        <div class="card-body pb-0">
+            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#filtradoModal">
+                Aplicar Filtros de Busqueda
+            </button>
+            @if($filtrado)
+                <label for="">
+                    Filtro de Busqueda Aplicado por:
+                    @if($id_autor)<span class="font-weight-bold text-primary"> Autor /</span>@endif
+                    @if($id_conocimiento)<span class="font-weight-bold text-primary"> Conocimiento /</span>@endif
+                    @if($id_edicion)<span class="font-weight-bold text-primary"> Edición</span>@endif
+                </label>
+            @else
+                <label for="">
+                    No hay filtros aplicados en el reporte de la tabla...
+                </label>
+            @endif
         </div>
 
         <div class="card-body">
@@ -95,7 +126,58 @@
             </div>
         </div>
     </div>
+</div>
+<input type="hidden" id="link_dir" value="{{ route('articulo.all') }}">
 
+<!-- Modal para filtrar la información -->
+<div class="modal fade" id="filtradoModal" tabindex="-1" role="dialog" aria-labelledby="filtradoModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtradoModalLongTitle">Selecciona el filtrado para la Tabla</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Autor del Artículo -->
+                <div class="form-group">
+                    <label for="autor_filter">Selecciona un Autor: Opcional*</label>
+                    <select id="autor_filter" class="form-control" name="id_autor">
+                        <option value="0">Selecciona un Autor a filtrar...</option>
+                        @foreach($autores as $autor)
+                            <option value="{{ $autor->id_autor }}" {{ $id_autor == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Area de Conocimiento -->
+                <div class="form-group">
+                    <label for="area_filter">Selecciona un Área de Conocimiento: Opcional*</label>
+                    <select id="area_filter" class="form-control" name="id_conocimiento">
+                        <option value="0">Selecciona un Área a filtrar...</option>
+                        @foreach($areas as $area)
+                            <option value="{{ $area->id_conocimiento }}" {{ $id_conocimiento == $area->id_conocimiento ? "selected" : ""}}>{{ $area->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Ediciones -->
+                <div class="form-group">
+                    <label for="edicion_filter">Selecciona una Edición: Opcional*</label>
+                    <select id="edicion_filter" class="form-control" name="id_edicion">
+                        <option value="0">Selecciona una Edición a filtrar...</option>
+                        @foreach($ediciones as $edicion)
+                            <option value="{{ $edicion->id_edicion }}" {{ $id_edicion == $edicion->id_edicion ? "selected" : ""}}>{{ $edicion->titulo }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="filter_button" class="btn btn-secondary">Aplicar Filtro</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -104,6 +186,7 @@
 <script>
     $(document).ready(function() {
         
+        //Eliminar artículo
         $('.btn-delete').click(function(){
             var id = $(this).attr('name');
 
@@ -128,6 +211,16 @@
                     }, 2000);
                 }
             });
+        });
+
+        //Filtrat Tabla de Artículos
+        $('#filter_button').click(function(){
+            let link = $('#link_dir').val();
+            let autor = $('#autor_filter option:selected').val();
+            let area = $('#area_filter option:selected').val();
+            let edicion = $('#edicion_filter option:selected').val();
+            
+            location.href = link+"/"+autor+"/"+area+"/"+edicion;
         });
     });
 </script>

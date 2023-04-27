@@ -54,12 +54,12 @@
             <i class="fas fa-fw fa-solid fa-newspaper"></i>
             <span>Artículos</span>
         </a>
-        <div id="collapseUtilities" class="collapse {{ request()->is('*/articulos') || request()->is('*/articulos/*') ? 'show' : '' }}" aria-labelledby="headingUtilities"
+        <div id="collapseUtilities" class="collapse {{ request()->is('*/articulos') || request()->is('*/articulos/*') || request()->is('*/autor') || request()->is('*/autor/*') ? 'show' : '' }}" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->is('*/articulos') || request()->is('*/articulos/todos') ? 'active' : '' }}" href="{{ route('articulo.index') }}">Ver Artículos</a>
                 <a class="collapse-item {{ request()->is('*/articulos/create') ? 'active' : '' }}" href="{{ route('articulo.create') }}">Crear Artículo</a>
-                <a class="collapse-item" href="utilities-animation.html">Autores</a>
+                <a class="collapse-item {{ request()->is('*/autor') || request()->is('*/autor/*') ? 'active' : '' }}" href="{{ route('autor.index') }}">Autores</a>
                 <a class="collapse-item" href="utilities-animation.html">Estadísticas</a>
                 <a class="collapse-item" href="utilities-animation.html">Ultimos Comentarios</a>
                 <a class="collapse-item" href="utilities-other.html">Documentos o Archivos</a>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticuloController;
+use App\Http\Controllers\AutorController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ConocimientoController;
@@ -41,7 +42,7 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
 
     //ARTICULOS
     Route::get('/articulos', [ArticuloController::class, 'index'])->name('articulo.index');
-    Route::get('/articulos/todos', [ArticuloController::class, 'all_articles'])->name('articulo.all');
+    Route::get('/articulos/todos/{id_autor?}/{id_conocimiento?}/{id_edicion?}', [ArticuloController::class, 'all_articles'])->name('articulo.all');
     Route::get('/articulos/view/{id}', [ArticuloController::class, 'one_article'])->name('articulo.view');
     Route::get('/articulos/create', [ArticuloController::class, 'create'])->name('articulo.create');
     Route::get('/articulos/edit/{id}', [ArticuloController::class, 'edit'])->name('articulo.edit');
@@ -52,6 +53,16 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::post('/articulos/store', [ArticuloController::class, 'store'])->name('articulo.store');
     Route::post('/articulos/update/{id}', [ArticuloController::class, 'update'])->name('articulo.update');
     Route::post('/articulos/delete/{id}', [ArticuloController::class, 'destroy'])->name('articulo.delete');
+
+    //AUTORES
+    Route::get('/autor', [AutorController::class, 'index'])->name('autor.index');
+    Route::get('/autor/create', [AutorController::class, 'create'])->name('autor.create');
+    Route::get('/autor/edit/{id}', [AutorController::class, 'edit'])->name('autor.edit');
+    Route::get('/autor/getImage/{filename?}', [AutorController::class, 'getImage'])->name('autor.imagen');
+    
+    Route::post('/autor/store', [AutorController::class, 'store'])->name('autor.store');
+    Route::post('/autor/update/{id}', [AutorController::class, 'update'])->name('autor.update');
+    Route::post('/autor/delete/{id}', [AutorController::class, 'destroy'])->name('autor.delete');
 
     //COMENTARIOS
     Route::get('/comentario/edit/{id}', [ComentarioController::class, 'edit'])->name('comentario.edit');

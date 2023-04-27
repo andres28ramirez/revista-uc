@@ -13,9 +13,15 @@
         <!-- Articulos -->
         @if(request()->is('*/articulos')) Panel de Artículos @endif
         @if(request()->is('*/articulos/todos')) Panel de Artículos Completos @endif
+        @if(request()->is('*/articulos/todos/*')) Panel de Artículos Completos @endif
         @if(request()->is('*/articulos/view/*')) Visual de Artículo Seleccionado @endif
         @if(request()->is('*/articulos/create')) Panel Creación de Artículos @endif
         @if(request()->is('*/articulos/edit/*')) Panel Modificación de Artículos @endif
+
+        <!-- Autores -->
+        @if(request()->is('*/autor')) Panel de Autores @endif
+        @if(request()->is('*/autor/create')) Panel Creación de nuevos Autores @endif
+        @if(request()->is('*/autor/edit/*')) Panel Modificación de Autores @endif
     </h1>
 
     <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i

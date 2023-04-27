@@ -76,9 +76,36 @@ class ArticuloController extends Controller
     }
 
     //Visual Tabla con todos los artículos
-    public function all_articles(){
-        $articulos = Articulo::all();
-        return view('panel_admin.articulos.all', compact('articulos'));
+    public function all_articles($id_autor = null, $id_conocimiento = null, $id_edicion = null){
+        $ediciones = Edicion::all();
+        $areas = Conocimiento::all();
+        $autores = Autor::all();
+        $filtrado = null;
+
+        //Filtros de Busqueda
+        if($id_autor || $id_conocimiento || $id_edicion) $filtrado = true;
+        
+        
+        $query = Articulo::query();
+
+        //Autor
+        $query->when($id_autor, function ($q, $id_autor) {
+            return $q->where('FK_id_autor', $id_autor);
+        });
+
+        //Conocimiento
+        $query->when($id_conocimiento, function ($q, $id_conocimiento) {
+            return $q->where('FK_id_conocimiento', $id_conocimiento);
+        });
+
+        //Edición
+        $query->when($id_edicion, function ($q, $id_edicion) {
+            return $q->where('FK_id_edicion', $id_edicion);
+        });
+
+        $articulos = $query->get();
+        
+        return view('panel_admin.articulos.all', compact('articulos', 'autores', 'areas', 'ediciones', 'filtrado', 'id_autor', 'id_conocimiento', 'id_edicion'));
     }
 
     //Visual Tabla con todos los artículos
