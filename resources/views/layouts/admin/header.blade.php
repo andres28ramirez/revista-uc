@@ -22,6 +22,10 @@
         @if(request()->is('*/autor')) Panel de Autores @endif
         @if(request()->is('*/autor/create')) Panel Creación de nuevos Autores @endif
         @if(request()->is('*/autor/edit/*')) Panel Modificación de Autores @endif
+
+        <!-- Comentarios -->
+        @if(request()->is('*/comentario')) Panel de Comentarios @endif
+        @if(request()->is('*/comentario/edit/*')) Panel Verificación de Comentarios @endif
     </h1>
 
     <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i

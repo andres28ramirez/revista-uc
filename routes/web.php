@@ -65,7 +65,16 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::post('/autor/delete/{id}', [AutorController::class, 'destroy'])->name('autor.delete');
 
     //COMENTARIOS
+    Route::get('/comentario', [ComentarioController::class, 'index'])->name('comentario.index');
+    Route::get('/comentario/view/{id}', [ComentarioController::class, 'one_article'])->name('comentario.view');
+    Route::get('/comentario/todos/{id_autor?}/{id_conocimiento?}/{id_edicion?}', [ArticuloController::class, 'all_articles'])->name('comentario.all');
     Route::get('/comentario/edit/{id}', [ComentarioController::class, 'edit'])->name('comentario.edit');
+
+    Route::post('/comentario/update/{id}', [ComentarioController::class, 'coUpdate'])->name('comentario.update');
+    Route::post('/comentario/delete/{id}', [ComentarioController::class, 'coDestroy'])->name('comentario.delete');
+
+    Route::post('/respuesta/update/{id}', [ComentarioController::class, 'reUpdate'])->name('respuesta.update');
+    Route::post('/respuesta/delete/{id}', [ComentarioController::class, 'reDestroy'])->name('respuesta.delete');
 });
 
 //RUTAS DE AUTENTICACIÓN

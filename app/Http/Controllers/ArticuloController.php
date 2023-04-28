@@ -69,7 +69,7 @@ class ArticuloController extends Controller
                 $articulos = Articulo::where('FK_id_edicion', $id_edicion)->get();
             }
             else
-                $articulos = Articulo::paginate(6);
+                $articulos = Articulo::orderBy('created_at', 'desc')->paginate(6);
         }
         
         return view('panel_admin.articulos.index', compact('ediciones', 'articulos', 'nombre'));

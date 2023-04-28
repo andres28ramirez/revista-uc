@@ -58,7 +58,7 @@ class AutorController extends Controller
         return view('panel_admin.autores.create_edit', compact('autor'));
     }
 
-    //Visual de Editar Edición
+    //Visual de Editar Autor
     public function edit($id_autor){
         $autor = Autor::findOrFail($id_autor);
         return view('panel_admin.autores.create_edit', compact('autor'));
@@ -83,7 +83,7 @@ class AutorController extends Controller
         return new Response($file, 200);
     }
 
-    //Store de una Nueva Edicion
+    //Store de un Nuevo Autor
     public function store(Request $request){
         
         DB::beginTransaction();
@@ -116,7 +116,7 @@ class AutorController extends Controller
         }
     }
 
-    //Update de una Edicion
+    //Update de un Autor
     public function update(Request $request, $id_autor){
         
         DB::beginTransaction();
@@ -158,7 +158,7 @@ class AutorController extends Controller
         }
     }
 
-    //Destroy de una Edicion
+    //Destroy de un Autor
     public function destroy($id_autor){
         
         DB::beginTransaction();
