@@ -61,8 +61,8 @@
                 <a class="collapse-item {{ request()->is('*/articulos/create') ? 'active' : '' }}" href="{{ route('articulo.create') }}">Crear Artículo</a>
                 <a class="collapse-item {{ request()->is('*/autor') || request()->is('*/autor/*') ? 'active' : '' }}" href="{{ route('autor.index') }}">Autores</a>
                 <a class="collapse-item" href="utilities-animation.html">Estadísticas</a>
-                <a class="collapse-item {{ request()->is('*/comentario') || request()->is('*/comentario/*') ? 'active' : '' }}" href="{{ route('comentario.index') }}">Ultimos Comentarios</a>
-                <a class="collapse-item" href="utilities-other.html">Documentos o Archivos</a>
+                <a class="collapse-item {{ request()->is('*/comentario') || request()->is('*/comentario/*') || request()->is('*/respuesta/*') ? 'active' : '' }}" href="{{ route('comentario.index') }}">Ultimos Comentarios</a>
+                <a class="collapse-item {{ request()->is('*/archivo') || request()->is('*/archivo/*') ? 'active' : '' }}" href="{{ route('archivo.index') }}">Documentos o Archivos</a>
             </div>
         </div>
     </li>
@@ -76,6 +76,13 @@
     </div>
 
     <!-- Nav Item - Usuarios -->
+    <li class="nav-item {{ request()->is('*/usuarios') || request()->is('*/usuarios/*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('usuario.index') }}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Usuarios</span></a>
+    </li>
+
+    <!-- borra este nav item de abajo -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
             aria-expanded="true" aria-controls="collapsePages">

@@ -7,92 +7,94 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                {{ $autor ? "Editando Autor Seleccionado" : "Almacenando nuevo Autor"}}
+                {{ $edicion ? "Editando Edición" : "Crear una nueva Edición"}}
             </h6>
         </div>
 
-        <!-- CREAR NUEVO AUTOR -->
+        <!-- CREAR NUEVA EDICIÓN -->
         <div class="card-header py-3" style="border-bottom: 0px;">
-            <a href="{{ route('autor.index') }}" class="btn btn-secondary btn-icon-split">
+            <a href="{{ route('edicion.index') }}" class="btn btn-secondary btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-rotate-left"></i>
                 </span>
-                <span class="text">Regresar a todas los autores</span>
+                <span class="text">Regresar a todas las ediciones</span>
             </a>
         </div>
 
         <div class="card-body container">
             <div class="row">
-                <!-- formulario de creación o update de autor -->
+                <!-- formulario de creación o update de edición -->
                 <div class="col-sm">
-                    <form method="POST" enctype="multipart/form-data" action="{{ $autor ? route('autor.update', $autor->id_autor) : route('autor.store') }}">
+                    <form method="POST" enctype="multipart/form-data" action="{{ $edicion ? route('edicion.update', $edicion->id_edicion) : route('edicion.store') }}">
                         @csrf
                         
-                        <!-- nombre -->
+                        <!-- titulo -->
                         <div class="form-group">
-                            <label for="nombre">Nombre Completo:</label>
-                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" 
-                                id="nombre" 
-                                name="nombre"
-                                value="{{ $autor ? old('nombre', $autor->nombre) : old('nombre') }}" required
-                                placeholder="Nombre del Autor...">
+                            <label for="titulo">Título:</label>
+                            <input type="text" class="form-control @error('titulo') is-invalid @enderror" 
+                                id="titulo" 
+                                name="titulo"
+                                value="{{ $edicion ? old('titulo', $edicion->titulo) : old('titulo') }}" required
+                                placeholder="Título de la Edición...">
                             
-                            @error('nombre')
+                            @error('titulo')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
 
-                        <!-- Email del Autor -->
+                        <!-- numero de publicacion -->
                         <div class="form-group">
-                            <label for="email">Correo Electrónico: <em>Opcional *</em></label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                id="email" 
-                                name="email"
-                                value="{{ $autor ? old('email', $autor->email) : old('email') }}"
-                                placeholder="Digita el correo del Autor...">
+                            <label for="numero">Número de Publicación / <em>sirve como ordenamiento</em>:</label>
+                            <input type="number" min="1" 
+                                class="form-control @error('numero') is-invalid @enderror" 
+                                id="numero" 
+                                name="numero"
+                                value="{{ $edicion ? old('numero', $edicion->numero) : old('numero') }}" required
+                                placeholder="Digita el número de la edición...">
                             
-                            @error('email')
+                            @error('numero')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
 
-                        <!-- Grado Educativo -->
+                        <!-- Fecha de la publicación -->
                         <div class="form-group">
-                            <label for="grado">Grado - Institución de la que proviene:</label>
-                            <input type="text" class="form-control @error('grado') is-invalid @enderror" 
-                                id="grado" 
-                                name="grado"
-                                value="{{ $autor ? old('grado', $autor->grado) : old('grado') }}" required
-                                placeholder="Grado del Autor...">
+                            <label for="fecha">Fecha de Publicación:</label>
+                            <input type="date" min="1" 
+                                class="form-control @error('fecha') is-invalid @enderror" 
+                                id="fecha" 
+                                name="fecha"
+                                value="{{ $edicion ? old('fecha', $edicion->fecha) : old('fecha', date('Y-m-d')) }}" required
+                                placeholder="Digita el número de la edición...">
                             
-                            @error('grado')
+                            @error('fecha')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
 
-                        <!-- Sintesis del Autor -->
+                        <!-- Descripcion de la edicion -->
                         <div class="form-group">
-                            <label for="sintesis">Descripción:</label>
-                            <textarea class="form-control @error('sintesis') is-invalid @enderror"
-                                name="sintesis" id="sintesis" required
-                                cols="30" rows="5">{{ $autor ? old('sintesis', $autor->sintesis) : old('sintesis') }}</textarea>
+                            <label for="descripcion">Descripción:</label>
+                            <textarea class="form-control @error('descripcion') is-invalid @enderror"
+                                name="descripcion" id="descripcion" required
+                                cols="30" rows="5">{{ $edicion ? old('descripcion', $edicion->descripcion) : old('descripcion') }}</textarea>
                             
-                            @error('sintesis')
+                            @error('descripcion')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
 
-                        <!-- Imagen del Autor -->
+                        <!-- Imagen del Archivo -->
                         <div class="form-group">
-                            <label for="ruta_imagen">Imagen del Autor: <em>Opcional *</em></label>
+                            <label for="ruta_imagen">Caratula de la Edición: Opcional*</label>
 
                             <div class="custom-file">
                                 <input type="file" accept="image/png, image/jpeg, image/jpg" name="ruta_imagen"
@@ -104,9 +106,11 @@
                                 @enderror
                                 <label class="custom-file-label" for="ruta_imagen">Selecciona un archivo</label>
                             </div>
+
+                            
                         </div>
                         <button type="submit" class="btn btn-success mt-2">
-                            {{ $autor ? "Editar Autor" : "Crear Autor" }}
+                            {{ $edicion ? "Editar Edición" : "Crear Edición" }}
                         </button>
                     </form>
                 </div>
@@ -114,28 +118,22 @@
                 <!-- previsualización -->
                 <div class="col-sm">
                     <div class="text-center">
-                        <h5>Previsualización del Autor</h5>
+                        <h5>Previsualización del Contenido</h5>
                     </div>
                     
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 text-center">
                                 <img id="preImagen" 
-                                    src="{{ $autor ? route('autor.imagen', ['filename' => basename($autor->ruta_imagen)]) : asset('images/nodisponible.png') }}" 
-                                    class="img-fluid rounded-circle" height="200" width="200">
+                                    src="{{ $edicion ? route('edicion.imagen', ['filename' => basename($edicion->ruta_imagen)]) : asset('images/nodisponible.png') }}" 
+                                    class="img-fluid" height="300" width="300">
                             </div>
                             <div class="col-12">
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <h6 class="font-weight-bold" id="preNombre">{{ $autor ? $autor->nombre : old("nombre", "Nombre del Autor") }}</h6>
-                                        <p id="preGrado">
-                                            {{ $autor ? $autor->grado : old("grado", "Institución del Autor") }}
-                                        </p>
-                                    </div>
-                                    <p><b>Correo: </b> <span id="preEmail">{{ $autor ? $autor->email : old("email", "Opcional...") }}</span></p>
-                                    <p id="preSintesis" class="text-justify">
-                                        {{ $autor ? $autor->sintesis : old("sintesis", "Resumen del Autor...") }}
-                                    </p>
+                                    <h6 class="font-weight-bold" id="preTitulo">{{ $edicion ? $edicion->titulo : "Título de la Edición" }}</h6>
+                                    <p><b>Fecha de Publicación: </b> <span id="preFecha">{{ $edicion ? date_format(date_create($edicion->fecha), "Y-m-d") : date('Y-m-d')}}</span></p>
+                                    <p id="preDescrip">{{ $edicion ? $edicion->descripcion : "Texto con la descripción" }}</p>
+                                    <a href="#" type="button" class="btn btn-outline-dark">Edición Completa</a>
                                 </div>
                             </div>
                         </div>
@@ -154,20 +152,24 @@
 <script>
     $(document).ready(function() {
         //Edicion de la previsualizacion
-        $('#nombre').change(function() {
-            $('#preNombre').text($(this).val());
+        $('#titulo').change(function() {
+            $('#preTitulo').text($(this).val());
         });
 
-        $('#grado').change(function() {
-            $('#preGrado').text($(this).val());
+        $('#fecha').change(function() {
+            $('#preFecha').text($(this).val());
         });
 
-        $('#sintesis').change(function() {
-            $('#preSintesis').text($(this).val());
+        $('#descripcion').change(function() {
+            $('#preDescrip').text($(this).val());
         });
         
-        $('#email').change(function() {
-            $('#preEmail').text($(this).val());
+        $('#numero').change(function() {
+            var numero = $(this).val();
+
+            if(numero < 1){
+                $(this).val(null);
+            }
         });
 
         function readImage(input){

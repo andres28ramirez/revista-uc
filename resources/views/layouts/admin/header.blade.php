@@ -25,7 +25,18 @@
 
         <!-- Comentarios -->
         @if(request()->is('*/comentario')) Panel de Comentarios @endif
-        @if(request()->is('*/comentario/edit/*')) Panel Verificación de Comentarios @endif
+        @if(request()->is('*/comentario/edit/*')) Panel Edición de Estado Sobre Comentario @endif
+        @if(request()->is('*/respuesta/edit/*')) Panel Edición de Estado sobre Respuesta @endif
+
+        <!-- Archivos -->
+        @if(request()->is('*/archivo')) Panel de Archivos Cargados en los Artículos @endif
+        @if(request()->is('*/archivo/*')) Panel de Archivos Cargados en los Artículos @endif
+        
+        <!-- Usuarios -->
+        @if(request()->is('*/usuarios')) Panel de Usuarios @endif
+        @if(request()->is('*/usuarios/*')) Panel de Usuarios @endif
+        @if(request()->is('*/usuarios/create')) Panel Creación de Usuario @endif
+        @if(request()->is('*/usuarios/edit/*')) Panel Modificación de Usuario @endif
     </h1>
 
     <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i

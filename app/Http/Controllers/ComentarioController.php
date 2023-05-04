@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,7 @@ use Illuminate\Http\Response;
 //MODELOS
 use App\Models\Comentario;
 use App\Models\Respuesta;
+use App\Models\User;
 use Illuminate\Contracts\Cache\Store;
 
 //HELPER DE NOTIFICACION
@@ -59,7 +61,7 @@ class ComentarioController extends Controller
 
             //Top Usuarios con más comentarios
             $usuarios = Comentario::select('FK_id_usuario', DB::raw('count(*) as total'))
-                        ->groupBy('FK_id_usuario')->orderBy('total', 'desc')->get();
+                        ->groupBy('FK_id_usuario')->orderBy('total', 'desc')->paginate(5);
         }
         else{
             $comentarios = [];
@@ -76,10 +78,68 @@ class ComentarioController extends Controller
         return view('panel_admin.autores.create_edit', compact('autor'));
     }
 
-    //Visual de Editar Edición
-    public function edit($id_autor){
-        $autor = Autor::findOrFail($id_autor);
-        return view('panel_admin.autores.create_edit', compact('autor'));
+    //Visual de Editar Comentario
+    public function coEdit($id_comentario){
+        $info = Comentario::findOrFail($id_comentario);
+
+        if(!$info)
+            return redirect()->route('comentario.index')->with('warning', 'El comentario no pudo ser editado debido a que no pudo ser encontrado');
+
+        $info->tipo = "comentario";
+        $info->autor = $info->autor;
+        $info->id = $info->id_comentario;
+
+        $articulo = $info->articulo;
+
+        return view('panel_admin.comentarios.edit', compact('info', 'articulo'));
+    }
+
+    //Visual de Editar Respuesta
+    public function reEdit($id_respuesta){
+        $info = Respuesta::findOrFail($id_respuesta);
+
+        if(!$info)
+            return redirect()->route('comentario.index')->with('warning', 'La respuesta no pudo ser editada debido a que no pudo ser encontrada');
+
+        $info->tipo = "respuesta";
+        $info->autor = $info->nombre;
+        $info->id = $info->id_respuesta;
+
+        $articulo = $info->comentario->articulo;
+
+        return view('panel_admin.comentarios.edit', compact('info', 'articulo'));
+    }
+
+    //Visual de ver todos los comentarios con paginación y filtrado
+    public function all_comments($id_usuario = null, $id_articulo = null, $id_estado = null){
+        $usuarios = User::all();
+        $articulos = Articulo::all();
+        $filtrado = null;
+
+        //Filtros de Busqueda
+        if($id_usuario || $id_articulo || $id_estado) $filtrado = true;
+        
+        
+        $query = Comentario::query();
+
+        //Autor
+        $query->when($id_usuario, function ($q, $id_usuario) {
+            return $q->where('FK_id_usuario', $id_usuario);
+        });
+
+        //Conocimiento
+        $query->when($id_articulo, function ($q, $id_articulo) {
+            return $q->where('FK_id_articulo', $id_articulo);
+        });
+
+        //Edición
+        $query->when($id_estado, function ($q, $id_estado) {
+            return $q->where('estado', $id_estado);
+        });
+
+        $comentarios = $query->paginate(10);
+        
+        return view('panel_admin.comentarios.all', compact('comentarios', 'usuarios', 'articulos', 'filtrado', 'id_usuario', 'id_articulo', 'id_estado'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR
@@ -101,47 +161,15 @@ class ComentarioController extends Controller
         return new Response($file, 200);
     }
 
-    //Store de una Nueva Edicion
-    public function store(Request $request){
-        
-        DB::beginTransaction();
-        try{
-            
-            //Validando datos
-            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
-            if($validate->fails()){
-                return Redirect::back()->withErrors($validate)->withInput();
-            }
-
-            //Siguio, entonces almacenamos el autor
-            $datos = $request->all();
-            //Envio de la Notificación
-
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen')){
-                $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('autores', 'public');
-            }
-            
-            $autor = Autor::create($datos);
-            
-            //Aceptamos la creación de todo y redireccionamos
-            DB::commit();
-            return redirect()->route('autor.index')->with('success', 'El Autor fue almacenado de manera exitosa ya puedes verla entre los registros');
-
-        }catch(QueryException $e){
-            DB::rollBack();
-            return Redirect::back()->with('bderror', 'El Autor no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
-        }
-    }
-
     //Update de un Comentario
-    public function coUpdate(Request $request, $id_autor){
+    public function coUpdate(Request $request, $id_comentario){
         
         DB::beginTransaction();
         try{
 
-            $validaciones = $this->validations;
-            $validaciones["email"] = "nullable|email|min:0|unique:autor,email,".$id_autor.",id_autor";
+            $validaciones = [
+                "estado" => "required",
+            ];
 
             //Validando datos
             $validate = Validator::make($request->all(), $validaciones, $this->error_messages);
@@ -151,28 +179,23 @@ class ComentarioController extends Controller
 
             //Siguio, entonces almacenamos la edición
             $datos = $request->all();
+            $comentario = Comentario::find($id_comentario);
             
-            $autor = Autor::findOrFail($id_autor);
+            if(!$comentario)
+                return redirect()->route('comentario.index')->with('warning', 'El comentario no pudo ser editado debido a que no pudo ser encontrado');
+
             //Envio de la Notificación
             
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen')){
-                Storage::delete(['public/'.$autor->ruta_imagen]);
-                $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('autores', 'public');
-            }
-            else{
-                unset($datos['ruta_imagen']);
-            }
-            
-            $autor->update($datos);
+            //Hacemos el Update
+            $comentario->update($datos);
             
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('autor.index')->with('success', 'El autor fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
+            return Redirect::back()->with('success', 'El comentario fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El autor no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'El comentario no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 
@@ -200,14 +223,15 @@ class ComentarioController extends Controller
         }
     }
 
-    //Update de un Comentario
-    public function reUpdate(Request $request, $id_autor){
+    //Update de una Respuesta
+    public function reUpdate(Request $request, $id_respuesta){
         
         DB::beginTransaction();
         try{
 
-            $validaciones = $this->validations;
-            $validaciones["email"] = "nullable|email|min:0|unique:autor,email,".$id_autor.",id_autor";
+            $validaciones = [
+                "estado" => "required",
+            ];
 
             //Validando datos
             $validate = Validator::make($request->all(), $validaciones, $this->error_messages);
@@ -217,32 +241,27 @@ class ComentarioController extends Controller
 
             //Siguio, entonces almacenamos la edición
             $datos = $request->all();
+            $respuesta = Respuesta::find($id_respuesta);
             
-            $autor = Autor::findOrFail($id_autor);
+            if(!$respuesta)
+                return redirect()->route('comentario.index')->with('warning', 'La respuesta no pudo ser editada debido a que no pudo ser encontrado');
+
             //Envio de la Notificación
             
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen')){
-                Storage::delete(['public/'.$autor->ruta_imagen]);
-                $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('autores', 'public');
-            }
-            else{
-                unset($datos['ruta_imagen']);
-            }
-            
-            $autor->update($datos);
+            //Hacemos el Update
+            $respuesta->update($datos);
             
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('autor.index')->with('success', 'El autor fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
+            return Redirect::back()->with('success', 'La respuesta fue editada de manera exitosa ya puedes ver sus cambios entre los registros');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El autor no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'La respuesta no pudo ser actualizada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 
-    //Destroy de un Comentario
+    //Destroy de una Respuesta
     public function reDestroy($id_respuesta){
         
         DB::beginTransaction();
@@ -262,6 +281,41 @@ class ComentarioController extends Controller
         }catch(QueryException $e){
             DB::rollBack();
             return Redirect::back()->with('bderror', 'La respuesta no pudo ser eliminada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+        }
+    }
+
+    //OPCIONES DE USUARIOS
+    
+    //Store de un Nuevo Comentario o Respuesta
+    public function store(Request $request){
+        
+        DB::beginTransaction();
+        try{
+            
+            //Validando datos
+            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            if($validate->fails()){
+                return Redirect::back()->withErrors($validate)->withInput();
+            }
+
+            //Siguio, entonces almacenamos el autor
+            $datos = $request->all();
+            //Envio de la Notificación
+
+            //Almacenamiento de la Imagen
+            if($request->hasFile('ruta_imagen')){
+                $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('autores', 'public');
+            }
+            
+            $autor = Comentario::create($datos);
+            
+            //Aceptamos la creación de todo y redireccionamos
+            DB::commit();
+            return redirect()->route('autor.index')->with('success', 'El Autor fue almacenado de manera exitosa ya puedes verla entre los registros');
+
+        }catch(QueryException $e){
+            DB::rollBack();
+            return Redirect::back()->with('bderror', 'El Autor no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 }

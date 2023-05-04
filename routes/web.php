@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\ComentarioController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ConocimientoController;
 use App\Http\Controllers\EdicionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
 //RUTA DE LA PÁGINA INICIAL DEL SISTEMA
@@ -67,14 +69,29 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     //COMENTARIOS
     Route::get('/comentario', [ComentarioController::class, 'index'])->name('comentario.index');
     Route::get('/comentario/view/{id}', [ComentarioController::class, 'one_article'])->name('comentario.view');
-    Route::get('/comentario/todos/{id_autor?}/{id_conocimiento?}/{id_edicion?}', [ArticuloController::class, 'all_articles'])->name('comentario.all');
-    Route::get('/comentario/edit/{id}', [ComentarioController::class, 'edit'])->name('comentario.edit');
+    Route::get('/comentario/todos/{id_usuario?}/{id_articulo?}/{id_estado?}', [ComentarioController::class, 'all_comments'])->name('comentario.all');
+    Route::get('/comentario/edit/{id}', [ComentarioController::class, 'coEdit'])->name('comentario.edit');
+    Route::get('/respuesta/edit/{id}', [ComentarioController::class, 'reEdit'])->name('respuesta.edit');
 
     Route::post('/comentario/update/{id}', [ComentarioController::class, 'coUpdate'])->name('comentario.update');
     Route::post('/comentario/delete/{id}', [ComentarioController::class, 'coDestroy'])->name('comentario.delete');
 
     Route::post('/respuesta/update/{id}', [ComentarioController::class, 'reUpdate'])->name('respuesta.update');
     Route::post('/respuesta/delete/{id}', [ComentarioController::class, 'reDestroy'])->name('respuesta.delete');
+
+    //ARCHIVOS
+    Route::get('/archivo/{id_articulo?}', [ArchivosController::class, 'index'])->name('archivo.index');
+    Route::post('/archivo/delete/{id}', [ArchivosController::class, 'destroy'])->name('archivo.delete');
+    
+    //USUARIOS
+    Route::get('/usuarios/{id_usuario?}/{id_articulo?}/{id_estado?}', [UsuariosController::class, 'index'])->name('usuario.index');
+    Route::get('/usuarios/view', [UsuariosController::class, 'view'])->name('usuario.view');
+    Route::get('/usuarios/create', [UsuariosController::class, 'create'])->name('usuario.create');
+    Route::get('/usuarios/edit/{id}', [UsuariosController::class, 'edit'])->name('usuario.edit');
+    
+    Route::post('/usuarios/store', [UsuariosController::class, 'store'])->name('usuario.store');
+    Route::post('/usuarios/update/{id}', [UsuariosController::class, 'update'])->name('usuario.update');
+    Route::post('/usuarios/delete/{id}', [UsuariosController::class, 'destroy'])->name('usuario.delete');
 });
 
 //RUTAS DE AUTENTICACIÓN

@@ -220,10 +220,10 @@
                                 </div>
                                 <div class="col-2">
                                     <!-- Boton de Editar -->
-                                    <button name="{{ $comentario->id_comentario  }}" 
-                                        class="edit_area btn btn-info btn-circle btn-sm">
+                                    <a href="{{ route('comentario.edit', $comentario->id_comentario) }}" 
+                                        class="edit_comentario btn btn-info btn-circle btn-sm">
                                         <i class="fas fa-pencil"></i>
-                                    </button>
+                                    </a>
 
                                     <!-- Boton de Eliminar -->
                                     <button name="{{ $comentario->id_comentario  }}" class="btn btn-danger btn-circle btn-sm comentario-delete">
@@ -262,13 +262,13 @@
                                                 </span> 
 
                                                 <!-- Boton de Editar -->
-                                                <button name="{{ $respuesta->id_respuesta  }}" 
-                                                    class="edit_area btn btn-info btn-circle btn-sm">
+                                                <a href="{{ route('respuesta.edit', $respuesta->id_respuesta) }}"  
+                                                    class="edit_respuesta btn btn-info btn-circle btn-sm">
                                                     <i class="fas fa-pencil"></i>
-                                                </button>
+                                                </a>
 
                                                 <!-- Boton de Eliminar -->
-                                                <button name="{{ $respuesta->id_respuesta  }}" class="btn btn-danger btn-circle btn-sm respuesta-delete">
+                                                <button name="{{ $respuesta->id_respuesta }}" class="btn btn-danger btn-circle btn-sm respuesta-delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 <form id="respuesta-delete-{{ $respuesta->id_respuesta  }}" action="{{ route('respuesta.delete', $respuesta->id_respuesta) }}" method="POST" style="display: none;">
