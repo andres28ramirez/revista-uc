@@ -86,7 +86,7 @@
             <!-- REINICIAR FILTROS DE BUSQUEDA -->
             @if($filtrado)
                 <div class="card-header pb-0" style="border-bottom: 0px;">
-                    <a href="{{ route('archivo.index') }}" class="btn btn-secondary btn-sm btn-icon-split">
+                    <a href="{{ route('usuario.index') }}" class="btn btn-secondary btn-sm btn-icon-split">
                         <span class="icon text-white-50" style="padding: 0.75rem 0.75rem;">
                             <i class="fas fa-rotate-left"></i>
                         </span>
@@ -152,26 +152,35 @@
                                         {{ $usuario->urol->rol->nombre }}
                                     </td>
                                     <td class="align-middle">
-                                        {{ $usuario->comentarios->count() }}
+                                        <a href="{{ route('comentario.all', ['id_usuario' => $usuario->id, 'id_articulo' => 0, 'id_estado' => 0], ) }}" class="btn btn-warning btn-icon-split">
+                                            <span class="icon text-white font-weight-bold">
+                                                {{ $usuario->comentarios->count() }}
+                                            </span>
+                                            <span class="text">
+                                                <i class="fas fa-comment"></i>
+                                            </span>
+                                        </a>
                                     </td>
                                     <td class="align-middle">
                                         <!-- Boton de Ver User -->       
                                         <a href="{{ route('usuario.view', $usuario->id) }}" class="btn btn-success btn-circle btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        
+                                        @if( $usuario->urol->rol->nombre != "Administrador" )
+                                            <!-- Boton de Editar -->
+                                            <a href="{{ route('usuario.edit', $usuario->id) }}" class="btn btn-info btn-circle btn-sm">
+                                                <i class="fas fa-pencil"></i>
+                                            </a>
 
-                                        <!-- Boton de Editar -->
-                                        <a href="{{ route('usuario.edit', $usuario->id) }}" class="btn btn-info btn-circle btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-
-                                        <!-- Boton de Eliminar -->
-                                        <button name="{{ $usuario->id }}" class="btn btn-danger btn-circle btn-sm area-delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                        <form id="delete-user-{{ $usuario->id }}" action="{{ route('usuario.delete', $usuario->id) }}" method="POST" style="display: none;">
-                                            @csrf
-                                        </form>
+                                            <!-- Boton de Eliminar -->
+                                            <button name="{{ $usuario->id }}" class="btn btn-danger btn-circle btn-sm user-delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <form id="delete-user-{{ $usuario->id }}" action="{{ route('usuario.delete', $usuario->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -200,10 +209,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Artículos -->
+                <!-- Roles -->
                 <div class="form-group">
-                    <label for="articulo_filter">Selecciona un Artículo: Opcional*</label>
-                    <select id="articulo_filter" class="form-control" name="id_estado">
+                    <label for="rol_filter">Selecciona un Artículo: Opcional*</label>
+                    <select id="rol_filter" class="form-control" name="id_rol">
                         <option value="0">Selecciona un Artículo a filtrar...</option>
                         @foreach($roles as $rol)
                             <option value="{{ $rol->id_rol }}" {{ $id_rol == $rol->id_rol ? "selected" : ""}}>{{ $rol->nombre }}</option>
@@ -223,21 +232,21 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        //Filtrat Tabla de Artículos
+        //Filtrat Tabla de Usuarios
         $('#filter_button').click(function(){
             let link = $('#link_dir').val();
-            let articulo = $('#articulo_filter option:selected').val();
+            let rol = $('#rol_filter option:selected').val();
             
-            location.href = link+"/"+articulo;
+            location.href = link+"/"+rol;
         });
 
-        //click para eliminar area de conocimiento
-        $('.area-delete').click(function(){
+        //click para eliminar usuario
+        $('.user-delete').click(function(){
             var id = $(this).attr('name');
 
             Swal.fire({
-                title: 'Estas seguro de elimnar el area seleccionada?',
-                text: "No podras revertir esta elección, esto dejara algunos artículos sin area definida!",
+                title: 'Estas seguro de elimnar el usuario seleccionado?',
+                text: "No podras revertir esta elección, esto eliminara todas las notificaciones o comentarios del usuario!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#084456',
@@ -248,11 +257,11 @@
                 if (result.isConfirmed) {
                     Swal.fire(
                         'Eliminando!',
-                        'El area de conocimiento sera procesada para ser eliminada de los registros.',
+                        'El usuario sera procesado para ser eliminado de los registros.',
                         'success'
                     );
                     setTimeout(function() { 
-                        $( "#delete-area-"+id ).submit();
+                        $( "#delete-user-"+id ).submit();
                     }, 2000);
                 }
             });

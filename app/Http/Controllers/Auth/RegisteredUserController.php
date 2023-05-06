@@ -81,7 +81,7 @@ class RegisteredUserController extends Controller
             $perfil->nombre = $request->name;
             $perfil->apellido = $request->lastname;
             $perfil->direccion = $request->address ? $request->address : null;
-            $perfil->telefono = $request->telephone ? $request->telephone : null;
+            $perfil->telefono = $request->telephone ? $request->code."".$request->telephone : null;
             $perfil->FK_id_usuario = $user->id;
             $perfil->FK_id_tipo = $request->user_tipo;
             $perfil->save();

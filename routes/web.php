@@ -84,10 +84,10 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::post('/archivo/delete/{id}', [ArchivosController::class, 'destroy'])->name('archivo.delete');
     
     //USUARIOS
-    Route::get('/usuarios/{id_usuario?}/{id_articulo?}/{id_estado?}', [UsuariosController::class, 'index'])->name('usuario.index');
-    Route::get('/usuarios/view', [UsuariosController::class, 'view'])->name('usuario.view');
+    Route::get('/usuarios/view/{id}', [UsuariosController::class, 'view'])->name('usuario.view');
     Route::get('/usuarios/create', [UsuariosController::class, 'create'])->name('usuario.create');
     Route::get('/usuarios/edit/{id}', [UsuariosController::class, 'edit'])->name('usuario.edit');
+    Route::get('/usuarios/{id_usuario?}/{id_articulo?}/{id_estado?}', [UsuariosController::class, 'index'])->name('usuario.index');
     
     Route::post('/usuarios/store', [UsuariosController::class, 'store'])->name('usuario.store');
     Route::post('/usuarios/update/{id}', [UsuariosController::class, 'update'])->name('usuario.update');

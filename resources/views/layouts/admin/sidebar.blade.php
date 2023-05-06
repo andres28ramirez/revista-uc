@@ -82,23 +82,6 @@
             <span>Usuarios</span></a>
     </li>
 
-    <!-- borra este nav item de abajo -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-users"></i>
-            <span>Usuarios</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="login.html">Todos los Usuarios</a>
-                <a class="collapse-item" href="login.html">Administrativos</a>
-                <a class="collapse-item" href="register.html">Editores</a>
-                <a class="collapse-item" href="forgot-password.html">Comunes</a>
-            </div>
-        </div>
-    </li>
-
     <!-- Nav Item - Configuraciones -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfig"

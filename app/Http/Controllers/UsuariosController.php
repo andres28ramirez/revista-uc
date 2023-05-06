@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 
 //MODELOS
@@ -16,9 +17,14 @@ use App\Models\Articulo;
 use App\Models\Autor;
 use App\Models\Conocimiento;
 use App\Models\Edicion;
+use App\Models\Modulo;
+use App\Models\Perfil;
+use App\Models\Respuesta;
 use App\Models\Rol;
 use App\Models\User;
+use App\Models\Usuario_Permiso;
 use App\Models\Usuario_Rol;
+use App\Models\Usuario_Tipo;
 use Illuminate\Contracts\Cache\Store;
 
 //HELPER DE NOTIFICACION
@@ -29,13 +35,15 @@ class UsuariosController extends Controller
 {
     //VALIDACIONES
     public $validations = [
-        "titulo" => "required|string|min:3|max:255",
-        "contenido" => "required|string",
-        "FK_id_edicion" => "required|numeric",
-        "FK_id_autor" => "numeric|nullable",
-        "FK_id_conocimiento" => "numeric|nullable",
-        "ruta_imagen_es" => "file|mimes:jpg,jpeg,png|max:2100|",
-        "archivos.*" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
+        "nombre" => "required|string|min:3|max:255",
+        "apellido" => "required|string|min:3|max:255",
+        "email" => "required|string|max:255|email|unique:users,email",
+        "direccion" => "nullable|string",
+        "telefono" => "nullable|numeric|digits_between:5,15",
+        "FK_id_tipo" => "required|numeric",
+        "FK_id_rol" => "required|numeric",
+        "password" => "required|string|min:5|max:255",
+        "password_confirmation" => "required|string|same:password",
     ];
 
     //MENSAJES DE ERROR
@@ -45,14 +53,13 @@ class UsuariosController extends Controller
         "email" => "El dato debe ser enviado en formato corre (ejemplo@correo.com)",
         "numeric" => "El dato solo debe poseer datos númericos",
         "nullable" => "El dato puede viajar vacio",
-        "unique" => "El orden enviado ya se encuentra registrado",
+        "unique" => "El dato enviado ya se encuentra registrado",
         "max" => "El dato debe poseer menos de 255 caracteres",
-        "titulo.min" => "El título debe poseer al menos 3 caracteres",
-        "ruta_imagen_es.max" => "La Imagen no debe pesar más de 2 Mb",
-        "ruta_imagen_es.mimes" => "El archivo debe ser en formato png, jpg y jpeg",
-        "archivos.*.max" => "Los Documentos no deben pesar más de 10 Mb",
-        "archivos.*.mimes" => "Los Documentos deben ser en formato png, jpg, jpeg, o pdf",
-        "file" => "El dato debe ser enviado como un archivo",
+        "nombre.min" => "El nombre debe poseer al menos 3 caracteres",
+        "apellido.min" => "El apellido debe poseer al menos 3 caracteres",
+        "telefono.digits_between" => "El teléfono debe tener una longitud entre 5 y 15 caracteres",
+        "password.min" => "La contraseña debe poseer al menos 5 caracteres",
+        "same" => "La confirmación no coincide con la contraseña",
     ];
 
     //VISUALES DEL SISTEMA REDIRECCIONAMIENTO
@@ -82,120 +89,45 @@ class UsuariosController extends Controller
         return view('panel_admin.usuarios.index', compact('usuarios', 'roles', 'filtrado', 'id_rol'));
     }
 
-    //Visual Tabla con todos los artículos
-    public function all_articles($id_autor = null, $id_conocimiento = null, $id_edicion = null){
-        $ediciones = Edicion::all();
-        $areas = Conocimiento::all();
-        $autores = Autor::all();
-        $filtrado = null;
+    //Visual de un solo usuario
+    public function view($id_user){
+        $usuario = User::find($id_user);
 
-        //Filtros de Busqueda
-        if($id_autor || $id_conocimiento || $id_edicion) $filtrado = true;
-        
-        
-        $query = Articulo::query();
+        if(!$usuario)
+            return redirect()->route('usuario.index')->with('warning', 'El Usuario para visualizar no pudo ser encontrado, por favor intenta con un nuevo artículo');
 
-        //Autor
-        $query->when($id_autor, function ($q, $id_autor) {
-            return $q->where('FK_id_autor', $id_autor);
-        });
-
-        //Conocimiento
-        $query->when($id_conocimiento, function ($q, $id_conocimiento) {
-            return $q->where('FK_id_conocimiento', $id_conocimiento);
-        });
-
-        //Edición
-        $query->when($id_edicion, function ($q, $id_edicion) {
-            return $q->where('FK_id_edicion', $id_edicion);
-        });
-
-        $articulos = $query->get();
-        
-        return view('panel_admin.articulos.all', compact('articulos', 'autores', 'areas', 'ediciones', 'filtrado', 'id_autor', 'id_conocimiento', 'id_edicion'));
-    }
-
-    //Visual Tabla con todos los artículos
-    public function one_article($id_articulo){
-        $articulo = Articulo::find($id_articulo);
-
-        if(!$articulo)
-            return redirect()->route('articulo.index')->with('warning', 'El Artículo para visualizar no pudo ser encontrado, por favor intenta con un nuevo artículo');
-
-        return view('panel_admin.articulos.one', compact('articulo'));
+        return view('panel_admin.usuarios.view', compact('usuario'));
     }
 
     //Visual de Creación
     public function create(){
-        $ediciones = Edicion::all();
-        $autores = Autor::all();
-        $areas = Conocimiento::all();
+        $usuario = null;
+        $tipos = Usuario_Tipo::all();
+        $roles = Rol::all();
+        $modulos = Modulo::all();
 
-        if($ediciones)
-            return view('panel_admin.articulos.create', compact('ediciones', 'autores', 'areas'));
+        if($tipos && $roles)
+            return view('panel_admin.usuarios.create_edit', compact('usuario', 'tipos', 'roles', 'modulos'));
         else
-            return redirect()->route('articulo.index')->with('warning', 'No puedes cargar artículos hasta que no haya una edición subida');
+            return redirect()->route('usuario.index')->with('warning', 'No puedes cargar usuarios hasta que no haya roles o tipos de usuario definidos');
     }
 
-    //Visual de Editar Artículo
-    public function edit($id_articulo){
-        $articulo = Articulo::find($id_articulo);
-        $ediciones = Edicion::all();
-        $autores = Autor::all();
-        $areas = Conocimiento::all();
+    //Visual de Editar Usuario
+    public function edit($id_usuario){
+        $usuario = User::find($id_usuario);
+        $tipos = Usuario_Tipo::all();
+        $roles = Rol::all();
+        $modulos = Modulo::all();
 
-        if(!$articulo)
-            return redirect()->route('articulo.index')->with('warning', 'El artículo seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
+        if(!$usuario)
+            return redirect()->route('usuario.index')->with('warning', 'El usuario seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
 
-        return view('panel_admin.articulos.edit', compact('articulo', 'ediciones', 'autores', 'areas'));
+        return view('panel_admin.usuarios.create_edit', compact('usuario', 'tipos', 'roles', 'modulos'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR
 
-    //Retorno de la Imagen del Storage
-    public function getImage($filename = null){
-
-        if($filename){
-            $exist = Storage::disk('public')->exists('articulos/'.$filename);
-
-            if(!$exist)
-                $file = Storage::disk('public')->get('crash.png');
-            else
-                $file = Storage::disk('public')->get('articulos/'.$filename);
-        }
-        else
-            $file = Storage::disk('public')->get('crash.png');
-
-        return new Response($file, 200);
-    }
-
-    //Retorno del Archivo del Storage
-    public function getArchive($filename = null){
-
-        if($filename){
-            $extension = pathinfo($filename)['extension'];
-
-            $exist = Storage::disk('public')->exists('archivos/'.$filename);
-
-            if(!$exist){
-                $extension = null;
-                $file = storage_path('app/public/crash.png');
-            }
-            else
-                $file = storage_path('app/public/archivos/'.$filename);
-        }
-        else
-            $file = storage_path('app/public/crash.png');
-        
-        $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
-
-        return Response(file_get_contents($file), 200, [
-            'Content-Type' => $extension,
-            'Content-Disposition' => 'inline; filename="'.$file.'"'
-        ]);
-    }
-
-    //Store de una Nueva Edicion
+    //Store de un Usuario
     public function store(Request $request){
         
         DB::beginTransaction();
@@ -207,138 +139,147 @@ class UsuariosController extends Controller
                 return Redirect::back()->withErrors($validate)->withInput();
             }
             
-            //Siguio, entonces almacenamos la edición
-            $datos = $request->all();
-            //Envio de la Notificación
+            //Creamos el usuario primero.
+            $user = new User();
+            $user->name     = $request->nombre." ".$request->apellido;
+            $user->email    = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
 
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen_es')){
-                $datos["ruta_imagen_es"] = $request->file('ruta_imagen_es')->store('articulos', 'public');
-            }
-            
-            $articulo = Articulo::create($datos);
-            
-            //Almacenamiento de los Archivos
-            foreach($request->archivos as $archivo){
-                $save_archive = new Archivo();
-                $save_archive->FK_id_articulo  = $articulo->id_articulo;
-                $save_archive->nombre = $archivo->getClientOriginalName();
-                $save_archive->tipo = $archivo->extension();
+            //Geramos los datos del perfil
+            $perfil = new Perfil();
+            $perfil->nombre = $request->nombre;
+            $perfil->apellido = $request->apellido;
+            $perfil->direccion = $request->direccion ? $request->direccion : null;
+            $perfil->telefono = $request->telefono ? $request->code."".$request->telefono : null;
+            $perfil->FK_id_usuario = $user->id;
+            $perfil->FK_id_tipo = $request->FK_id_tipo;
+            $perfil->save();
 
-                //Guardo el Archivo
-                $save_archive->ruta_archivo_es = $archivo->store('archivos', 'public');
+            //Generamos sus roles
+            $user_rol = new Usuario_Rol();
+            $user_rol->FK_id_usuario = $user->id;
+            $user_rol->FK_id_rol = $request->FK_id_rol;
+            $user_rol->save();
 
-                $save_archive->save();
-            }
+            //Generamos Permisos
+            //EN PAUSA POR EL MOMENTO
+
+            //NOTIFICACION DE USUARIO CREADO
 
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('articulo.index')->with('success', 'El Artículo fue almacenado de manera exitosa ya puedes verla entre los registros');
+            return redirect()->route('usuario.index')->with('success', 'El Usuario fue almacenado de manera exitosa ya puedes verla entre los registros');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El Artículo no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'El Usuario no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
     
-    //Update de un Artículo
-    public function update(Request $request, $id_articulo){
+    //Update de un Usuario
+    public function update(Request $request, $id_usuario){
         
         DB::beginTransaction();
         try{
+            $validaciones = $this->validations;
+            $validaciones["email"] = "required|string|max:255|email|unique:users,email,".$id_usuario.",id";
 
+            //Dejo o quito las validacion de password y confirm_password
+            if(!$request->editPass){
+                unset($validaciones["password"]);
+                unset($validaciones["password_confirmation"]);
+            }
+            
             //Validando datos
-            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            $validate = Validator::make($request->all(), $validaciones, $this->error_messages);
             if($validate->fails()){
                 return Redirect::back()->withErrors($validate)->withInput();
             }
 
             //Siguio, entonces almacenamos la edición
             $datos = $request->all();
+
+            $usuario = User::find($id_usuario);
+            if(!$usuario)
+                return redirect()->route('usuario.index')->with('warning', 'El Usuario a editar no pudo ser encontrado, por favor intenta con un nuevo artículo');
             
-            $articulo = Articulo::find($id_articulo);
+            //Hacemos Update del Perfil
+            $perfil = $usuario->perfil;
+            $perfil->nombre = $request->nombre;
+            $perfil->apellido = $request->apellido;
+            $perfil->direccion = $request->direccion ? $request->direccion : null;
+            $perfil->telefono = $request->telefono ? $request->code."".$request->telefono : null;
+            $perfil->FK_id_tipo = $request->FK_id_tipo;
+            $perfil->update();
+
+            //Generamos sus roles
+            $user_rol = $usuario->urol;
+            $user_rol->FK_id_rol = $request->FK_id_rol;
+            $user_rol->update();
+            
+            //Creamos el usuario primero.
+            $usuario->name     = $request->nombre." ".$request->apellido;
+            $usuario->email    = $request->email;
+            if($request->editPass){
+                $usuario->password = Hash::make($request->password);
+            }
+            $usuario->update();
+            
             //Envio de la Notificación
-
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen')){
-                Storage::delete(['public/'.$articulo->ruta_imagen_es]);
-                $datos["ruta_imagen_es"] = $request->file('ruta_imagen_es')->store('ediciones', 'public');
-            }
-            else{
-                unset($datos['ruta_imagen_es']);
-            }
             
-            $articulo->update($datos);
-
-            if($request->editArchive){
-                //Edición o eliminación de los antiguos archivos
-                $archivos = Archivo::whereNotIn('ruta_archivo_es', $request->loaded)->get();
-                foreach($archivos as $archivo){
-                    Storage::delete(['public/'.$archivo->ruta_archivo_es]);
-                    Storage::delete(['public/'.$archivo->ruta_archivo_en]);
-                    $archivo->delete();
-                }
-
-                //Almacenamiento de los nuevos Archivos
-                foreach($request->archivos as $archivo){
-                    $save_archive = new Archivo();
-                    $save_archive->FK_id_articulo  = $articulo->id_articulo;
-                    $save_archive->nombre = $archivo->getClientOriginalName();
-                    $save_archive->tipo = $archivo->extension();
-
-                    //Guardo el Archivo
-                    $save_archive->ruta_archivo_es = $archivo->store('archivos', 'public');
-
-                    $save_archive->save();
-                }
-            }
-            
-            //Aceptamos la creación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('articulo.index')->with('success', 'El Artículo fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
+            return Redirect::back()->with('success', 'El Usuario fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El Artículo no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'El Usuario no pudo ser actualizado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 
-    //Destroy de un Artículo
-    public function destroy($id_articulo){
+    //Destroy de un Usuario
+    public function destroy($id_user){
         
         DB::beginTransaction();
         try{
 
-            $articulo = Articulo::find($id_articulo);
+            $usuario = User::find($id_user);
 
-            if(!$articulo)
-            return redirect()->route('articulo.index')->with('warning', 'El artículo no pudo ser eliminado debido a que no pudo ser encontrado');
+            if(!$usuario)
+            return redirect()->route('usuario.index')->with('warning', 'El usuario no pudo ser eliminado debido a que no pudo ser encontrado');
 
-            //recorro archivo por archivo y borro
-            foreach($articulo->archivos as $archivo){
-                Storage::delete(['public/'.$archivo->ruta_archivo_es]);
-                Storage::delete(['public/'.$archivo->ruta_archivo_en]);
-                $archivo->delete();
+            //Elimino el rol y el perfil
+            $usuario->perfil->delete();
+            $usuario->urol->delete();
+
+            //elimino los permisos y respuestas
+            Usuario_Permiso::where('FK_id_usuario', $usuario->id)->delete();
+            Respuesta::where('FK_id_usuario', $usuario->id)->delete();
+
+            //Elimino sus notificaciones
+            foreach($usuario->notificaciones as $unotificacion){
+                $noti = $unotificacion->notificacion;
+                $unotificacion->delete();
+                $noti->delete();
             }
 
             //recorro comentarios y consecuentemente sus respuestas y borro
-            foreach($articulo->comentarios as $comentario){
+            foreach($usuario->comentarios as $comentario){
                 foreach($comentario->respuestas as $respuesta){
                     $respuesta->delete();
                 }
                 $comentario->delete();
             }
 
-            Storage::delete(['public/'.$articulo->ruta_imagen_es]);
-            $articulo->delete();
+            $usuario->delete();
 
             //Aceptamos la eliminación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('articulo.index')->with('success', 'El Artículo fue eliminado de manera exitosa');
+            return redirect()->route('usuario.index')->with('success', 'El usuario fue eliminado de manera exitosa');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El Artículo no pudo ser eliminado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'El usuario no pudo ser eliminado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 }

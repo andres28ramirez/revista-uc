@@ -137,7 +137,7 @@ class ComentarioController extends Controller
             return $q->where('estado', $id_estado);
         });
 
-        $comentarios = $query->paginate(10);
+        $comentarios = $query->orderBy('created_at', 'desc')->paginate(10);
         
         return view('panel_admin.comentarios.all', compact('comentarios', 'usuarios', 'articulos', 'filtrado', 'id_usuario', 'id_articulo', 'id_estado'));
     }

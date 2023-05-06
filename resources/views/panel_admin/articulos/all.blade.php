@@ -92,7 +92,7 @@
                                 {{ date_format(date_create($articulo->created_at), "F j, Y") }}
                             </td>
                             <td class="align-middle">
-                                <a href="#" class="btn btn-warning btn-icon-split">
+                                <a href="{{ route('comentario.all', ['id_usuario' => 0, 'id_articulo' => $articulo->id_articulo, 'id_estado' => 0], ) }}" class="btn btn-warning btn-icon-split">
                                     <span class="icon text-white font-weight-bold">
                                         {{ $articulo->comentarios->count() }}
                                     </span>

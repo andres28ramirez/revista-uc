@@ -41,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function notificaciones(){
-        return $this->hasMany('App\Models\Usuario_Notificacion', 'FK_id_usuario');
+        return $this->hasMany('App\Models\Usuario_Notificacion', 'FK_id_user');
     }
 
     public function comentarios(){
