@@ -8,6 +8,7 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ConocimientoController;
 use App\Http\Controllers\EdicionController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
@@ -92,6 +93,25 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::post('/usuarios/store', [UsuariosController::class, 'store'])->name('usuario.store');
     Route::post('/usuarios/update/{id}', [UsuariosController::class, 'update'])->name('usuario.update');
     Route::post('/usuarios/delete/{id}', [UsuariosController::class, 'destroy'])->name('usuario.delete');
+
+    //PERFIL
+    Route::get('/perfil/edit', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::post('/perfil/update', [PerfilController::class, 'update'])->name('perfil.update');
+
+    //CONFIGURACION
+    Route::get('/configuracion/roles', [ConfiguracionController::class, 'roles'])->name('configuracion.roles');
+    Route::get('/configuracion/tipos', [ConfiguracionController::class, 'tipos'])->name('configuracion.tipos');
+    Route::get('/configuracion/modulos', [ConfiguracionController::class, 'modulos'])->name('configuracion.modulos');
+    
+        //ROLES
+        Route::post('/configuracion/rol/store', [ConfiguracionController::class, 'storeRol'])->name('configuración.rol.store');
+        Route::post('/configuracion/rol/update', [ConfiguracionController::class, 'updateRol'])->name('configuración.rol.update');
+        Route::post('/configuracion/rol/delete/{id}', [ConfiguracionController::class, 'destroyRol'])->name('configuración.rol.delete');
+
+        //TIPOS
+        Route::post('/configuracion/tipos/store', [ConfiguracionController::class, 'storeTipo'])->name('configuración.tipo.store');
+        Route::post('/configuracion/tipos/update', [ConfiguracionController::class, 'updateTipo'])->name('configuración.tipo.update');
+        Route::post('/configuracion/tipos/delete/{id}', [ConfiguracionController::class, 'destroyTipo'])->name('configuración.tipo.delete');
 });
 
 //RUTAS DE AUTENTICACIÓN

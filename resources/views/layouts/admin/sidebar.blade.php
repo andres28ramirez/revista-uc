@@ -83,19 +83,20 @@
     </li>
 
     <!-- Nav Item - Configuraciones -->
-    <li class="nav-item">
+    <li class="nav-item {{ request()->is('*/configuracion/*') ? 'active' : ''  }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfig"
             aria-expanded="true" aria-controls="collapseConfig">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Configuración</span>
         </a>
-        <div id="collapseConfig" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseConfig" class="collapse {{ request()->is('*/configuracion/*') ? 'show' : '' }}" 
+            aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="login.html">Roles</a>
-                <a class="collapse-item" href="login.html">Tipos de Usuario</a>
-                <a class="collapse-item" href="login.html">Módulos</a>
-                <a class="collapse-item" href="register.html">Información Editable</a>
-                <a class="collapse-item" href="forgot-password.html">Banners o Carrousels</a>
+                <a class="collapse-item {{ request()->is('*/configuracion/roles') ? 'active' : '' }}" href="{{ route('configuracion.roles') }}">Roles</a>
+                <a class="collapse-item {{ request()->is('*/configuracion/tipos') ? 'active' : '' }}" href="{{ route('configuracion.tipos') }}">Tipos de Usuario</a>
+                <!-- <a class="collapse-item {{ request()->is('*/configuración/modulos') ? 'active' : '' }}" href="{{ route('configuracion.modulos') }}">Módulos</a> -->
+                <a class="collapse-item" href="#">Acerca de... Editable</a>
+                <a class="collapse-item" href="#">Banners o Carrousels</a>
             </div>
         </div>
     </li>

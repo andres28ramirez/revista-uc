@@ -37,6 +37,11 @@
         @if(request()->is('*/usuarios/*')) Panel de Usuarios @endif
         @if(request()->is('*/usuarios/create')) Panel Creación de Usuario @endif
         @if(request()->is('*/usuarios/edit/*')) Panel Modificación de Usuario @endif
+
+        <!-- Configuracion -->
+        @if(request()->is('*/configuracion/roles')) Panel de Roles de Usuario @endif
+        @if(request()->is('*/configuracion/tipos')) Panel de Tipos de Usuario @endif
+        @if(request()->is('*/configuracion/modulos')) Panel de Modulos @endif
     </h1>
 
     <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i

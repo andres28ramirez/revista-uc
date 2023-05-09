@@ -197,8 +197,7 @@ class UsuariosController extends Controller
                 return Redirect::back()->withErrors($validate)->withInput();
             }
 
-            //Siguio, entonces almacenamos la edición
-            $datos = $request->all();
+            //Siguio, entonces almacenamos la información
 
             $usuario = User::find($id_usuario);
             if(!$usuario)

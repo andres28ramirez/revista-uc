@@ -23,6 +23,6 @@ class Rol extends Model
 
     //colecciones
     public function usuarios(){
-        return $this->belongsTo('App\Models\Usuario_Rol', 'FK_id_rol');
+        return $this->hasMany('App\Models\Usuario_Rol', 'FK_id_rol');
     }
 }
