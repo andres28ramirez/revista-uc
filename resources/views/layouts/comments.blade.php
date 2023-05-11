@@ -77,7 +77,7 @@
                                                             {{ $respuesta->estado }}
                                                     </span>
                                                     <span class="action-icons">
-                                                        <a href="{{ route('comentario.edit', $respuesta->id_respuesta) }}" class="text-primary">
+                                                        <a href="{{ route('respuesta.edit', $respuesta->id_respuesta) }}" class="text-primary">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     </span>

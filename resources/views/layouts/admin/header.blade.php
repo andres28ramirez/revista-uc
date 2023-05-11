@@ -41,6 +41,8 @@
         <!-- Configuracion -->
         @if(request()->is('*/configuracion/roles')) Panel de Roles de Usuario @endif
         @if(request()->is('*/configuracion/tipos')) Panel de Tipos de Usuario @endif
+        @if(request()->is('*/configuracion/informaciones')) Panel de Informaciones @endif
+        @if(request()->is('*/configuracion/info/*')) Panel de Informaciones @endif
         @if(request()->is('*/configuracion/modulos')) Panel de Modulos @endif
     </h1>
 

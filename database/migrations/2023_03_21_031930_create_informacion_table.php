@@ -14,6 +14,7 @@ return new class extends Migration
                 $table->id('id_informacion');
                 $table->string('titulo',255);
                 $table->text('contenido');
+                $table->text('ruta_archivo')->nullable();
                 $table->timestamps();
             });
         });

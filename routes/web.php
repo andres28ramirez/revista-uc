@@ -102,6 +102,7 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::get('/configuracion/roles', [ConfiguracionController::class, 'roles'])->name('configuracion.roles');
     Route::get('/configuracion/tipos', [ConfiguracionController::class, 'tipos'])->name('configuracion.tipos');
     Route::get('/configuracion/modulos', [ConfiguracionController::class, 'modulos'])->name('configuracion.modulos');
+    Route::get('/configuracion/informaciones', [ConfiguracionController::class, 'informaciones'])->name('configuracion.informaciones');
     
         //ROLES
         Route::post('/configuracion/rol/store', [ConfiguracionController::class, 'storeRol'])->name('configuración.rol.store');
@@ -112,6 +113,14 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
         Route::post('/configuracion/tipos/store', [ConfiguracionController::class, 'storeTipo'])->name('configuración.tipo.store');
         Route::post('/configuracion/tipos/update', [ConfiguracionController::class, 'updateTipo'])->name('configuración.tipo.update');
         Route::post('/configuracion/tipos/delete/{id}', [ConfiguracionController::class, 'destroyTipo'])->name('configuración.tipo.delete');
+
+        //INFORMACIONES
+        Route::get('/configuracion/info/getArchive/{filename?}', [ConfiguracionController::class, 'getArchive'])->name('configuracion.info.archivo');
+        Route::get('/configuracion/info/create', [ConfiguracionController::class, 'create'])->name('configuración.info.create');
+        Route::get('/configuracion/info/edit/{id}', [ConfiguracionController::class, 'edit'])->name('configuración.info.edit');
+        Route::post('/configuracion/info/store', [ConfiguracionController::class, 'storeInfo'])->name('configuración.info.store');
+        Route::post('/configuracion/info/update/{id}', [ConfiguracionController::class, 'updateInfo'])->name('configuración.info.update');
+        Route::post('/configuracion/info/delete/{id}', [ConfiguracionController::class, 'destroyInfo'])->name('configuración.info.delete');
 });
 
 //RUTAS DE AUTENTICACIÓN

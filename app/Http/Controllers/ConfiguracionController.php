@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Articulo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 
 //MODELOS
-use App\Models\Edicion;
+use App\Models\Informacion;
 use App\Models\Perfil;
 use App\Models\Rol;
 use App\Models\User;
@@ -49,10 +48,14 @@ class ConfiguracionController extends Controller
         "unique" => "El nombre enviado ya se encuentra registrado",
         "max" => "El dato debe poseer menos de 255 caracteres",
         "nombre.min" => "El nombre debe poseer al menos 3 caracteres",
+        "titulo.min" => "El nombre debe poseer al menos 3 caracteres",
         "nombre_update.min" => "El nombre debe poseer al menos 3 caracteres",
         "ruta_imagen.max" => "La Imagen no debe pesar más de 2 Mb",
         "file" => "El dato debe ser enviado como un archivo",
         "mime" => "El archivo debe llegar en formato png, jpg y jpeg",
+        "required" => "El dato es requerido",
+        "ruta_archivo.max" => "Los Documentos no deben pesar más de 10 Mb",
+        "ruta_archivo.mimes" => "Los Documentos deben ser en formato png, jpg, jpeg, o pdf",
     ];
 
     //VISUALES DEL SISTEMA REDIRECCIONAMIENTO
@@ -72,6 +75,13 @@ class ConfiguracionController extends Controller
         $perfiles = Perfil::all();
 
         return view('panel_admin.configuracion.tipos', compact('tipos', 'perfiles'));
+    }
+    
+    //Visual de Información en Acerca de...
+    public function informaciones(){
+        $informaciones = Informacion::paginate(10);
+        
+        return view('panel_admin.configuracion.informaciones', compact('informaciones'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR
@@ -259,6 +269,168 @@ class ConfiguracionController extends Controller
             }catch(QueryException $e){
                 DB::rollBack();
                 return Redirect::back()->with('bderror', 'El tipo de usuario no pudo ser eliminado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            }
+        }
+
+    ////////INFORMACIONES
+        //Retorno del Archivo del Storage
+        public function getArchive($filename = null){
+
+            if($filename){
+                $extension = pathinfo($filename)['extension'];
+
+                $exist = Storage::disk('public')->exists('informacion/'.$filename);
+
+                if(!$exist){
+                    $extension = null;
+                    $file = storage_path('app/public/crash.png');
+                }
+                else
+                    $file = storage_path('app/public/informacion/'.$filename);
+            }
+            else
+                $file = storage_path('app/public/crash.png');
+            
+            $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
+
+            return Response(file_get_contents($file), 200, [
+                'Content-Type' => $extension,
+                'Content-Disposition' => 'inline; filename="'.$file.'"'
+            ]);
+        }
+
+        //Visual de Creación
+        public function create(){
+            $informacion = null;
+            return view('panel_admin.configuracion.info_create_edit', compact('informacion'));
+        }
+
+        //Visual de Editar Información
+        public function edit($id_informacion){
+            $informacion = Informacion::find($id_informacion);
+
+            if(!$informacion)
+                return redirect()->route('configuracion.informaciones')->with('warning', 'La información seleccionada no pudo ser encontrada, por favor intentalo nuevamente');
+
+            return view('panel_admin.configuracion.info_create_edit', compact('informacion'));
+        }
+
+        //Store de una Nueva Información
+        public function storeInfo(Request $request){
+            
+            DB::beginTransaction();
+            try{
+                            
+                //VALIDACIONES
+                $validations = [
+                    "titulo" => "required|string|min:3|max:255",
+                    "contenido" => "required|string",
+                    "ruta_archivo" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
+                ];
+
+                //Validando datos
+                $validate = Validator::make($request->all(), $validations, $this->error_messages);
+                if($validate->fails()){
+                    return Redirect::back()->withErrors($validate)->withInput();
+                }
+                
+                //Siguio, entonces almacenamos la edición
+                $datos = $request->all();
+
+                //Almacenamiento del archivo
+                if($request->hasFile('ruta_archivo')){
+                    $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('informacion', 'public');
+                }
+                
+                $informacion = Informacion::create($datos);
+
+                //Envio de la Notificación
+
+                //Aceptamos la creación de todo y redireccionamos
+                DB::commit();
+                return redirect()->route('configuracion.informaciones')->with('success', 'La Información fue almacenada de manera exitosa ya puedes verla entre los registros');
+
+            }catch(QueryException $e){
+                DB::rollBack();
+                return Redirect::back()->with('bderror', 'La Información no pudo ser creada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            }
+        }
+        
+        //Update de una Información
+        public function updateInfo(Request $request, $id_informacion){
+            
+            DB::beginTransaction();
+            try{
+
+                //VALIDACIONES
+                $validations = [
+                    "titulo" => "required|string|min:3|max:255",
+                    "contenido" => "required|string",
+                    "ruta_archivo" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
+                ];
+
+                //Validando datos
+                $validate = Validator::make($request->all(), $validations, $this->error_messages);
+                if($validate->fails()){
+                    return Redirect::back()->withErrors($validate)->withInput();
+                }
+
+                //Siguio, entonces almacenamos la información
+                $datos = $request->all();
+                $informacion = Informacion::find($id_informacion);
+
+                //Almacenamiento del Archivo
+                if($request->hasFile('ruta_archivo') && $request->editArchive){
+                    Storage::delete(['public/'.$informacion->ruta_archivo]);
+                    $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('informacion', 'public');
+                }
+                elseif($request->editArchive && !$request->has('loaded')){
+                    Storage::delete(['public/'.$informacion->ruta_archivo]);
+                    $datos["ruta_archivo"] = null;
+                }
+                elseif($request->hasFile('ruta_archivo') && !$request->has('editArchive')){
+                    $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('informacion', 'public');
+                }
+                else{
+                    unset($datos['ruta_archivo']);
+                }
+                
+                $informacion->update($datos);
+                
+                //Envio de la Notificación
+
+                //Aceptamos la creación de todo y redireccionamos
+                DB::commit();
+                return Redirect::back()->with('success', 'La Información fue editada de manera exitosa ya puedes ver sus cambios entre los registros');
+
+            }catch(QueryException $e){
+                DB::rollBack();
+                return Redirect::back()->with('bderror', 'La Información no pudo ser actualizada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            }
+        }
+
+        //Destroy de una Información
+        public function destroyInfo($id_informacion){
+            
+            DB::beginTransaction();
+            try{
+
+                $informacion = Informacion::find($id_informacion);
+
+                if(!$informacion)
+                return redirect()->route('configuracion.informaciones')->with('warning', 'La información no pudo ser eliminada debido a que no pudo ser encontrado');
+
+                //elimino el archivo anclado
+                Storage::delete(['public/'.$informacion->ruta_archivo]);
+                $informacion->delete();
+
+                //Aceptamos la eliminación de todo y redireccionamos
+                DB::commit();
+                return redirect()->route('configuracion.informaciones')->with('success', 'La información fue eliminada de manera exitosa');
+
+            }catch(QueryException $e){
+                DB::rollBack();
+                return Redirect::back()->with('bderror', 'La información no pudo ser eliminada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
             }
         }
 }

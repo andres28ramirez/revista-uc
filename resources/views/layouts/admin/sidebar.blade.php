@@ -95,7 +95,7 @@
                 <a class="collapse-item {{ request()->is('*/configuracion/roles') ? 'active' : '' }}" href="{{ route('configuracion.roles') }}">Roles</a>
                 <a class="collapse-item {{ request()->is('*/configuracion/tipos') ? 'active' : '' }}" href="{{ route('configuracion.tipos') }}">Tipos de Usuario</a>
                 <!-- <a class="collapse-item {{ request()->is('*/configuración/modulos') ? 'active' : '' }}" href="{{ route('configuracion.modulos') }}">Módulos</a> -->
-                <a class="collapse-item" href="#">Acerca de... Editable</a>
+                <a class="collapse-item {{ request()->is('*/configuracion/informaciones') || request()->is('*/configuracion/info/*') ? 'active' : '' }}" href="{{ route('configuracion.informaciones') }}">Acerca de... Editable</a>
                 <a class="collapse-item" href="#">Banners o Carrousels</a>
             </div>
         </div>

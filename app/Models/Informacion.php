@@ -15,6 +15,7 @@ class Informacion extends Model
         "id_informacion",
         "titulo",
         "contenido",
+        "ruta_archivo",
     ];
 
     protected $hidden = [
