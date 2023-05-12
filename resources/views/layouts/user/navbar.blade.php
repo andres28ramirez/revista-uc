@@ -9,38 +9,43 @@
         </div>
     </ul>
 
+    <!-- Icono desplegable del menu en tamaño de pantalla -->
     <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
         <span class="navbar-toggler-icon"><i class="fa fa-bars" aria-hidden="true" style="color:#e6e6ff; margin-top:5px;"></i></span>
     </button>
 
+    <!-- Opciones de la barra de navegación -->
     <div class="collapse navbar-collapse flex" id="collapse_target">
         <ul class="navbar-nav ml-auto justify-content-end">
+            <!-- Menu de Areas de Conocimiento -->
             <li class="navbar-item dropdown">
                 <a class="nav-link dropdown-toggle btn-group" data-toggle="dropdown" id="dropdown_target" href="#">
                     {{ __('Ámbitos de Conocimiento')}}
                     <span></span>
                 </a>
+                <!-- Opciones -->
                 <div class=" dropdown-menu" id="lineas" arial-labelledby="dropdown_target">
-                    <a class="dropdown-item" href="#">{{__('Biología')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Derecho')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Economía')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Educación')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Epistemologia')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Filosofía')}}</a>
-                    <a class="dropdown-item" href="#">{{__('Gerencia')}}</a>
+                    @foreach($conocimientos as $conocimiento)
+                        <a class="dropdown-item" href="#">
+                            {{ $conocimiento->nombre }}
+                        </a>
+                    @endforeach
                 </div>
             </li>
 
+            <!-- Autores -->
             <li class="navbar-item">
                 <a class="nav-link"  href="#">{{__('Autores')}}</a>
             </li>
 
+            <!-- Ediciones -->
             <li class="navbar-item">
                 <a class="nav-link" href="#">{{__('Listado de Ediciones')}}</a>
             </li>
 
+            <!-- Información o Acerca de... -->
             <li class="navbar-item">
-                <a class="nav-link" href="#">{{__('Información')}}</a>
+                <a class="nav-link" href="#">{{__('Acerca de...')}}</a>
             </li>
 
             <!-- Buscador -->

@@ -29,7 +29,6 @@ class RevistaController extends Controller
 {
     public function index(){
         $edicion = Edicion::orderBy('id_edicion', 'desc')->first();
-
         return view('panel_user.welcome', compact('edicion'));
     }
 }
