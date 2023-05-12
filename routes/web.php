@@ -10,15 +10,21 @@ use App\Http\Controllers\EdicionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RevistaController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
-//RUTA DE LA PÁGINA INICIAL DEL SISTEMA
-Route::get('/', function () {
-    return view('panel_user.welcome');
-})->name('welcome');
-
 //RUTAS DE LA PÁGINA DE USUARIOS | NAVEGACIÓN INTERNA
+Route::get('/', [RevistaController::class, 'index'])->name('welcome');
+
+Route::prefix('/users')->group(function () {
+    //Articulos
+    Route::get('/articulo/codigo/{id}', [ArticuloController::class, 'getArticle'])->name('user.articulo');
+    Route::get('/articulo/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('user.articulo.imagen');
+
+    //Ediciones
+    Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('user.edicion.imagen');
+});
 
 //RUTAS DE CONTROL Y MODIFICACIONES
 Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->name('change.lang');

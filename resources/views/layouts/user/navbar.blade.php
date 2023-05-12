@@ -1,7 +1,6 @@
-<!------------------------------------------------- NAVBAR ------------------------------------------------------------>
 <nav class="navbar navbar-expand-md sticky-top" style="margin-bottom: 0;">
     
-    <!------------------------------------------------- LOGO ------------------------------------------------------------>
+    <!-- Logo -->
     <ul class="navbar-nav">
         <div class="logotipo">
             <a href="{{ route('welcome') }}">
@@ -9,12 +8,12 @@
             </a>
         </div>
     </ul>
+
     <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
         <span class="navbar-toggler-icon"><i class="fa fa-bars" aria-hidden="true" style="color:#e6e6ff; margin-top:5px;"></i></span>
     </button>
 
     <div class="collapse navbar-collapse flex" id="collapse_target">
-        <!------------------------------------------------- ENLACES ------------------------------------------------------------>
         <ul class="navbar-nav ml-auto justify-content-end">
             <li class="navbar-item dropdown">
                 <a class="nav-link dropdown-toggle btn-group" data-toggle="dropdown" id="dropdown_target" href="#">
@@ -31,17 +30,20 @@
                     <a class="dropdown-item" href="#">{{__('Gerencia')}}</a>
                 </div>
             </li>
+
             <li class="navbar-item">
                 <a class="nav-link"  href="#">{{__('Autores')}}</a>
             </li>
+
             <li class="navbar-item">
                 <a class="nav-link" href="#">{{__('Listado de Ediciones')}}</a>
             </li>
+
             <li class="navbar-item">
                 <a class="nav-link" href="#">{{__('Información')}}</a>
             </li>
 
-            <!------------------------------------------------- BUSCADOR ------------------------------------------------------------>
+            <!-- Buscador -->
             <li class="navbar-item dropdown" id="icons">
                 <button class="btn dropdown-toggle" type="button" id="dropdownSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-search fa-fw"></i>
@@ -54,7 +56,7 @@
                 </div>
             </li>
 
-            <!------------------------------------------------- ICONOS DE IDIOMAS ------------------------------------------------------------>
+            <!-- Cambio de Idiomas -->
             <li class="navbar-item dropdown" id="icons">
                 <button class="btn dropdown-toggle" type="button" id="dropdownLanguajeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-globe fa-fw">{{ App::getLocale() }}</i>
@@ -65,8 +67,9 @@
                 </div>
             </li>
 
-            <!------------------------------------------------- USUARIO ------------------------------------------------------------>
+            <!-- Usuario Loggueado -->
             @guest
+                <!-- Menu de login o Registro -->
                 <li class="nav-item dropdown" id="icons">
                     <button class="btn dropdown-toggle" type="button" id="dropdownSingin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user-circle fa-fw"></i>
@@ -77,6 +80,7 @@
                     </div>
                 </li>
             @else
+                <!-- Botones de Usuario y Cerrar Sesión -->
                 <li class="nav-item dropdown">
                     <button class="btn dropdown-toggle" type="button" id="dropdownSingUp" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fff; margin-top:5px;">
                         {{ Auth::user()->name }}
