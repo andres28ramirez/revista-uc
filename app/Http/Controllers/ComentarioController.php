@@ -16,6 +16,7 @@ use App\Models\Comentario;
 use App\Models\Respuesta;
 use App\Models\User;
 use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 
 //HELPER DE NOTIFICACION
 
@@ -286,36 +287,68 @@ class ComentarioController extends Controller
 
     //OPCIONES DE USUARIOS
     
-    //Store de un Nuevo Comentario o Respuesta
-    public function store(Request $request){
+    //Store de un Nuevo Comentario
+    public function storeCo(Request $request){
         
         DB::beginTransaction();
         try{
             
+            $validations = [
+                "contenido" => "required|string|min:3",
+                "FK_id_articulo" => "required",
+            ];
+
             //Validando datos
-            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            $validate = Validator::make($request->all(), $validations, $this->error_messages);
+            if($validate->fails()){
+                return Redirect::back()->withErrors($validate, 'comentario')->withInput();
+            }
+
+            //Siguio, entonces almacenamos el autor
+            $datos = $request->all();
+            $datos["autor"] = Auth::user()->name;
+            $datos["FK_id_usuario"] = Auth::user()->id;
+            $comentario = Comentario::create($datos);
+            
+            //Aceptamos la creación de todo y redireccionamos
+            DB::commit();
+            return Redirect::back()->with('success', 'Tu comentario fue enviado con exito, estara en evaluación para ser convalidado la visualización del mismo por varios usuarios');
+        }catch(QueryException $e){
+            DB::rollBack();
+            return Redirect::back()->with('bderror', 'Tu comentario no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+        }
+    }
+
+    //Store de un Nueva Respuesta
+    public function storeRe(Request $request){
+        
+        DB::beginTransaction();
+        try{
+            
+            $validations = [
+                "contenido" => "required|string|min:3",
+                "FK_id_comentario" => "required",
+            ];
+
+            //Validando datos
+            $validate = Validator::make($request->all(), $validations, $this->error_messages);
             if($validate->fails()){
                 return Redirect::back()->withErrors($validate)->withInput();
             }
 
             //Siguio, entonces almacenamos el autor
             $datos = $request->all();
-            //Envio de la Notificación
-
-            //Almacenamiento de la Imagen
-            if($request->hasFile('ruta_imagen')){
-                $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('autores', 'public');
-            }
-            
-            $autor = Comentario::create($datos);
+            $datos["nombre"] = Auth::user()->name;
+            $datos["FK_id_usuario"] = Auth::user()->id;
+            $Respuesta = Respuesta::create($datos);
             
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
-            return redirect()->route('autor.index')->with('success', 'El Autor fue almacenado de manera exitosa ya puedes verla entre los registros');
+            return Redirect::back()->with('success', 'Tu respuesta fue enviada con exito, estara en evaluación para ser convalidada la visualización del mismo por varios usuarios');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'El Autor no pudo ser creado debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'La Respuesta no pudo ser creada debido a un error interno, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 }

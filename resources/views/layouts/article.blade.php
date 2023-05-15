@@ -14,10 +14,12 @@
                 <h5><b>{{ $articulo->titulo }}</b></h5>
 
                 <!-- Autor -->
-                <p>{{ $articulo->autor ? $articulo->autor->nombre : "N/A" }}</p>
+                <p style="white-space: pre-line">{{ $articulo->autor ? $articulo->autor->nombre : "N/A" }}</p>
 
                 <!-- Fecha de creación del Artículo -->
-                <p class="card-text"><small class="text-muted">{{ $articulo->created_at }}</small></p>
+                <p class="card-text" style="white-space: pre-line">
+                    <small class="text-muted">{{ $articulo->created_at }} - {{ FormatTime::LongTimeFilter($articulo->created_at) }}</small>
+                </p>
 
                 <!-- Link para ver detail del artilcle -->
                 <a type="button" class="btn btn-outline-dark" href="{{route('user.articulo', $articulo->id_articulo)}}">

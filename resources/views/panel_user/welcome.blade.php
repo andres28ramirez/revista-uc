@@ -66,7 +66,7 @@
         <hr>
         <div class="container mt-5">
             @forelse($edicion->articulos as $articulo)
-                @include(('layouts.article'))
+                @include('layouts.article', ["artículo" => $articulo])
             @empty
                 <div class="text-center pb-5 font-weight-bold text-gray-600">
                     La edición aun no posee artículos registrados.

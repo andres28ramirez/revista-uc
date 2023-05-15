@@ -19,11 +19,22 @@ Route::get('/', [RevistaController::class, 'index'])->name('welcome');
 
 Route::prefix('/users')->group(function () {
     //Articulos
-    Route::get('/articulo/codigo/{id}', [ArticuloController::class, 'getArticle'])->name('user.articulo');
+    Route::get('/articulo/codigo/{id}', [RevistaController::class, 'getArticle'])->name('user.articulo');
     Route::get('/articulo/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('user.articulo.imagen');
+    Route::get('/articulos/getArchive/{filename?}', [ArticuloController::class, 'getArchive'])->name('user.articulo.archivo');
 
     //Ediciones
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('user.edicion.imagen');
+
+    //Autores
+    Route::get('/autor/getImage/{filename?}', [AutorController::class, 'getImage'])->name('user.autor.imagen');
+
+    //Comentarios
+    Route::post('/usuario/comentario/store', [ComentarioController::class, 'storeCo'])->name('user.comentario.store');
+    Route::post('/usuario/respuesta/store', [ComentarioController::class, 'storeRe'])->name('user.respuesta.store');
+
+    //Conocimientos
+    Route::get('/conocimiento/articulos/{id?}', [RevistaController::class, 'getArticlesByArea'])->name('user.conocimiento.articulos');
 });
 
 //RUTAS DE CONTROL Y MODIFICACIONES

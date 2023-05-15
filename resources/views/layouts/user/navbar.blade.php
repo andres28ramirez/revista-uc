@@ -26,7 +26,7 @@
                 <!-- Opciones -->
                 <div class=" dropdown-menu" id="lineas" arial-labelledby="dropdown_target">
                     @foreach($conocimientos as $conocimiento)
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{route('user.conocimiento.articulos', $conocimiento->id_conocimiento)}}">
                             {{ $conocimiento->nombre }}
                         </a>
                     @endforeach
