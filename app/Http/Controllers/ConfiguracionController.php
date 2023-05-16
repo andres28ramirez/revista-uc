@@ -79,7 +79,7 @@ class ConfiguracionController extends Controller
     
     //Visual de Información en Acerca de...
     public function informaciones(){
-        $informaciones = Informacion::paginate(10);
+        $informaciones = Informacion::orderBy('titulo', 'asc')->paginate(5);
         
         return view('panel_admin.configuracion.informaciones', compact('informaciones'));
     }

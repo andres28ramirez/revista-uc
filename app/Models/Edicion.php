@@ -18,6 +18,7 @@ class Edicion extends Model
         "descripcion",
         "fecha",
         "ruta_imagen",
+        "ruta_archivo",
     ];
 
     protected $hidden = [

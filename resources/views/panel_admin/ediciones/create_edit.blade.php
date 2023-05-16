@@ -109,6 +109,73 @@
 
                             
                         </div>
+
+                        <!-- Documento de la Edición -->
+                        @if($edicion)
+                            @if($edicion->ruta_archivo)
+                                <!-- Opciones de editar archivos o no -->
+                                <label for="">¿Deseas editar el archivo?</label>
+                                <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio1" value="1">
+                                        <label class="form-check-label" for="inlineRadio1">Si</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio2" value="0" checked="checked">
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </div>
+
+                                <!-- Documentos Cargado -->
+                                <label for="">Archivo Cargado:</label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <div id="div_arch_{{ $edicion->id_edicion }}">
+                                            <input type="hidden" name="loaded" id="archivo_{{ $edicion->id_edicion }}"
+                                            value="{{ $edicion->ruta_archivo }}">
+                                            <a href="{{ route('edicion.archivo', ['filename' => basename($edicion->ruta_archivo)]) }}" target="_blank" 
+                                                class="btn btn-light btn-icon-split mb-1">
+                                                <span class="icon text-gray-600" style="width: 50px;">
+                                                    @switch(pathinfo($edicion->ruta_archivo)['extension'])
+                                                        @case('pdf')<i class="fas fa-file-pdf"></i>@break
+                                                        @default <i class="fas fa-image"></i>
+                                                    @endswitch
+                                                </span>
+                                                <span class="text">Documento Cargado...</span>
+                                            </a>
+                                            <a style="display: none" name="{{ $edicion->id_edicion }}"
+                                                class="btn btn-danger btn-circle btn-sm load_archives btn_erase">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
+                        @if($edicion)
+                            <div class="form-group load_archives" 
+                                style="display: <?php echo $edicion->ruta_archivo ? 'none' : '' ?>">
+                        @else
+                            <div class="form-group load_archives">
+                        @endif
+                            <label for="ruta_archivo">Archivo con la Edición Completa: Opcional*</label>
+
+                            <div class="custom-file">
+                                <input type="file" name="ruta_archivo"
+                                    class="custom-file-input @error('ruta_archivo') is-invalid @enderror" id="archivo_doc">
+                                @error('ruta_archivo')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                <label class="custom-file-label" for="ruta_archivo">Selecciona un archivo</label>
+                            </div>
+                            <div id="files_names">
+
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-success mt-2">
                             {{ $edicion ? "Editar Edición" : "Crear Edición" }}
                         </button>
@@ -194,5 +261,34 @@
         $('#archivo').change(function() {
             readImage(this);
         });
+
+        $('#archivo_doc').change(function() {
+            var files = $('#archivo').get(0).files;
+
+            $('#files_names').empty();
+            $.each(files, function(_, file) {
+                $('#files_names').append('<label class="d-block">'+file.name+'</label>');
+            });
+        });
+
+        //activar la edición de los archivos
+            $('input[name="editArchive"]').change(function() {
+                let selected = $('input[name="editArchive"]:checked').val();
+                
+                if(selected == 1){
+                    $('.load_archives').slideDown();
+                }
+                else{
+                    $('.load_archives').slideUp();
+                }
+            });
+
+        //delete de archivo que ya este almacenado
+            $('.btn_erase').click(function() {
+                let id = $(this).attr('name');
+
+                $('#div_arch_'+id).fadeOut();
+                $('#archivo_'+id).remove();
+            });
     });
 </script>

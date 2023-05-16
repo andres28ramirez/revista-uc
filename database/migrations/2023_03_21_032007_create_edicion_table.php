@@ -17,6 +17,7 @@ return new class extends Migration
                 $table->text('descripcion');
                 $table->date('fecha');
                 $table->text('ruta_imagen')->nullable();
+                $table->text('ruta_archivo')->nullable();
                 $table->timestamps();
             });
         });

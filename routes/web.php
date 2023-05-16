@@ -14,19 +14,29 @@ use App\Http\Controllers\RevistaController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
+//RUTAS DE CONTROL Y MODIFICACIONES
+Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->name('change.lang');
+
 //RUTAS DE LA PÁGINA DE USUARIOS | NAVEGACIÓN INTERNA
 Route::get('/', [RevistaController::class, 'index'])->name('welcome');
 
-Route::prefix('/users')->group(function () {
+Route::prefix('/revista')->group(function () {
+    //Buscador
+    Route::get('/buscador/{parametro?}', [RevistaController::class, 'buscador'])->name('user.search');
+
     //Articulos
     Route::get('/articulo/codigo/{id}', [RevistaController::class, 'getArticle'])->name('user.articulo');
     Route::get('/articulo/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('user.articulo.imagen');
     Route::get('/articulos/getArchive/{filename?}', [ArticuloController::class, 'getArchive'])->name('user.articulo.archivo');
 
     //Ediciones
+    Route::get('/ediciones', [RevistaController::class, 'allEditions'])->name('user.ediciones');
+    Route::get('/edicion/codigo/{id}', [RevistaController::class, 'getEdition'])->name('user.edicion');
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('user.edicion.imagen');
+    Route::get('/edicion/getArchive/{filename?}', [EdicionController::class, 'getArchive'])->name('user.edicion.archivo');
 
     //Autores
+    Route::get('/autores', [RevistaController::class, 'getAuthors'])->name('user.autores');
     Route::get('/autor/getImage/{filename?}', [AutorController::class, 'getImage'])->name('user.autor.imagen');
 
     //Comentarios
@@ -35,10 +45,11 @@ Route::prefix('/users')->group(function () {
 
     //Conocimientos
     Route::get('/conocimiento/articulos/{id?}', [RevistaController::class, 'getArticlesByArea'])->name('user.conocimiento.articulos');
-});
+    Route::get('/configuracion/info/getArchive/{filename?}', [ConfiguracionController::class, 'getArchive'])->name('configuracion.info.archivo');
 
-//RUTAS DE CONTROL Y MODIFICACIONES
-Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->name('change.lang');
+    //Informaciones
+    Route::get('/informacion', [RevistaController::class, 'getInformations'])->name('user.informaciones');
+});
 
 //RUTAS DEL PANEL ADMINISTRATIVO
 Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(function () {
@@ -49,6 +60,7 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::get('/edicion/create', [EdicionController::class, 'create'])->name('edicion.create');
     Route::get('/edicion/edit/{id}', [EdicionController::class, 'edit'])->name('edicion.edit');
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('edicion.imagen');
+    Route::get('/edicion/getArchive/{filename?}', [EdicionController::class, 'getArchive'])->name('edicion.archivo');
     
     Route::post('/edicion/store', [EdicionController::class, 'store'])->name('edicion.store');
     Route::post('/edicion/update/{id}', [EdicionController::class, 'update'])->name('edicion.update');

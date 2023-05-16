@@ -27,6 +27,7 @@ class EdicionController extends Controller
         "descripcion" => "required|string",
         "fecha" => "required",
         "ruta_imagen" => "file|mimes:jpg,jpeg,png|max:2100|",
+        "ruta_archivo" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
     ];
 
     //MENSAJES DE ERROR
@@ -40,8 +41,10 @@ class EdicionController extends Controller
         "max" => "El dato debe poseer menos de 255 caracteres",
         "titulo.min" => "El título debe poseer al menos 3 caracteres",
         "ruta_imagen.max" => "La Imagen no debe pesar más de 2 Mb",
+        "ruta_archivo.max" => "La Imagen no debe pesar más de 10 Mb",
         "file" => "El dato debe ser enviado como un archivo",
-        "mime" => "El archivo debe llegar en formato png, jpg y jpeg",
+        "ruta_imagen.mimes" => "El archivo debe llegar en formato png, jpg y jpeg",
+        "ruta_archivo.mimes" => "El archivo debe llegar en formato png, jpg, jpeg o pdf",
     ];
 
     //VISUALES DEL SISTEMA REDIRECCIONAMIENTO
@@ -83,6 +86,32 @@ class EdicionController extends Controller
         return new Response($file, 200);
     }
 
+    //Retorno del Archivo del Storage
+    public function getArchive($filename = null){
+
+        if($filename){
+            $extension = pathinfo($filename)['extension'];
+
+            $exist = Storage::disk('public')->exists('ediciones/'.$filename);
+
+            if(!$exist){
+                $extension = null;
+                $file = storage_path('app/public/crash.png');
+            }
+            else
+                $file = storage_path('app/public/ediciones/'.$filename);
+        }
+        else
+            $file = storage_path('app/public/crash.png');
+        
+        $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
+
+        return Response(file_get_contents($file), 200, [
+            'Content-Type' => $extension,
+            'Content-Disposition' => 'inline; filename="'.$file.'"'
+        ]);
+    }
+
     //Store de una Nueva Edicion
     public function store(Request $request){
         
@@ -102,6 +131,11 @@ class EdicionController extends Controller
             //Almacenamiento de la Imagen
             if($request->hasFile('ruta_imagen')){
                 $datos["ruta_imagen"] = $request->file('ruta_imagen')->store('ediciones', 'public');
+            }
+
+            //Almacenamiento del Archivo
+            if($request->hasFile('ruta_archivo')){
+                $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('ediciones', 'public');
             }
             
             $edicion = Edicion::create($datos);
@@ -144,6 +178,22 @@ class EdicionController extends Controller
             }
             else{
                 unset($datos['ruta_imagen']);
+            }
+
+            //Almacenamiento del Archivo
+            if($request->hasFile('ruta_archivo') && $request->editArchive){
+                Storage::delete(['public/'.$edicion->ruta_archivo]);
+                $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('ediciones', 'public');
+            }
+            elseif($request->editArchive && !$request->has('loaded')){
+                Storage::delete(['public/'.$edicion->ruta_archivo]);
+                $datos["ruta_archivo"] = null;
+            }
+            elseif($request->hasFile('ruta_archivo') && !$request->has('editArchive')){
+                $datos["ruta_archivo"] = $request->file('ruta_archivo')->store('ediciones', 'public');
+            }
+            else{
+                unset($datos['ruta_archivo']);
             }
             
             $edicion->update($datos);
@@ -191,8 +241,9 @@ class EdicionController extends Controller
                     $articulo->delete();
                 }
             
-            //Eliminamos finalmente la edición y su imagen preview
+            //Eliminamos finalmente la edición y su imagen preview como archivo
                 Storage::delete(['public/'.$edicion->ruta_imagen]);
+                Storage::delete(['public/'.$edicion->ruta_archivo]);
                 $edicion->delete();
 
             //Aceptamos la eliminación de todo y redireccionamos

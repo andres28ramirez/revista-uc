@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 
 //MODELOS
 use App\Models\Articulo;
+use App\Models\Autor;
 use App\Models\Conocimiento;
 use App\Models\Edicion;
 use App\Models\Informacion;
@@ -28,11 +29,13 @@ use Illuminate\Contracts\Cache\Store;
 
 class RevistaController extends Controller
 {
+    //Pagina Inicial
     public function index(){
-        $edicion = Edicion::orderBy('id_edicion', 'desc')->first();
+        $edicion = Edicion::orderBy('numero', 'desc')->first();
         return view('panel_user.welcome', compact('edicion'));
     }
 
+    //Apartado de articulos
     public function getArticle($id_articulo){
         $articulo = Articulo::find($id_articulo);
 
@@ -42,6 +45,7 @@ class RevistaController extends Controller
         return view('panel_user.article', compact('articulo'));
     }
 
+    //Apartado de areas de conocimiento
     public function getArticlesByArea($id_conocimiento = null){
         $conocimiento = Conocimiento::find($id_conocimiento);
 
@@ -50,4 +54,45 @@ class RevistaController extends Controller
 
         return view('panel_user.areas', compact('conocimiento'));
     }
+
+    //Apartado de Autores
+    public function getAuthors(){
+        $autores = Autor::orderBy('nombre', 'asc')->get();
+        return view('panel_user.autores', compact('autores'));
+    }
+
+    //Apartado de Ediciones
+    public function allEditions(){
+        $ediciones = Edicion::orderBy('numero', 'desc')->get();
+        return view('panel_user.ediciones', compact('ediciones'));
+    }
+
+    //Información de edición seleccionada
+    public function getEdition($id_edicion){
+        $edicion = Edicion::find($id_edicion);
+
+        if(!$edicion)
+            return redirect()->route('welcome')->with('warning', 'La edición seleccionada no pudo ser encontrada, por favor intentalo nuevamente');
+
+        return view('panel_user.edition', compact('edicion'));
+    }
+
+    //Apartado de Informaciones o Acerca de...
+    public function getInformations(){
+        $informaciones = Informacion::all();
+        return view('panel_user.informaciones', compact('informaciones'));
+    }
+
+    //Buscador Global
+    public function buscador(Request $request){
+        $param = $request->parametro;
+
+        $articulos = Articulo::where(function($query) use ($param) {
+            $query->where('titulo', 'like', '%'.$param.'%')
+                ->orWhere('contenido', 'like', '%'.$param.'%');
+        })->paginate(1);
+
+        return view('panel_user.buscador', compact('articulos', 'param'));
+    }
+
 }

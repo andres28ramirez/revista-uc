@@ -35,17 +35,23 @@
 
             <!-- Autores -->
             <li class="navbar-item">
-                <a class="nav-link"  href="#">{{__('Autores')}}</a>
+                <a class="nav-link"  href="{{ route('user.autores') }}">
+                    {{__('Autores')}}
+                </a>
             </li>
 
             <!-- Ediciones -->
             <li class="navbar-item">
-                <a class="nav-link" href="#">{{__('Listado de Ediciones')}}</a>
+                <a class="nav-link" href="{{ route('user.ediciones') }}">
+                    {{__('Listado de Ediciones')}}
+                </a>
             </li>
 
             <!-- Información o Acerca de... -->
             <li class="navbar-item">
-                <a class="nav-link" href="#">{{__('Acerca de...')}}</a>
+                <a class="nav-link" href="{{ route('user.informaciones') }}">
+                    {{__('Acerca de...')}}
+                </a>
             </li>
 
             <!-- Buscador -->
@@ -54,9 +60,9 @@
                     <i class="fa fa-search fa-fw"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="dropdownSearch">
-                    <form class="px-4 py-3" type="get" action="">
-                        <input class="input" type="text" name="query" placeholder="{{__('Buscar')}}...">
-                        <button type="button" class="btn btn-success">{{__('Buscar')}}</button>
+                    <form class="px-4 py-3" method="get" action="{{ route('user.search') }}">
+                        <input class="input" type="text" name="parametro" placeholder="{{__('Buscar')}}...">
+                        <button type="submit" class="btn btn-success">{{__('Buscar')}}</button>
                     </form>
                 </div>
             </li>

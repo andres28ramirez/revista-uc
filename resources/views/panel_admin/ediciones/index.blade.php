@@ -29,6 +29,7 @@
                     <thead>
                         <tr><th>Nro. de Publicación</th>
                             <th>Imagen</th>
+                            <th>Archivo</th>
                             <th>Título</th>
                             <th>Descripción</th>
                             <th>Fecha de Edición</th>
@@ -54,6 +55,21 @@
                                         alt="previsual de la edición" width="100%" height="100%">
                                     @endif
                                 </div>
+                            </td>
+                            <td class="align-middle">
+                                @if($edicion->ruta_archivo)
+                                    <a href="{{ route('edicion.archivo', ['filename' => basename($edicion->ruta_archivo)]) }}" target="_blank" 
+                                        class="btn btn-light w-100">
+                                        <span class="icon text-gray-600">
+                                                @switch(pathinfo($edicion->ruta_archivo)['extension'])
+                                                    @case('pdf')<i class="fas fa-file-pdf"></i>@break
+                                                    @default <i class="fas fa-image"></i>
+                                                @endswitch
+                                        </span>
+                                    </a>
+                                @else
+                                    N/A
+                                @endif
                             </td>
                             <td class="align-middle">
                                 {{ $edicion->titulo }}

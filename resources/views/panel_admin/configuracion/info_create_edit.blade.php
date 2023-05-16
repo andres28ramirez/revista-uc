@@ -58,49 +58,55 @@
                             @enderror
                         </div>
 
-                        @if($informacion->ruta_archivo)
-                            <!-- Opciones de editar archivos o no -->
-                            <label for="">¿Deseas editar el archivo?</label>
-                            <div class="form-group">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio1" value="1">
-                                    <label class="form-check-label" for="inlineRadio1">Si</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio2" value="0" checked="checked">
-                                    <label class="form-check-label" for="inlineRadio2">No</label>
-                                </div>
-                            </div>
-
-                            <!-- Documentos Cargado -->
-                            <label for="">Archivo Cargado:</label>
-                            <div class="row mb-2">
-                                <div class="col-12">
-                                    <div id="div_arch_{{ $informacion->id_informacion }}">
-                                        <input type="hidden" name="loaded" id="archivo_{{ $informacion->id_informacion }}"
-                                        value="{{ $informacion->ruta_archivo }}">
-                                        <a href="{{ route('configuracion.info.archivo', ['filename' => basename($informacion->ruta_archivo)]) }}" target="_blank" 
-                                            class="btn btn-light btn-icon-split mb-1">
-                                            <span class="icon text-gray-600" style="width: 50px;">
-                                                @switch(pathinfo($informacion->ruta_archivo)['extension'])
-                                                    @case('pdf')<i class="fas fa-file-pdf"></i>@break
-                                                    @default <i class="fas fa-image"></i>
-                                                @endswitch
-                                            </span>
-                                            <span class="text">Documento Cargado...</span>
-                                        </a>
-                                        <a style="display: none" name="{{ $informacion->id_informacion }}"
-                                            class="btn btn-danger btn-circle btn-sm load_archives btn_erase">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                        @if($informacion)
+                            @if($informacion->ruta_archivo)
+                                <!-- Opciones de editar archivos o no -->
+                                <label for="">¿Deseas editar el archivo?</label>
+                                <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio1" value="1">
+                                        <label class="form-check-label" for="inlineRadio1">Si</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="editArchive" id="inlineRadio2" value="0" checked="checked">
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
                                     </div>
                                 </div>
-                            </div>
+
+                                <!-- Documentos Cargado -->
+                                <label for="">Archivo Cargado:</label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <div id="div_arch_{{ $informacion->id_informacion }}">
+                                            <input type="hidden" name="loaded" id="archivo_{{ $informacion->id_informacion }}"
+                                            value="{{ $informacion->ruta_archivo }}">
+                                            <a href="{{ route('configuracion.info.archivo', ['filename' => basename($informacion->ruta_archivo)]) }}" target="_blank" 
+                                                class="btn btn-light btn-icon-split mb-1">
+                                                <span class="icon text-gray-600" style="width: 50px;">
+                                                    @switch(pathinfo($informacion->ruta_archivo)['extension'])
+                                                        @case('pdf')<i class="fas fa-file-pdf"></i>@break
+                                                        @default <i class="fas fa-image"></i>
+                                                    @endswitch
+                                                </span>
+                                                <span class="text">Documento Cargado...</span>
+                                            </a>
+                                            <a style="display: none" name="{{ $informacion->id_informacion }}"
+                                                class="btn btn-danger btn-circle btn-sm load_archives btn_erase">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
                         <!-- Documento de la Información -->
-                        <div class="form-group load_archives" 
-                            style="display: <?php echo $informacion->ruta_archivo ? 'none' : '' ?>">
+                        @if($informacion)
+                            <div class="form-group load_archives" 
+                                style="display: <?php echo $informacion->ruta_archivo ? 'none' : '' ?>">
+                        @else
+                            <div class="form-group load_archives">
+                        @endif
                             <label for="ruta_archivo">Archivo anclado a la información: Opcional*</label>
 
                             <div class="custom-file">

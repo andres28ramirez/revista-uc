@@ -23,30 +23,30 @@
 
     <body>
         <div class=".container-xl">
-            @include('layouts.user.navbar');
+            @include('layouts.user.navbar')
             
             <!-- alerta de finalización de procesos o notificaciones -->
             @if(Session::has('bderror'))
-                <div class="pt-2 container font-weight-bold text-center alert alert-danger" style="margin-bottom: 1%">
+                <div class="mt-2 container font-weight-bold text-center alert alert-danger" style="margin-bottom: 1%">
                     {{ Session::get('bderror') }}
                 </div>
             @endif
 
             @if(Session::has('success'))
-                <div class="pt-2 container font-weight-bold text-center alert alert-success" style="margin-bottom: 1%">
+                <div class="mt-2 container font-weight-bold text-center alert alert-success" style="margin-bottom: 1%">
                     {{ Session::get('success') }}
                 </div>
             @endif
             
             @if(Session::has('warning'))
-                <div class="pt-2 container font-weight-bold text-center alert alert-warning" style="margin-bottom: 1%">
+                <div class="mt-2 container font-weight-bold text-center alert alert-warning" style="margin-bottom: 1%">
                     {{ Session::get('warning') }}
                 </div>
             @endif
 
             @yield('content')
             
-            @include('layouts.user.footer');
+            @include('layouts.user.footer')
 
             @include('layouts.user.login')
 
