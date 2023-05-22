@@ -32,7 +32,8 @@
                             <th>Archivo</th>
                             <th>Título</th>
                             <th>Descripción</th>
-                            <th>Fecha de Edición</th>
+                            <th>Fecha de Publicación</th>
+                            <th>Periodo</th>
                             <th>Nro. de Artículos</th>
                             <th>Opciones</th>
                         </tr>
@@ -79,6 +80,9 @@
                             </td>
                             <td class="align-middle">
                                 {{ date_format(date_create($edicion->fecha), "F j, Y") }}
+                            </td>
+                            <td class="align-middle">
+                                {{ $edicion->periodo }}
                             </td>
                             <td class="align-middle">
                                 <a href="{{ route('articulo.index', $edicion->id_edicion) }}" class="btn btn-warning btn-icon-split">

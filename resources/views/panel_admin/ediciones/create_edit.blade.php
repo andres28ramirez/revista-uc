@@ -78,6 +78,21 @@
                             @enderror
                         </div>
 
+                        <!-- Periodo de la Publicación -->
+                        <div class="form-group">
+                            <label for="periodo">Período de la Edición:</label>
+                            <input type="text" class="form-control @error('periodo') is-invalid @enderror" 
+                                id="periodo" name="periodo"
+                                value="{{ $edicion ? old('periodo', $edicion->periodo) : old('periodo') }}" required
+                                placeholder="Enero - Junio {{ date('Y') }}">
+                            
+                            @error('periodo')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
                         <!-- Descripcion de la edicion -->
                         <div class="form-group">
                             <label for="descripcion">Descripción:</label>
@@ -109,6 +124,58 @@
 
                             
                         </div>
+
+                    <!-- SECCIÓN CARGA DEL ARTÍCULO EN INGLES -->
+                        <hr>
+                        <!-- Opciones de cargar contenido en ingles -->
+                        @if(!isset($edicion->titulo_en))
+                            <label for="">¿Ya el artículo posee contenido en ingles?</label>
+                            <div class="form-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="editEnglish" id="inlineEng1" value="1">
+                                    <label class="form-check-label" for="inlineEng1">Si</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="editEnglish" id="inlineEng2" value="0" checked="checked">
+                                    <label class="form-check-label" for="inlineEng2">No</label>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="form-group load_english" 
+                            style="display: <?php echo isset($edicion->titulo_en) ? '' : 'none'?>">
+                            <!-- Título en Ingles -->
+                            <div class="form-group">
+                                <label for="titulo">Title of the edition:</label>
+                                <input type="text" class="form-control @error('titulo_en') is-invalid @enderror" 
+                                    id="titulo_en" 
+                                    name="titulo_en"
+                                    value="{{ $edicion ? old('titulo_en', $edicion->titulo_en) : old('titulo_en') }}"
+                                    placeholder="Title of the Article...">
+                                
+                                @error('titulo_en')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Descripción en Ingles -->
+                            <div class="form-group">
+                                <label for="descripcion_en">Description:</label>
+                                <textarea class="form-control @error('descripcion_en') is-invalid @enderror"
+                                    name="descripcion_en" id="descripcion_en"
+                                    cols="30" rows="5">{{ $edicion ? old('titulo_en', $edicion->descripcion_en) : old('descripcion_en') }}</textarea>
+                                
+                                @error('descripcion_en')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <hr>
+                    <!-- FIN SECCIÓN CARGA DEL ARTÍCULO EN INGLES -->
 
                         <!-- Documento de la Edición -->
                         @if($edicion)
@@ -162,7 +229,7 @@
                             <label for="ruta_archivo">Archivo con la Edición Completa: Opcional*</label>
 
                             <div class="custom-file">
-                                <input type="file" name="ruta_archivo"
+                                <input type="file" name="ruta_archivo" accept=".pdf, .html"
                                     class="custom-file-input @error('ruta_archivo') is-invalid @enderror" id="archivo_doc">
                                 @error('ruta_archivo')
                                     <span class="invalid-feedback" role="alert">
@@ -280,6 +347,18 @@
                 }
                 else{
                     $('.load_archives').slideUp();
+                }
+            });
+
+        //activar la creación / edicion de contenido en ingles
+            $('input[name="editEnglish"]').change(function() {
+                let selected = $('input[name="editEnglish"]:checked').val();
+                
+                if(selected == 1){
+                    $('.load_english').slideDown();
+                }
+                else{
+                    $('.load_english').slideUp();
                 }
             });
 

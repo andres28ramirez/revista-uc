@@ -26,8 +26,9 @@ class EdicionController extends Controller
         "numero" => "required|numeric|min:0|unique:edicion,numero",
         "descripcion" => "required|string",
         "fecha" => "required",
+        "periodo" => "required|string|min:3|max:255",
         "ruta_imagen" => "file|mimes:jpg,jpeg,png|max:2100|",
-        "ruta_archivo" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
+        "ruta_archivo" => "file|mimes:pdf,html|max:10240|",
     ];
 
     //MENSAJES DE ERROR
@@ -40,11 +41,13 @@ class EdicionController extends Controller
         "unique" => "El orden enviado ya se encuentra registrado",
         "max" => "El dato debe poseer menos de 255 caracteres",
         "titulo.min" => "El título debe poseer al menos 3 caracteres",
+        "titulo_en.min" => "El título debe poseer al menos 3 caracteres",
+        "periodo.min" => "El periodo debe poseer al menos 3 caracteres",
         "ruta_imagen.max" => "La Imagen no debe pesar más de 2 Mb",
         "ruta_archivo.max" => "La Imagen no debe pesar más de 10 Mb",
         "file" => "El dato debe ser enviado como un archivo",
         "ruta_imagen.mimes" => "El archivo debe llegar en formato png, jpg y jpeg",
-        "ruta_archivo.mimes" => "El archivo debe llegar en formato png, jpg, jpeg o pdf",
+        "ruta_archivo.mimes" => "El archivo debe llegar en formato pdf o html",
     ];
 
     //VISUALES DEL SISTEMA REDIRECCIONAMIENTO
@@ -118,8 +121,15 @@ class EdicionController extends Controller
         DB::beginTransaction();
         try{
             
+            $validations = $this->validations;
+
+            if($request->editEnglish){
+                $validations["titulo_en"] = "required|string|min:3|max:255";
+                $validations["descripcion_en"] = "required|string";
+            }
+
             //Validando datos
-            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            $validate = Validator::make($request->all(), $validations, $this->error_messages);
             if($validate->fails()){
                 return Redirect::back()->withErrors($validate)->withInput();
             }
@@ -158,6 +168,11 @@ class EdicionController extends Controller
 
             $validaciones = $this->validations;
             $validaciones["numero"] = "required|numeric|min:0|unique:edicion,numero,".$id_edicion.",id_edicion";
+
+            if($request->editEnglish){
+                $validations["titulo_en"] = "required|string|min:3|max:255";
+                $validations["contenido_en"] = "required|string";
+            }
 
             //Validando datos
             $validate = Validator::make($request->all(), $validaciones, $this->error_messages);

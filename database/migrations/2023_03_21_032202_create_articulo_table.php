@@ -13,12 +13,15 @@ return new class extends Migration
             Schema::create('articulo', function (Blueprint $table) {
                 $table->id('id_articulo');
                 $table->string('titulo',255);
+                $table->string('titulo_en',255)->nullable();
                 $table->text('contenido');
+                $table->text('contenido_en')->nullable();
                 $table->text('ruta_imagen_es')->nullable();
                 $table->text('ruta_imagen_en')->nullable();
                 $table->bigInteger('FK_id_edicion')->unsigned();
                 $table->bigInteger('FK_id_autor')->nullable()->unsigned();
                 $table->bigInteger('FK_id_conocimiento')->nullable()->unsigned();
+                $table->date('publicated_at')->nullable();
                 $table->timestamps();
 
                 $table->foreign('FK_id_edicion')->references('id_edicion')->on('edicion')->cascadeOnDelete();

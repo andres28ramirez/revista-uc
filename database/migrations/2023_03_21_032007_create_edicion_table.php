@@ -14,8 +14,11 @@ return new class extends Migration
                 $table->id('id_edicion');
                 $table->integer('numero');
                 $table->string('titulo',255);
+                $table->string('titulo_en',255);
                 $table->text('descripcion');
+                $table->text('descripcion_en');
                 $table->date('fecha');
+                $table->string('periodo',255);
                 $table->text('ruta_imagen')->nullable();
                 $table->text('ruta_archivo')->nullable();
                 $table->timestamps();

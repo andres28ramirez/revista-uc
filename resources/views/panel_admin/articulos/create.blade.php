@@ -79,13 +79,15 @@
 
                         <!-- Autor del Artículo -->
                         <div class="form-group">
-                            <label for="autor">Autor del Artículo: Opcional*</label>
-                            <select id="autor" class="form-control @error('FK_id_autor') is-invalid @enderror" name="FK_id_autor">
-                                <option value="">Selecciona un Autor...</option>
-                                @foreach($autores as $autor)
-                                    <option value="{{ $autor->id_autor }}" {{ old('FK_id_autor') == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
-                                @endforeach
-                            </select>
+                            <label for="autor">Autor o Autores del Artículo: Opcional*</label>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <select id="autor" class="form-control mr-2 @error('FK_id_autor') is-invalid @enderror" name="FK_id_autor">
+                                    <option value="">Selecciona un Autor...</option>
+                                    @foreach($autores as $autor)
+                                        <option value="{{ $autor->id_autor }}" {{ old('FK_id_autor') == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             
                             @error('FK_id_autor')
                                 <span class="invalid-feedback" role="alert">
@@ -111,6 +113,20 @@
                             @enderror
                         </div>
 
+                        <!-- Fecha de Publicación o aceptado el artículo -->
+                        <!-- <div class="form-group">
+                            <label for="publicated_at">Fecha de Publicación: Opcional*</label>
+                            <input type="date" class="form-control @error('publicated_at') is-invalid @enderror" 
+                                id="publicated_at" name="publicated_at"
+                                value="{{ old('publicated_at', date('Y-m-d')) }}">
+                            
+                            @error('publicated_at')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div> -->
+
                         <!-- Imagen del Archivo español -->
                         <div class="form-group">
                             <label for="ruta_imagen_es">Caratula del Artículo: Opcional*</label>
@@ -127,13 +143,62 @@
                             </div>
                         </div>
 
+                    <!-- SECCIÓN CARGA DEL ARTÍCULO EN INGLES -->
+                        <hr>
+                        <!-- Opciones de cargar contenido en ingles -->
+                        <label for="">¿Ya el artículo posee contenido en ingles?</label>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="editEnglish" id="inlineEng1" value="1">
+                                <label class="form-check-label" for="inlineEng1">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="editEnglish" id="inlineEng2" value="0" checked="checked">
+                                <label class="form-check-label" for="inlineEng2">No</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group load_english" style="display: none">
+                            <!-- Título en Ingles -->
+                            <div class="form-group">
+                                <label for="titulo">Title of the Article:</label>
+                                <input type="text" class="form-control @error('titulo_en') is-invalid @enderror" 
+                                    id="titulo_en" 
+                                    name="titulo_en"
+                                    value="{{ old('titulo_en') }}"
+                                    placeholder="Title of the Article...">
+                                
+                                @error('titulo_en')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Contenido en Ingles -->
+                            <div class="form-group">
+                                <label for="contenido_en">Content:</label>
+                                <textarea class="form-control @error('contenido_en') is-invalid @enderror"
+                                    name="contenido_en" id="contenido_en"
+                                    cols="30" rows="5">{{ old('contenido_en') }}</textarea>
+                                
+                                @error('contenido_en')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <hr>
+                    <!-- FIN SECCIÓN CARGA DEL ARTÍCULO EN INGLES -->
+
                         <!-- Documentos del Artículo -->
                         <div class="form-group">
                             <label for="ruta_imagen_es">Archivos Adjuntos al Artículo:</label>
 
                             <div class="form-group files">
                                 <input type="file" class="form-control @error('archivos.*') is-invalid @enderror" 
-                                    name="archivos[]" multiple="" id="archivos">
+                                    name="archivos[]" multiple="" id="archivos" accept=".pdf, .html">
                                 @error('archivos.*')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -264,6 +329,18 @@
                 $.each(files, function(_, file) {
                     $('#files_names').append('<label class="d-block">'+file.name+'</label>');
                 });
+            });
+
+        //activar la creación de contenido en ingles
+            $('input[name="editEnglish"]').change(function() {
+                let selected = $('input[name="editEnglish"]:checked').val();
+                
+                if(selected == 1){
+                    $('.load_english').slideDown();
+                }
+                else{
+                    $('.load_english').slideUp();
+                }
             });
     });
 </script>

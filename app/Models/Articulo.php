@@ -14,12 +14,15 @@ class Articulo extends Model
     protected $fillable = [
         "id_archivo",
         "titulo",
+        "titulo_en",
         "contenido",
+        "contenido_en",
         "ruta_imagen_es",
         "ruta_imagen_en",
         "FK_id_edicion",
         "FK_id_autor",
         "FK_id_conocimiento",
+        "publicated_at",
     ];
 
     protected $hidden = [

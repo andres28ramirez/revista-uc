@@ -23,22 +23,24 @@
                                         </div>
                                     </div>
                                     <!-- Estado de Comentario -->
-                                    @if($comentario->FK_id_usuario == Auth::user()->id)
-                                        <div class="comment-footer col-12">
-                                            @switch($comentario->estado)
-                                                @case('rechazado')
-                                                    <span class="badge badge-pill badge-danger">
-                                                @break
-                                                @case('aceptado') 
-                                                    <span class="badge badge-pill badge-success">
-                                                @break
-                                                @default 
-                                                    <span class="badge badge-pill badge-primary">
-                                                @break
-                                            @endswitch
-                                                {{ $comentario->estado }}
-                                            </span> 
-                                        </div>
+                                    @if(Auth::user())
+                                        @if($comentario->FK_id_usuario == Auth::user()->id)
+                                            <div class="comment-footer col-12">
+                                                @switch($comentario->estado)
+                                                    @case('rechazado')
+                                                        <span class="badge badge-pill badge-danger">
+                                                    @break
+                                                    @case('aceptado') 
+                                                        <span class="badge badge-pill badge-success">
+                                                    @break
+                                                    @default 
+                                                        <span class="badge badge-pill badge-primary">
+                                                    @break
+                                                @endswitch
+                                                    {{ $comentario->estado }}
+                                                </span> 
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>		
                                 
@@ -60,22 +62,24 @@
                                                     </div>
                                                 </div>
                                                 <!-- Panel de Manejo de Respuesta -->
-                                                @if($respuesta->FK_id_usuario == Auth::user()->id)
-                                                    <div class="comment-footer col-12">
-                                                        @switch($respuesta->estado)
-                                                            @case('rechazado')
-                                                                <span class="badge badge-pill badge-danger">
-                                                            @break
-                                                            @case('aceptado') 
-                                                                <span class="badge badge-pill badge-success">
-                                                            @break
-                                                            @default 
-                                                                <span class="badge badge-pill badge-primary">
-                                                            @break
-                                                        @endswitch
-                                                                {{ $respuesta->estado }}
-                                                        </span>
-                                                    </div>
+                                                @if(Auth::user())
+                                                    @if($respuesta->FK_id_usuario == Auth::user()->id)
+                                                        <div class="comment-footer col-12">
+                                                            @switch($respuesta->estado)
+                                                                @case('rechazado')
+                                                                    <span class="badge badge-pill badge-danger">
+                                                                @break
+                                                                @case('aceptado') 
+                                                                    <span class="badge badge-pill badge-success">
+                                                                @break
+                                                                @default 
+                                                                    <span class="badge badge-pill badge-primary">
+                                                                @break
+                                                            @endswitch
+                                                                    {{ $respuesta->estado }}
+                                                            </span>
+                                                        </div>
+                                                    @endif
                                                 @endif
                                                 <!-- Comentario de Respuesta -->
                                                 <p style="white-space: pre-line">{{ $respuesta->contenido }}</p>

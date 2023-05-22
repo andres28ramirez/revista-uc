@@ -11,7 +11,7 @@
                 <h6><a href="#" class="badge">{{ $articulo->conocimiento ? $articulo->conocimiento->nombre : "N/A" }}</a></h6>
                 
                 <!-- Título -->
-                <h5><b>{{ $articulo->titulo }}</b></h5>
+                <h5><b>{{ App::isLocale('en') && $articulo->titulo_en ? $articulo->titulo_en : $articulo->titulo  }}</b></h5>
 
                 <!-- Autor -->
                 <p style="white-space: pre-line">{{ $articulo->autor ? $articulo->autor->nombre : "N/A" }}</p>

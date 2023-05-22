@@ -15,8 +15,11 @@ class Edicion extends Model
         "id_edicion",
         "numero",
         "titulo",
+        "titulo_en",
         "descripcion",
+        "descripcion_en",
         "fecha",
+        "periodo",
         "ruta_imagen",
         "ruta_archivo",
     ];

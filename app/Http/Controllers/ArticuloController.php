@@ -32,7 +32,7 @@ class ArticuloController extends Controller
         "FK_id_autor" => "numeric|nullable",
         "FK_id_conocimiento" => "numeric|nullable",
         "ruta_imagen_es" => "file|mimes:jpg,jpeg,png|max:2100|",
-        "archivos.*" => "file|mimes:jpg,jpeg,png,pdf|max:10240|",
+        "archivos.*" => "file|mimes:pdf, html|max:10240|",
     ];
 
     //MENSAJES DE ERROR
@@ -45,10 +45,11 @@ class ArticuloController extends Controller
         "unique" => "El orden enviado ya se encuentra registrado",
         "max" => "El dato debe poseer menos de 255 caracteres",
         "titulo.min" => "El título debe poseer al menos 3 caracteres",
+        "titulo_en.min" => "El título debe poseer al menos 3 caracteres",
         "ruta_imagen_es.max" => "La Imagen no debe pesar más de 2 Mb",
         "ruta_imagen_es.mimes" => "El archivo debe ser en formato png, jpg y jpeg",
         "archivos.*.max" => "Los Documentos no deben pesar más de 10 Mb",
-        "archivos.*.mimes" => "Los Documentos deben ser en formato png, jpg, jpeg, o pdf",
+        "archivos.*.mimes" => "Los Documentos deben ser en formato pdf o html",
         "file" => "El dato debe ser enviado como un archivo",
     ];
 
@@ -60,7 +61,7 @@ class ArticuloController extends Controller
         $nombre = "";
 
         if(!$id_edicion)
-            $articulos = Articulo::paginate(6);
+            $articulos = Articulo::orderBy('created_at', 'desc')->paginate(6);
         else{
             $edicion = $ediciones->find($id_edicion);
 
@@ -194,8 +195,15 @@ class ArticuloController extends Controller
         DB::beginTransaction();
         try{
             
+            $validations = $this->validations;
+
+            if($request->editEnglish){
+                $validations["titulo_en"] = "required|string|min:3|max:255";
+                $validations["contenido_en"] = "required|string";
+            }
+
             //Validando datos
-            $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
+            $validate = Validator::make($request->all(), $validations, $this->error_messages);
             if($validate->fails()){
                 return Redirect::back()->withErrors($validate)->withInput();
             }
@@ -240,6 +248,13 @@ class ArticuloController extends Controller
         DB::beginTransaction();
         try{
 
+            $validations = $this->validations;
+
+            if($request->editEnglish){
+                $validations["titulo_en"] = "required|string|min:3|max:255";
+                $validations["contenido_en"] = "required|string";
+            }
+            
             //Validando datos
             $validate = Validator::make($request->all(), $this->validations, $this->error_messages);
             if($validate->fails()){
