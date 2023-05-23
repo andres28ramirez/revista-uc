@@ -51,4 +51,12 @@ class Articulo extends Model
     public function comentarios(){
         return $this->hasMany('App\Models\Comentario', 'FK_id_articulo');
     }
+    
+    public function descargas(){
+        return $this->hasMany('App\Models\Articulo_Descarga', 'FK_id_articulo');
+    }
+    
+    public function visitas(){
+        return $this->hasMany('App\Models\Articulo_Visita', 'FK_id_articulo');
+    }
 }

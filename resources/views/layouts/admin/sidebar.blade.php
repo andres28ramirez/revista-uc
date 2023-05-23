@@ -41,7 +41,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->is('*/edicion') ? 'active' : '' }}" href="{{ route('edicion.index') }}">Ver Ediciones</a>
                 <a class="collapse-item {{ request()->is('*/edicion/create') ? 'active' : '' }}" href="{{ route('edicion.create') }}">Crear Nueva Edición</a>
-                <a class="collapse-item {{ request()->is('*/edicion/stats') ? 'active' : '' }}" href="cards.html">Estadísticas</a>
+                <a class="collapse-item {{ request()->is('*/edicion/stats') || request()->is('*/edicion/stats/*') ? 'active' : '' }}" href="{{ route('edicion.stats') }}">Estadísticas</a>
                 <a class="collapse-item {{ request()->is('*/edicion/conocimiento') ? 'active' : '' }}" href="{{ route('edicion.conocimiento') }}">Area de Conocimiento</a>
             </div>
         </div>
@@ -112,11 +112,11 @@
     </li>
 
     <!-- Nav Item - Graficos y Estadisticas -->
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" href="charts.html">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Estadísticas Generales</span></a>
-    </li>
+    </li> -->
 
     <!-- Nav Item - Reportes -->
     <li class="nav-item">

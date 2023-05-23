@@ -6,6 +6,8 @@
         <!-- Ediciones -->
         @if(request()->is('*/edicion')) Todas las Ediciones @endif
         @if(request()->is('*/edicion/create')) Panel Creación de Ediciones @endif
+        @if(request()->is('*/edicion/stats')) Panel Estadístico del Modulo Ediciones @endif
+        @if(request()->is('*/edicion/stats/*')) Panel Estadístico del Modulo Ediciones @endif
 
         <!-- Conocimientos -->
         @if(request()->is('*/edicion/conocimiento')) Panel de Control - Areas de Conocimiento @endif

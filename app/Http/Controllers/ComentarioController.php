@@ -62,7 +62,7 @@ class ComentarioController extends Controller
 
             //Top Usuarios con más comentarios
             $usuarios = Comentario::select('FK_id_usuario', DB::raw('count(*) as total'))
-                        ->groupBy('FK_id_usuario')->orderBy('total', 'desc')->paginate(5);
+                        ->groupBy('FK_id_usuario')->orderBy('total', 'desc')->paginate(10);
         }
         else{
             $comentarios = [];

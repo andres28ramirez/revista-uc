@@ -92,6 +92,7 @@
 
 <!-- Recursos de los charts -->
 <script src="{{ asset('chart.js/Chart.min.js') }}"></script>
+<script src="{{ asset('js/graficos/lineal_visitas_edicion.js') }}"></script>
 <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
 <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
 

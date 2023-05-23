@@ -123,6 +123,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                {{ $articulos->links() }}
             </div>
         </div>
     </div>

@@ -12,6 +12,8 @@ use Illuminate\Http\Response;
 
 //MODELOS
 use App\Models\Edicion;
+use App\Models\Edicion_Descarga;
+use App\Models\Edicion_Visita;
 use Illuminate\Contracts\Cache\Store;
 
 //HELPER DE NOTIFICACION
@@ -54,7 +56,7 @@ class EdicionController extends Controller
     
     //Visual primer Index
     public function index(){
-        $ediciones = Edicion::all();
+        $ediciones = Edicion::paginate(10);
         return view('panel_admin.ediciones.index', compact('ediciones'));
     }
 
@@ -68,6 +70,20 @@ class EdicionController extends Controller
     public function edit($id_edicion){
         $edicion = Edicion::findOrFail($id_edicion);
         return view('panel_admin.ediciones.create_edit', compact('edicion'));
+    }
+
+    //Visual de las Estadisticas
+    public function estadisticas(){
+        $ediciones = "a";
+        $descargas = Edicion_Descarga::all();
+        $visitas = Edicion_Visita::all();
+
+        //Visitas por mes de formar general
+        $glo_visitas = Edicion_Visita::select('mes', DB::raw('sum(total) as total'))->
+                                        where('year', date('Y'))->
+                                        groupBy('mes')->get();
+        
+        return view('panel_admin.ediciones.stats', compact('glo_visitas'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR

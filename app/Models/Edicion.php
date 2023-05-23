@@ -33,4 +33,12 @@ class Edicion extends Model
     public function articulos(){
         return $this->hasMany('App\Models\Articulo', 'FK_id_edicion');
     }
+
+    public function descargas(){
+        return $this->hasMany('App\Models\Edicion_Descarga', 'FK_id_edicion');
+    }
+    
+    public function visitas(){
+        return $this->hasMany('App\Models\Edicion_Visita', 'FK_id_edicion');
+    }
 }

@@ -3,8 +3,6 @@
 @section('content')
 <div class="container-fluid">
     
-
-
     <!-- TABLA -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -110,6 +108,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                {{ $ediciones->links() }}
             </div>
         </div>
     </div>

@@ -85,6 +85,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                {{ $autores->links() }}
             </div>
         </div>
     </div>

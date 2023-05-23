@@ -104,7 +104,7 @@ class ArticuloController extends Controller
             return $q->where('FK_id_edicion', $id_edicion);
         });
 
-        $articulos = $query->get();
+        $articulos = $query->paginate(10);
         
         return view('panel_admin.articulos.all', compact('articulos', 'autores', 'areas', 'ediciones', 'filtrado', 'id_autor', 'id_conocimiento', 'id_edicion'));
     }

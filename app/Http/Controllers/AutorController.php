@@ -48,7 +48,7 @@ class AutorController extends Controller
     
     //Visual primer Index
     public function index(){
-        $autores = Autor::all();
+        $autores = Autor::paginate(10);
         return view('panel_admin.autores.index', compact('autores'));
     }
 

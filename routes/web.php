@@ -58,6 +58,7 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     //EDICIONES
     Route::get('/edicion', [EdicionController::class, 'index'])->name('edicion.index');
     Route::get('/edicion/create', [EdicionController::class, 'create'])->name('edicion.create');
+    Route::get('/edicion/stats', [EdicionController::class, 'estadisticas'])->name('edicion.stats');
     Route::get('/edicion/edit/{id}', [EdicionController::class, 'edit'])->name('edicion.edit');
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('edicion.imagen');
     Route::get('/edicion/getArchive/{filename?}', [EdicionController::class, 'getArchive'])->name('edicion.archivo');
