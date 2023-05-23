@@ -23,7 +23,7 @@
 
             <!-- Nombre de la Edición -->
             <div class="edition_title">
-                <h4><b>{{ $edicion->titulo }}</b></h4>
+                <h4><b>{{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}</b></h4>
             </div>
         </div>
         
@@ -34,14 +34,14 @@
                 @include('layouts.article', ["artículo" => $articulo])
             @empty
                 <div class="text-center pb-5 font-weight-bold text-gray-600">
-                    La edición aun no posee artículos registrados.
+                    {{__('La edición aun no posee artículos registrados.')}}
                 </div>
             @endforelse
         </div>
     @else
         <!-- Titulo informativo -->
         <div class="edition_title py-3">
-            <h4><b>La revista aun no tiene ninguna edición o artículo registrado</b></h4>
+            <h4><b>{{__('La revista aun no tiene ninguna edición o artículo registrado')}}</b></h4>
         </div>
     @endif
 </div>

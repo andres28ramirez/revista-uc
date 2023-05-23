@@ -2,7 +2,7 @@
 <!-- Titulo -->
 <div class="container">
     <div class="title-article mb-1">
-        <h2>{{ $articulo->titulo }}</h2>
+        <h2>{{ App::isLocale('en') && $articulo->titulo_en ? $articulo->titulo_en : $articulo->titulo }}</h2>
     </div>
 </div>
 
@@ -16,9 +16,9 @@
 <!-- Texto del Artículo -->
 <div class="resume-article">
     <div class="container">
-        <p class="font-weight-bold font-italic" style="white-space: pre-line">Resumen:</p>
+        <p class="font-weight-bold font-italic" style="white-space: pre-line">{{ __('Resumen') }}:</p>
         <div>
-            {{ $articulo->contenido }}
+            {{ App::isLocale('en') && $articulo->contenido_en ? $articulo->contenido_en : $articulo->contenido }}
         </div>
     </div>
 </div>
@@ -37,7 +37,7 @@
             <span class="text">{{ $archivo->nombre }}</span>
         </a>
     @empty
-        No posee archivos linkeados...
+        {{ __('No posee archivos linkeados') }}...
     @endforelse
 </div>
 <br>

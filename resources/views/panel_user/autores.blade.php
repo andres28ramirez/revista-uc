@@ -13,7 +13,7 @@
                 @include('layouts.author', ["autor" => $autor])
             @empty
                 <div class="text-center pb-5 font-weight-bold text-gray-600">
-                    No hay autores registrados en el sistema.
+                    {{ __('No hay autores registrados en el sistema') }}.
                 </div>
             @endforelse
         </div>

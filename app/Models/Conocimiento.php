@@ -14,6 +14,7 @@ class Conocimiento extends Model
     protected $fillable = [
         "id_conocimiento",
         "nombre",
+        "nombre_en",
     ];
 
     protected $hidden = [

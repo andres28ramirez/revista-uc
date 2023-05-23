@@ -2,12 +2,16 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 
 class FormatTime {
 
     public static function LongTimeFilter($date) {
         if ($date == null) {
-            return "Sin fecha";
+            if(App::isLocale('en'))
+                return "Without date";
+            else
+                return "Sin fecha";
         }
 
         $start_date = $date;
@@ -19,50 +23,50 @@ class FormatTime {
                     if ($since_start->h == 0) {
                         if ($since_start->i == 0) {
                             if ($since_start->s == 0) {
-                                $result = $since_start->s . ' segundos';
+                                $result = App::isLocale('en') ? $since_start->s .' seconds' : $since_start->s .' segundos';
                             } else {
                                 if ($since_start->s == 1) {
-                                    $result = $since_start->s . ' segundo';
+                                    $result = App::isLocale('en') ? $since_start->s .' second' : $since_start->s .' segundo';
                                 } else {
-                                    $result = $since_start->s . ' segundos';
+                                    $result = App::isLocale('en') ? $since_start->s .' seconds' : $since_start->s .' segundos';
                                 }
                             }
                         } else {
                             if ($since_start->i == 1) {
-                                $result = $since_start->i . ' minuto';
+                                $result = App::isLocale('en') ? $since_start->i .' minute' : $since_start->i .' minuto';
                             } else {
-                                $result = $since_start->i . ' minutos';
+                                $result = App::isLocale('en') ? $since_start->i .' minutes' : $since_start->i .' minutos';
                             }
                         }
                     } else {
                         if ($since_start->h == 1) {
-                            $result = $since_start->h . ' hora';
+                            $result = App::isLocale('en') ? $since_start->h .' hour' : $since_start->h .' hora';
                         } else {
-                            $result = $since_start->h . ' horas';
+                            $result = App::isLocale('en') ? $since_start->h .' hours' : $since_start->h .' horas';
                         }
                     }
                 } else {
                     if ($since_start->d == 1) {
-                        $result = $since_start->d . ' día';
+                        $result = App::isLocale('en') ? $since_start->d .' day' : $since_start->d .' día';
                     } else {
-                        $result = $since_start->d . ' días';
+                        $result = App::isLocale('en') ? $since_start->d .' days' : $since_start->d .' días';
                     }
                 }
             } else {
                 if ($since_start->m == 1) {
-                    $result = $since_start->m . ' mes';
+                    $result = App::isLocale('en') ? $since_start->m .' month' : $since_start->m .' mes';
                 } else {
-                    $result = $since_start->m . ' meses';
+                    $result = App::isLocale('en') ? $since_start->m .' months' : $since_start->m .' meses';
                 }
             }
         } else {
             if ($since_start->y == 1) {
-                $result = $since_start->y . ' año';
+                $result = App::isLocale('en') ? $since_start->y .' year' : $since_start->y .' año';
             } else {
-                $result = $since_start->y . ' años';
+                $result = App::isLocale('en') ? $since_start->y .' years' : $since_start->y .' años';
             }
         }
 
-        return "Hace " . $result;
+        return App::isLocale('en') ? $result . " ago" : "Hace " . $result;
     }
 }

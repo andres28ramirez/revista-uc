@@ -24,6 +24,7 @@ class ConocimientoController extends Controller
     //VALIDACIONES
     public $validations = [
         "nombre" => "required|string|min:4|max:255",
+        "nombre_en" => "required|string|min:4|max:255",
     ];
 
     //MENSAJES DE ERROR
@@ -37,6 +38,8 @@ class ConocimientoController extends Controller
         "max" => "El dato debe poseer menos de 255 caracteres",
         "nombre.min" => "El nombre debe poseer al menos 4 caracteres",
         "nombre_update.min" => "El nombre debe poseer al menos 4 caracteres",
+        "nombre_en.min" => "El nombre debe poseer al menos 4 caracteres",
+        "nombre_update_en.min" => "El nombre debe poseer al menos 4 caracteres",
         "ruta_imagen.max" => "La Imagen no debe pesar más de 2 Mb",
         "file" => "El dato debe ser enviado como un archivo",
         "mime" => "El archivo debe llegar en formato png, jpg y jpeg",
@@ -96,6 +99,7 @@ class ConocimientoController extends Controller
 
             $validaciones = [
                 "nombre_update" => "required|string|min:4|max:255",
+                "nombre_update_en" => "required|string|min:4|max:255",
                 "id_update" => "required",
             ];
 
@@ -108,6 +112,7 @@ class ConocimientoController extends Controller
             //Hacemos el Update
             $conocimiento = Conocimiento::findOrFail($request->id_update);
             $conocimiento->nombre = $request->nombre_update;
+            $conocimiento->nombre_en = $request->nombre_update_en;
             $conocimiento->update();
             
             //Aceptamos la creación de todo y redireccionamos

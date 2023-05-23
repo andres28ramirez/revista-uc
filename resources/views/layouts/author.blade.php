@@ -28,9 +28,9 @@
                             <div class="col-md-8 col-sm-12" id="infoautorcontainer">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $autor->nombre }}</h5>
-                                    <p class="card-text" style="white-space: pre-line"><small class="text-muted">{{ $autor->email }}</small></p>
-                                    <p class="card-text" style="white-space: pre-line">{{ $autor->grado }}</p>
-                                    <p class="card-text" style="white-space: pre-line">{{ $autor->sintesis }}</p>
+                                    <p class="card-text text-justify" style="white-space: pre-line"><small class="text-muted">{{ $autor->email }}</small></p>
+                                    <p class="card-text text-justify" style="white-space: pre-line">{{ $autor->grado }}</p>
+                                    <p class="card-text text-justify" style="white-space: pre-line">{{ $autor->sintesis }}</p>
                                 </div>
                             </div>
                         </div>
@@ -39,13 +39,15 @@
                     <!-- Artículos del Autor -->
                     <div class="col-md-6 col-sm-12">
                         <br>
-                        <h6>{{ __('Artículos del Autor:') }}</h6>
+                        <h6>{{ __('Artículos del Autor') }}:</h6>
                         <hr>
                         @foreach($autor->articulos as $articulo)
-                            <a id="link-author" href="{{ route('user.articulo', $articulo->id_articulo) }}" 
-                                style= "color: inherit;">
-                                {{ $articulo->titulo }}
-                            </a>
+                            <p>
+                                <a id="link-author" href="{{ route('user.articulo', $articulo->id_articulo) }}" 
+                                    style= "color: inherit;">
+                                    {{ $articulo->titulo }}
+                                </a>
+                            </p>
                         @endforeach
                     </div> 
                 </div>

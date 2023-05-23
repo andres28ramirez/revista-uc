@@ -7,7 +7,7 @@
         <!-- Nombre de la Edición -->
         <div class="edition_title">
             <h4 class="font-weight-bold">
-                {{ $edicion->titulo }}
+                {{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}
             </h4>
         </div>
         <hr>
@@ -34,7 +34,7 @@
             @include('layouts.article', ["artículo" => $articulo])
         @empty
             <div class="text-center pb-5 font-weight-bold text-gray-600">
-                La edición aun no posee artículos registrados.
+                {{ __('La edición aun no posee artículos registrados') }}.
             </div>
         @endforelse
     </div>

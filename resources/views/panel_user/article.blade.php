@@ -24,7 +24,7 @@
                                             
                                             <button name="{{ $articulo->id_articulo  }}" 
                                                 class="create_comment btn btn-info btn-circle btn-sm">
-                                                <i class="fas fa-comment"></i> Subir un Comentario
+                                                <i class="fas fa-comment"></i> {{ __('Subir un Comentario') }}
                                             </button>
                                         </div>
                                     </div>
@@ -54,7 +54,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createCommentLabel">Introduce tu Comentario...</h5>
+                <h5 class="modal-title" id="createCommentLabel">{{__('Ingresa el Comentario')}}...</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -76,8 +76,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-success">Enviar Comentario</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cerrar') }}</button>
+                    <button type="submit" class="btn btn-success">{{ __('Enviar Comentario') }}</button>
                 </div>
             </form>
             <!-- Fin Formulario -->
@@ -98,8 +98,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-success">Enviar Respuesta</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cerrar') }}</button>
+                    <button type="submit" class="btn btn-success">{{ __('Enviar Respuesta') }}</button>
                 </div>
             </form>
             <!-- Fin Formulario -->

@@ -23,13 +23,13 @@
             @forelse($edicion->articulos as $articulo)
                 <div class="contenido-popular-bar">
                     <li class="list-group-item">
-                        <p>{{ $articulo->titulo }}</p>
+                        <p>{{ App::isLocale('en') && $articulo->titulo_en ? $articulo->titulo_en : $articulo->titulo }}</p>
                     </li>
                 </div>
             @empty
                 <div class="contenido-popular-bar">
                     <li class="list-group-item">
-                        <p>Aun no posee artículos cargados la edición</p>
+                        <p>{{ __('Aun no posee artículos cargados la edición') }}</p>
                     </li>
                 </div>
             @endforelse

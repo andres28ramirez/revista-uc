@@ -38,7 +38,7 @@
                                 <div class="text-center">
                                     <a href="{{ route('configuracion.info.archivo', ['filename' => basename($informacion->ruta_archivo)]) }}"
                                         type="button" target="_blank" class="btn btn-outline-dark">
-                                        {{ __('Ver Más') }}
+                                        {{ __('Ver más') }}
                                     </a>
                                 </div>
                             @endif

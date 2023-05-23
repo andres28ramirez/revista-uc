@@ -1,6 +1,6 @@
 <div class="content">
     <!-- titulo -->
-    <h6>Información del Autor</h6>
+    <h6>{{ __('Información del Autor') }}</h6>
     <hr>
 
     <!-- Imagen -->
@@ -19,7 +19,7 @@
             </p>
             
             <p style="white-space: pre-line">
-                <span class="font-weight-bold">{{ __('Correo:') }}</span>{{ $autor->email }}
+                <span class="font-weight-bold">{{ __('Correo') }}: </span>{{ $autor->email }}
             </p>
         </ul>
 
@@ -31,7 +31,13 @@
         
         <ul class="card-body">
             <h6>
-                <a class="badge">{{ $articulo->conocimiento ? $articulo->conocimiento->nombre : "N/A" }}</a>
+                <a class="badge">
+                    @if(App::isLocale('en'))
+                        {{ $articulo->conocimiento ? $articulo->conocimiento->nombre_en : "N/A" }}
+                    @else
+                        {{ $articulo->conocimiento ? $articulo->conocimiento->nombre : "N/A" }}
+                    @endif    
+                </a>
             </h6>
         </ul>
     </div>

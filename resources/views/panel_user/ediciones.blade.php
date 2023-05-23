@@ -16,7 +16,7 @@
             @include('layouts.edition', ["edicion" => $edicion])
         @empty
             <div class="text-center pb-5 font-weight-bold text-gray-600">
-                No hay ediciones registradas en el sistema.
+                {{ __('No hay ediciones registradas en el sistema') }}.
             </div>
         @endforelse
     </div>

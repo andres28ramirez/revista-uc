@@ -15,7 +15,7 @@
                     @include('layouts.article', ["artículo" => $articulo])
                 @empty
                     <div class="text-center pb-5 font-weight-bold text-gray-600">
-                        El parametro de busqueda no tiene registros de artículos que coincidan.
+                        {{ __('El parametro de busqueda no tiene registros de artículos que coincidan') }}.
                     </div>
                 @endforelse
                 <br>

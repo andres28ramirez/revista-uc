@@ -13,6 +13,7 @@ return new class extends Migration
             Schema::create('conocimiento', function (Blueprint $table) {
                 $table->id('id_conocimiento');
                 $table->string('nombre',255);
+                $table->string('nombre_en',255);
                 $table->timestamps();
             });
         });

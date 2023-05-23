@@ -15,7 +15,7 @@
                     @include('layouts.article', ["artículo" => $articulo])
                 @empty
                     <div class="text-center pb-5 font-weight-bold text-gray-600">
-                        El conocimiento aun no posee artículos registrados.
+                        {{ __('El conocimiento aun no posee artículos registrados.') }}
                     </div>
                 @endforelse
                 <br>

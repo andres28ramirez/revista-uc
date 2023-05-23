@@ -110,7 +110,8 @@
                 <div class="table-responsive col-md-6">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr><th>Area</th>
+                            <tr>
+                                <th colspan="2" class="text-center">Area</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
@@ -118,6 +119,7 @@
                             @foreach($areas as $area)
                             <tr class="text-center">
                                 <td class="align-middle" id="nombre_{{ $area->id_conocimiento  }}">{{ $area->nombre }}</td>
+                                <td class="align-middle" id="nombre_en_{{ $area->id_conocimiento  }}">{{ $area->nombre_en }}</td>
                                 <td class="align-middle">
                                     <!-- Boton de Editar -->
                                     <button name="{{ $area->id_conocimiento  }}" 
@@ -160,12 +162,27 @@
             <form method="POST" action="{{ route('edicion.conocimiento.store') }}">
                 @csrf
                 <div class="modal-body">
+                    <!-- Nombre en español -->
                     <div class="form-group">
                         <label for="exampleInputEmail1">Nombre del Area de Conocimiento</label>
                         <input type="text" class="form-control @error('nombre') is-invalid @enderror"
                             name="nombre" value="{{ old('nombre') }}"
                             id="nombre" placeholder="Digitá el nombre...">
                         @error('nombre')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            <input type="hidden" id="loginerror" value=1>
+                        @enderror
+                    </div>
+
+                    <!-- Nombre en ingles -->
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Knowledge Area Name</label>
+                        <input type="text" class="form-control @error('nombre_en') is-invalid @enderror"
+                            name="nombre_en" value="{{ old('nombre_en') }}"
+                            id="nombre_en" placeholder="Type the name...">
+                        @error('nombre_en')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -199,6 +216,7 @@
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" id="id_update" name="id_update" value="">
+                    <!-- Nombre del area -->
                     <div class="form-group">
                         <label for="exampleInputEmail1">Nombre del Area de Conocimiento</label>
                         <input type="text" class="form-control {{$errors->update->first('nombre_update') ? 'is-invalid' : ''}}"
@@ -207,6 +225,19 @@
                         @if($errors->update->first('nombre_update'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->update->first('nombre_update') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- Nombre del area en ingles -->
+                    <div class="form-group">
+                        <label for="nombre_update_en">Knowledge Area Name</label>
+                        <input type="text" class="form-control {{$errors->update->first('nombre_update_en') ? 'is-invalid' : ''}}"
+                            name="nombre_update_en" value="{{ old('nombre_update_en') }}"
+                            id="nombre_update_en" placeholder="Type the name...">
+                        @if($errors->update->first('nombre_update_en'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->update->first('nombre_update_en') }}</strong>
                             </span>
                         @endif
                     </div>
@@ -251,10 +282,12 @@
         $('.edit_area').click(function(){
             var id = $(this).attr('name');
             var nombre = $('#nombre_'+id).text();
+            var nombre_en = $('#nombre_en_'+id).text();
 
             //Setteamos el Formulario
             $('#id_update').val(id); 
             $('#nombre_update').val(nombre);
+            $('#nombre_update_en').val(nombre_en);
 
             //Mostramos Modal
             $('#updateModal').modal('show');

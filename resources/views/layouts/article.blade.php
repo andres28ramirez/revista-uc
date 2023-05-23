@@ -8,7 +8,15 @@
         <div class="col-md-8">
             <div class="card-body">
                 <!-- Conocimiento -->
-                <h6><a href="#" class="badge">{{ $articulo->conocimiento ? $articulo->conocimiento->nombre : "N/A" }}</a></h6>
+                <h6>
+                    <a href="#" class="badge">
+                    @if(App::isLocale('en'))
+                        {{ $articulo->conocimiento ? $articulo->conocimiento->nombre_en : "N/A" }}
+                    @else
+                        {{ $articulo->conocimiento ? $articulo->conocimiento->nombre : "N/A" }}
+                    @endif
+                    </a>
+                </h6>
                 
                 <!-- Título -->
                 <h5><b>{{ App::isLocale('en') && $articulo->titulo_en ? $articulo->titulo_en : $articulo->titulo  }}</b></h5>

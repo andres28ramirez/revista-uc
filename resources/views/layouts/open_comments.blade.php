@@ -19,7 +19,7 @@
                                     <!-- Boton de Contestar -->
                                     <div class="col-4">
                                         <div title="{{ $comentario->id_comentario }}" class="pull-right reply create_answer text-primary" style="cursor: pointer">
-                                            <span><i class="fa fa-reply"></i> Responder</span>
+                                            <span><i class="fa fa-reply"></i> {{__('Responder')}}</span>
                                         </div>
                                     </div>
                                     <!-- Estado de Comentario -->
@@ -105,9 +105,9 @@
 
                     <!-- Comentarios Mostrados -->
                     <div class="card-actions col-12">
-                        <span>Mostrando 
-                            <span id="card-count">{{ $articulo->comentarios->where('estado', 'aceptado')->count() < 5 ? $articulo->comentarios->where('estado', 'aceptado')->count() : "5" }}</span> de 
-                            <span id="card-total">{{ $articulo->comentarios->where('estado', 'aceptado')->count() }}</span> comentarios      
+                        <span>{{ __('Mostrando') }} 
+                            <span id="card-count">{{ $articulo->comentarios->where('estado', 'aceptado')->count() < 5 ? $articulo->comentarios->where('estado', 'aceptado')->count() : "5" }}</span> {{__('de')}} 
+                            <span id="card-total">{{ $articulo->comentarios->where('estado', 'aceptado')->count() }}</span> {{__('Comentarios')}}      
                         </span>
                     </div>
                 </div>

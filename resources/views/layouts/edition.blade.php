@@ -8,7 +8,7 @@
                     data-toggle="collapse" href="#collapse{{ $edicion->id_edicion }}" 
                     aria-expanded="false" aria-controls="collapse{{ $edicion->id_edicion }}">
                     <h6 class="font-weight-bold">
-                        {{ $edicion->titulo }}<i class="fas fa-chevron-down"></i>
+                        {{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}<i class="fas fa-chevron-down"></i>
                     </h6>
                 </button> 
             </h2>
@@ -27,13 +27,13 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="font-weight-bold">
-                                {{ $edicion->titulo }}
+                                {{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}
                             </h5>
                             <p class="mb-0" style="white-space: pre-line">
                                 <b>{{ __('Fecha de Publicación') }}:</b> {{ $edicion->created_at }}
                             </p>
                             <p class="mt-0" style="white-space: pre-line">
-                                {{ $edicion->descripcion }}
+                                {{ App::isLocale('en') && $edicion->descripcion_en ? $edicion->descripcion_en : $edicion->descripcion }}
                             </p>
                             <a href="{{ route('user.edicion', $edicion->id_edicion) }}" type="button" class="btn btn-outline-dark">
                                 {{ __('Edición Completa') }}
