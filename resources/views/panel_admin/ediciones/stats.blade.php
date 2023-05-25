@@ -6,226 +6,167 @@
 
         <!-- Número de Ediciones -->
         <div class="col-xl-3 col-md-6 mb-4">
-            @include('layouts.admin.total_block', ['color' => "primary", 'titulo' => "Número de Ediciones Cargadas", 'total' => "25", 'icono' => 'fas fa-newspaper'])
+            @include('layouts.admin.total_block', ['color' => "primary", 'titulo' => "Número de Ediciones Cargadas", 'total' => $ediciones->count(), 'icono' => 'fas fa-newspaper'])
         </div>
 
         <!-- Número de Areas de Conocimiento -->
         <div class="col-xl-3 col-md-6 mb-4">
-            @include('layouts.admin.total_block', ['color' => "success", 'titulo' => "Areas de Conocimiento Existentes", 'total' => "5", 'icono' => 'fas fa-flask'])
+            @include('layouts.admin.total_block', ['color' => "success", 'titulo' => "Areas de Conocimiento Existentes", 'total' => $conocimientos->count(), 'icono' => 'fas fa-flask'])
         </div>
 
         <!-- Número de visitas -->
         <div class="col-xl-3 col-md-6 mb-4">
-            @include('layouts.admin.total_block', ['color' => "info", 'titulo' => "Número de Visitas a Ediciones", 'total' => "5", 'icono' => 'fas fa-eye'])
+            @include('layouts.admin.total_block', ['color' => "info", 'titulo' => "Número de Visitas a Ediciones", 'total' => $visitas->sum('total'), 'icono' => 'fas fa-eye'])
         </div>
         <!-- Número de descargas -->
         <div class="col-xl-3 col-md-6 mb-4">
-            @include('layouts.admin.total_block', ['color' => "warning", 'titulo' => "Número de Descargas realizadas", 'total' => "5", 'icono' => 'fas fa-download'])
+            @include('layouts.admin.total_block', ['color' => "warning", 'titulo' => "Número de Descargas realizadas", 'total' => $descargas->count(), 'icono' => 'fas fa-download'])
         </div>
     </div>
 
-    <!-- Ediciones nro artículos y barra de descargas -->
+    <!-- Primera Linea -->
     <div class="row">
-        <!-- Area Chart - Número de Visitas -->
+        <!-- Linea Grafico - Número de Visitas -->
+        <div class="col">
+            @php
+                $data = array_fill(0, 12, 0);
+
+                foreach($g_visitas as $visita){
+                    $data[($visita->mes - 1)] = $visita->total;
+                }
+
+                $chart_data = array(
+                    'titulo' => "Nro. de visitas por meses del año ".date('Y'),
+                    'canva' => 'c0',
+                    'labels' => array("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"),
+                    'datos' => $data,
+                    'tipo' => "normal",
+                    'bgColors' => 'rgba(255,48,23,0.7)',
+                    'brColors' => 'rgba(128,23,11,0.8)'
+                );
+            @endphp
+            @include('layouts.admin.total_area', ['datos' => $chart_data])
+        </div>
+
+        <!-- Barras Grafico - Numero de Descargas por Edicion -->
+        <div class="col">
+            @php
+                $data = array();
+                $nombres = array();
+
+                foreach($ediciones as $edicion){
+                    array_push($data, $edicion->descargas->sum('total'));
+                    array_push($nombres, $edicion->titulo);
+                }
+
+                $chart_data = array(
+                    'titulo' => "Nro. de descargas por edición",
+                    'canva' => 'c1',
+                    'labels' => $nombres,
+                    'datos' => $data,
+                    'tipo' => "normal",
+                    'bgColors' => 'rgba(128,23,11,0.8)',
+                    'brColors' => 'rgba(128,23,11,0.8)'
+                );
+            @endphp
+            @include('layouts.admin.total_bar', ['datos' => $chart_data])
+        </div>
+    </div>
+
+    <!-- Segunda Linea -->
+    <div class="row">
+        <!-- Progress Bar - Número de Articulos -->
         <div class="col-xl-8 col-lg-7">
-            @include('layouts.admin.total_area', ['id_grafico' => "global_visita", 'titulo' => "Número de visitas globales por mes", 'datos' => $glo_visitas])
-        </div>
-
-        <!-- Pie Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Dropdown Header:</div>
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Número de artículos por Edición</h6>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Direct
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Social
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Referral
-                        </span>
-                    </div>
+                    @forelse($ediciones as $edicion)
+                        <h4 class="small font-weight-bold">{{ $edicion->titulo }} 
+                            <span class="float-right">{{ $edicion->articulos->count() }}</span>
+                        </h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-gradient-info" role="progressbar" 
+                                style="width: <?php echo $articulos->count() ? $edicion->articulos->count() * 100 / $articulos->count() : '0' ?>%"
+                                aria-valuenow="{{ $articulos->count() ? $edicion->articulos->count() * 100 / $articulos->count() : '0' }}" 
+                                aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    @empty
+                        <p>No hay ediciones cargadas...</p>
+                    @endforelse
                 </div>
             </div>
+        </div>
+
+        <!-- Pie Chart - Articulos por Area de Conocimiento -->
+        <div class="col-xl-4 col-lg-5">
+            @php
+                $data = array();
+                $nombre = array();
+                $colorBg = array();
+
+                foreach($conocimientos as $key => $conocimiento){
+                    $opacidad = (100 - ($key * 20)) / 100;
+
+                    array_push($data, $conocimiento->articulos->count());
+                    array_push($nombre, $conocimiento->nombre);
+                    array_push($colorBg, "rgba(255,48,23,".$opacidad.")");
+                }
+
+                $chart_data = array(
+                    'titulo' => "Artículos por Area de Conocimiento",
+                    'canva' => 'c4',
+                    'labels' => $nombre,
+                    'datos' => $data,
+                    'tipo' => "normal",
+                    'bgColors' => $colorBg,
+                    'brColors' => 'rgba(128,23,11,0.8)'
+                );
+            @endphp
+            @include('layouts.admin.total_pie', ['datos' => $chart_data])
         </div>
     </div>
 
-    <!-- Content Row -->
+    <!-- Tercera Linea -->
     <div class="row">
+        <!-- Doble Barras - Visita y Decargas por edición -->
+        <div class="col">
+            @php
+                $labels = array();
+                $b_descargas = array();
+                $b_visitas = array();
 
-        <!-- Content Column -->
-        <div class="col-lg-6 mb-4">
+                foreach($ediciones as $edicion){
+                    array_push($labels, $edicion->titulo);
+                    array_push($b_descargas, $edicion->descargas->sum('total'));
+                    array_push($b_visitas, $edicion->visitas->sum('total'));
+                }
 
-            <!-- Project Card Example -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-                </div>
-                <div class="card-body">
-                    <h4 class="small font-weight-bold">Server Migration <span
-                            class="float-right">20%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Sales Tracking <span
-                            class="float-right">40%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Customer Database <span
-                            class="float-right">60%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Payout Details <span
-                            class="float-right">80%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Account Setup <span
-                            class="float-right">Complete!</span></h4>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color System -->
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-primary text-white shadow">
-                        <div class="card-body">
-                            Primary
-                            <div class="text-white-50 small">#4e73df</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-success text-white shadow">
-                        <div class="card-body">
-                            Success
-                            <div class="text-white-50 small">#1cc88a</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-info text-white shadow">
-                        <div class="card-body">
-                            Info
-                            <div class="text-white-50 small">#36b9cc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-warning text-white shadow">
-                        <div class="card-body">
-                            Warning
-                            <div class="text-white-50 small">#f6c23e</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-danger text-white shadow">
-                        <div class="card-body">
-                            Danger
-                            <div class="text-white-50 small">#e74a3b</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-secondary text-white shadow">
-                        <div class="card-body">
-                            Secondary
-                            <div class="text-white-50 small">#858796</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-light text-black shadow">
-                        <div class="card-body">
-                            Light
-                            <div class="text-black-50 small">#f8f9fc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-dark text-white shadow">
-                        <div class="card-body">
-                            Dark
-                            <div class="text-white-50 small">#5a5c69</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-lg-6 mb-4">
-
-            <!-- Illustrations -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                            src="img/undraw_posting_photo.svg" alt="...">
-                    </div>
-                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                        constantly updated collection of beautiful svg images that you can use
-                        completely free and without attribution!</p>
-                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                        unDraw &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Approach -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                </div>
-                <div class="card-body">
-                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                        custom components and custom utility classes.</p>
-                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                        Bootstrap framework, especially the utility classes.</p>
-                </div>
-            </div>
-
+                $chart_data = array(
+                    'titulo' => "Relación de Descargas y Visitas por Edición",
+                    'canva' => 'c5',
+                    'labels' => $labels,
+                    'bar1_datos' => $b_descargas,
+                    'bar1_labels' => "Descargas",
+                    'bar1_bgColors' => 'rgba(255,48,23,0.7)',
+                    'bar1_brColors' => 'rgba(128,23,11,0.8)',
+                    'bar2_datos' => $b_visitas,
+                    'bar2_labels' => "Visitas",
+                    'bar2_bgColors' => 'rgba(114,122,235,0.7)',
+                    'bar2_brColors' => 'rgba(135,122,235,0.8)'
+                );
+            @endphp
+            @include('layouts.admin.total_double_bar', ['datos' => $chart_data])
         </div>
     </div>
 @endsection
 
 <script src="{{ asset('jquery/jquery.min.js') }}"></script>
+@section('scripts')
+<script src="{{ asset('js/graficos/singleLine.js') }}"></script>
+<script src="{{ asset('js/graficos/singleBar.js') }}"></script>
+<script src="{{ asset('js/graficos/singlePie.js') }}"></script>
+<script src="{{ asset('js/graficos/doubleBar.js') }}"></script>
+@endsection

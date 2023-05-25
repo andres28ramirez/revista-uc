@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
+use App\Models\Conocimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -74,16 +76,19 @@ class EdicionController extends Controller
 
     //Visual de las Estadisticas
     public function estadisticas(){
-        $ediciones = "a";
+        $ediciones = Edicion::orderBy('numero', 'desc')->get();
         $descargas = Edicion_Descarga::all();
         $visitas = Edicion_Visita::all();
-
+        $conocimientos = Conocimiento::all();
+        $articulos = Articulo::all();
+        
         //Visitas por mes de formar general
-        $glo_visitas = Edicion_Visita::select('mes', DB::raw('sum(total) as total'))->
+        $g_visitas = Edicion_Visita::select('mes', DB::raw('sum(total) as total'))->
                                         where('year', date('Y'))->
+                                        orderBy('mes', 'asc')->
                                         groupBy('mes')->get();
         
-        return view('panel_admin.ediciones.stats', compact('glo_visitas'));
+        return view('panel_admin.ediciones.stats', compact('ediciones', 'descargas', 'visitas', 'conocimientos', 'articulos', 'g_visitas'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR
