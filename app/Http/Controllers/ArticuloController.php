@@ -13,7 +13,10 @@ use Illuminate\Http\Response;
 //MODELOS
 use App\Models\Archivo;
 use App\Models\Articulo;
+use App\Models\Articulo_Descarga;
+use App\Models\Articulo_Visita;
 use App\Models\Autor;
+use App\Models\Comentario;
 use App\Models\Conocimiento;
 use App\Models\Edicion;
 use Illuminate\Contracts\Cache\Store;
@@ -142,6 +145,41 @@ class ArticuloController extends Controller
             return redirect()->route('articulo.index')->with('warning', 'El artículo seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
 
         return view('panel_admin.articulos.edit', compact('articulo', 'ediciones', 'autores', 'areas'));
+    }
+
+    //Visual de las Estadisticas
+    public function estadisticas(Request $request){
+        
+        $articulos = Articulo::orderBy('created_at', 'asc')->get();
+        $descargas = Articulo_Descarga::all();
+        $visitas = Articulo_Visita::all();
+        $autores = Autor::all();
+        $comentarios = Comentario::all();
+        $archivos = Archivo::all();
+        $ediciones = Edicion::all();
+        
+        //Visitas por mes de formar general
+        $per_visita = $request->visitas_periodo ? $request->visitas_periodo : date('Y');
+                                        
+        $g_visitas = Articulo_Visita::select('mes', DB::raw('sum(total) as total'))->
+                                        where('year', $per_visita)->
+                                        orderBy('mes', 'asc')->
+                                        groupBy('mes')->get();
+
+        //Descargas del artículo seleccionado mes a mes
+        $per_descarga = $request->descargas_periodo ? $request->descargas_periodo : date('Y');
+        $id_article = $request->form_article ? $request->form_article : $articulos->first()->id_articulo;
+        
+        $d_articulo = Articulo_Descarga::select('mes', 'FK_id_articulo', DB::raw('sum(total) as total'))->
+                        where('year', $per_descarga)->
+                        where('FK_id_articulo', $id_article)->
+                        orderBy('mes', 'asc')->
+                        groupBy('mes', 'FK_id_articulo')->get();
+
+        //Edicion para el numero de descargas y visitas de sus articulos subidos
+        $request->form_edicion ? $edicion = Edicion::find($request->form_edicion) : $edicion = Edicion::first();
+        
+        return view('panel_admin.articulos.stats', compact('articulos', 'descargas', 'visitas', 'autores', 'g_visitas', 'd_articulo', 'comentarios', 'archivos', 'ediciones', 'edicion' ,'per_visita', 'per_descarga', 'id_article'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR

@@ -59,6 +59,7 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::get('/edicion', [EdicionController::class, 'index'])->name('edicion.index');
     Route::get('/edicion/create', [EdicionController::class, 'create'])->name('edicion.create');
     Route::get('/edicion/stats', [EdicionController::class, 'estadisticas'])->name('edicion.stats');
+    Route::post('/edicion/stats', [EdicionController::class, 'estadisticas'])->name('edicion.filter');
     Route::get('/edicion/edit/{id}', [EdicionController::class, 'edit'])->name('edicion.edit');
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('edicion.imagen');
     Route::get('/edicion/getArchive/{filename?}', [EdicionController::class, 'getArchive'])->name('edicion.archivo');
@@ -78,6 +79,8 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
     Route::get('/articulos/todos/{id_autor?}/{id_conocimiento?}/{id_edicion?}', [ArticuloController::class, 'all_articles'])->name('articulo.all');
     Route::get('/articulos/view/{id}', [ArticuloController::class, 'one_article'])->name('articulo.view');
     Route::get('/articulos/create', [ArticuloController::class, 'create'])->name('articulo.create');
+    Route::get('/articulos/stats', [ArticuloController::class, 'estadisticas'])->name('articulo.stats');
+    Route::post('/articulos/stats', [ArticuloController::class, 'estadisticas'])->name('articulo.filter');
     Route::get('/articulos/edit/{id}', [ArticuloController::class, 'edit'])->name('articulo.edit');
     Route::get('/articulos/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('articulo.imagen');
     Route::get('/articulos/getArchive/{filename?}', [ArticuloController::class, 'getArchive'])->name('articulo.archivo');

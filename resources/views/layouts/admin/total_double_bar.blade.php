@@ -2,22 +2,22 @@
     <!-- Header y Menu del Grafico -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 id="doublebar-title-{{ $datos['canva'] }}" class="m-0 font-weight-bold text-primary">{{$datos["titulo"]}}</h6>
-        <!-- <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-            </a>
+        @if(isset($datos_form))
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
 
-            
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                aria-labelledby="dropdownMenuLink">
-                <div class="dropdown-header">Filtrar tabla:</div>
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                    aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">Filtrar tabla:</div>
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#filtro-{{ $datos['canva'] }}">
+                        Abrir Modal
+                    </a>
+                </div>
             </div>
-        </div> -->
+        @endif
     </div>
 
     <!-- Cuerpo del Gráfico -->
@@ -71,3 +71,22 @@
         </div>
     </div>
 </div>
+
+@if(isset($datos_form))
+<!-- Modal para filtrar el gráfico -->
+<div class="modal fade" id="filtro-{{ $datos['canva'] }}" tabindex="-1" role="dialog" aria-labelledby="filterModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Filtrar Gráfico</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @include('layouts.admin.total_form', ['datos' => $datos_form])
+            </div>
+        </div>
+    </div>
+</div>
+@endif

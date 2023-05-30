@@ -18,6 +18,8 @@
         @if(request()->is('*/articulos/todos/*')) Panel de Artículos Completos @endif
         @if(request()->is('*/articulos/view/*')) Visual de Artículo Seleccionado @endif
         @if(request()->is('*/articulos/create')) Panel Creación de Artículos @endif
+        @if(request()->is('*/articulos/stats')) Panel Estadístico del Modulo Articulos @endif
+        @if(request()->is('*/articulos/stats/*')) Panel Estadístico del Modulo Articulos @endif
         @if(request()->is('*/articulos/edit/*')) Panel Modificación de Artículos @endif
 
         <!-- Autores -->

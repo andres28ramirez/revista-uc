@@ -17,6 +17,7 @@ use App\Models\Edicion;
 use App\Models\Edicion_Descarga;
 use App\Models\Edicion_Visita;
 use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 
 //HELPER DE NOTIFICACION
 
@@ -75,7 +76,7 @@ class EdicionController extends Controller
     }
 
     //Visual de las Estadisticas
-    public function estadisticas(){
+    public function estadisticas(Request $request){
         $ediciones = Edicion::orderBy('numero', 'desc')->get();
         $descargas = Edicion_Descarga::all();
         $visitas = Edicion_Visita::all();
@@ -83,12 +84,14 @@ class EdicionController extends Controller
         $articulos = Articulo::all();
         
         //Visitas por mes de formar general
+        $per_visita = $request->visitas_periodo ? $request->visitas_periodo : date('Y');
+
         $g_visitas = Edicion_Visita::select('mes', DB::raw('sum(total) as total'))->
-                                        where('year', date('Y'))->
+                                        where('year', $per_visita)->
                                         orderBy('mes', 'asc')->
                                         groupBy('mes')->get();
         
-        return view('panel_admin.ediciones.stats', compact('ediciones', 'descargas', 'visitas', 'conocimientos', 'articulos', 'g_visitas'));
+        return view('panel_admin.ediciones.stats', compact('ediciones', 'descargas', 'visitas', 'conocimientos', 'articulos', 'g_visitas', 'per_visita'));
     }
 
     //APARTADO DEL RUD DEL CONTROLADOR

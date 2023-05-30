@@ -60,7 +60,7 @@
                 <a class="collapse-item {{ request()->is('*/articulos') || request()->is('*/articulos/todos') ? 'active' : '' }}" href="{{ route('articulo.index') }}">Ver Artículos</a>
                 <a class="collapse-item {{ request()->is('*/articulos/create') ? 'active' : '' }}" href="{{ route('articulo.create') }}">Crear Artículo</a>
                 <a class="collapse-item {{ request()->is('*/autor') || request()->is('*/autor/*') ? 'active' : '' }}" href="{{ route('autor.index') }}">Autores</a>
-                <a class="collapse-item" href="utilities-animation.html">Estadísticas</a>
+                <a class="collapse-item {{ request()->is('*/articulos/stats') || request()->is('*/articulos/stats/*') ? 'active' : '' }}" href="{{ route('articulo.stats') }}">Estadísticas</a>
                 <a class="collapse-item {{ request()->is('*/comentario') || request()->is('*/comentario/*') || request()->is('*/respuesta/*') ? 'active' : '' }}" href="{{ route('comentario.index') }}">Ultimos Comentarios</a>
                 <a class="collapse-item {{ request()->is('*/archivo') || request()->is('*/archivo/*') ? 'active' : '' }}" href="{{ route('archivo.index') }}">Documentos o Archivos</a>
             </div>

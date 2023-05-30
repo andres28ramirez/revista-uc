@@ -36,7 +36,7 @@
                 }
 
                 $chart_data = array(
-                    'titulo' => "Nro. de visitas por meses del año ".date('Y'),
+                    'titulo' => "Nro. de visitas por meses del año ".$per_visita,
                     'canva' => 'c0',
                     'labels' => array("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"),
                     'datos' => $data,
@@ -44,8 +44,28 @@
                     'bgColors' => 'rgba(255,48,23,0.7)',
                     'brColors' => 'rgba(128,23,11,0.8)'
                 );
+
+                $form_data = array(
+                    "action" => "edicion.filter",
+                    "titulo" => "Filtro de Número de Visitas",
+                    "id_form" => "form_c0",
+
+                    "componentes" => array(
+                        array(
+                            "id_name" => "visitas_periodo",
+                            "form_name" => "visitas_periodo",
+                            "tipo" => "input",
+                            "label" => "Año a evaluar",
+                            "icon" => "fa-calendar-o",
+                            "dato_tipo" => "number",
+                            "placeholder" => "Ingresa el año a evaluar",
+                            "validate" => "Año es requerido",
+                            "requerido" => "required",
+                        ),
+                    )
+                );
             @endphp
-            @include('layouts.admin.total_area', ['datos' => $chart_data])
+            @include('layouts.admin.total_area', ['datos' => $chart_data, 'datos_form' => $form_data])
         </div>
 
         <!-- Barras Grafico - Numero de Descargas por Edicion -->
