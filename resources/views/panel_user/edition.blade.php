@@ -19,7 +19,7 @@
         @if(Auth::user() && $edicion->ruta_archivo)
             <hr>
                 <div class="edition_title text-center"> 
-                    <a href="{{ route('user.edicion.archivo', ['filename' => basename($edicion->ruta_archivo)]) }}" type="button" 
+                    <a href="{{ route('user.edicion.archivo', ['filename' => basename($edicion->ruta_archivo), 'id_edicion' => $edicion->id_edicion]) }}" type="button" 
                         class="btn btn-outline-dark" target="_blank">
                         <i class="fas fa-download"></i> {{ __('Edición Completa') }}
                     </a>

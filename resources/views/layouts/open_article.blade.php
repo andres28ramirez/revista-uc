@@ -26,7 +26,7 @@
 <!-- Boton de Abrir contenido del artículo -->
 <div class="col-12 text-center px-4">
     @forelse($articulo->archivos as $archivo)
-        <a href="{{ route('user.articulo.archivo', ['filename' => basename($archivo->ruta_archivo_es)]) }}" target="_blank" 
+        <a href="{{ route('user.articulo.archivo', ['filename' => basename($archivo->ruta_archivo_es), 'id_articulo' => $articulo->id_articulo]) }}" target="_blank" 
             class="btn btn-light btn-icon-split mb-1">
             <span class="icon text-gray-600" style="width: 50px;">
                 @switch($archivo->tipo)

@@ -46,24 +46,32 @@ class RevistaController extends Controller
             return redirect()->route('welcome')->with('warning', 'El artículo seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
 
         //Sumamos la visita
-        if(Auth::user()->urol->rol->nombre != "Administrador"){
-            $visita = Articulo_Visita::where('FK_id_articulo', $id_articulo)->
-                            where('mes', date('n'))->
-                            where('year', date('Y'))->first();
+        DB::beginTransaction();
+        try{
+            $user = Auth::user();
+            $rol = $user ? $user->urol->rol->nombre : "visitante";
             
-            if($visita){
-                $visita->total += 1;
-                $visita->update();
+            if($rol != "Administrador"){
+                
+                $visita = Articulo_Visita::where('FK_id_articulo', $id_articulo)->
+                                where('mes', date('n'))->
+                                where('year', date('Y'))->first();
+                
+                if($visita){
+                    $visita->total += 1;
+                    $visita->update();
+                }
+                else{
+                    $visita = new Articulo_Visita();
+                    $visita->mes = date('n');
+                    $visita->year = date('Y');
+                    $visita->total = 1;
+                    $visita->FK_id_articulo = $id_articulo;
+                    $visita->save();
+                }
             }
-            else{
-                $visita = new Articulo_Visita();
-                $visita->mes = date('n');
-                $visita->year = date('Y');
-                $visita->total = 1;
-                $visita->FK_id_articulo = $id_articulo;
-                $visita->save();
-            }
-        }
+            DB::commit();
+        }catch(QueryException $e){DB::rollBack();}
 
         return view('panel_user.article', compact('articulo'));
     }
@@ -98,24 +106,32 @@ class RevistaController extends Controller
             return redirect()->route('welcome')->with('warning', 'La edición seleccionada no pudo ser encontrada, por favor intentalo nuevamente');
 
         //Sumamos la visita
-        if(Auth::user()->urol->rol->nombre != "Administrador"){
-            $visita = Edicion_Visita::where('FK_id_edicion', $id_edicion)->
-                            where('mes', date('n'))->
-                            where('year', date('Y'))->first();
+        DB::beginTransaction();
+        try{
+            $user = Auth::user();
+            $rol = $user ? $user->urol->rol->nombre : "visitante";
             
-            if($visita){
-                $visita->total += 1;
-                $visita->update();
+            if($rol != "Administrador"){
+
+                $visita = Edicion_Visita::where('FK_id_edicion', $id_edicion)->
+                                where('mes', date('n'))->
+                                where('year', date('Y'))->first();
+                
+                if($visita){
+                    $visita->total += 1;
+                    $visita->update();
+                }
+                else{
+                    $visita = new Edicion_Visita();
+                    $visita->mes = date('n');
+                    $visita->year = date('Y');
+                    $visita->total = 1;
+                    $visita->FK_id_edicion = $id_edicion;
+                    $visita->save();
+                }
             }
-            else{
-                $visita = new Edicion_Visita();
-                $visita->mes = date('n');
-                $visita->year = date('Y');
-                $visita->total = 1;
-                $visita->FK_id_edicion = $id_edicion;
-                $visita->save();
-            }
-        }
+            DB::commit();
+        }catch(QueryException $e){DB::rollBack();}
 
         return view('panel_user.edition', compact('edicion'));
     }

@@ -114,8 +114,8 @@ class EdicionController extends Controller
     }
 
     //Retorno del Archivo del Storage
-    public function getArchive($filename = null){
-
+    public function getArchive($filename = null, $id_edicion = null){
+        
         if($filename){
             $extension = pathinfo($filename)['extension'];
 
@@ -132,6 +132,34 @@ class EdicionController extends Controller
             $file = storage_path('app/public/crash.png');
         
         $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
+
+        //Suma de descarga a la edición
+        DB::beginTransaction();
+        try{
+            $user = Auth::user();
+            $rol = $user ? $user->urol->rol->nombre : "visitante";
+            
+            if($rol != "Administrador" && $id_edicion){
+
+                $visita = Edicion_Descarga::where('FK_id_edicion', $id_edicion)->
+                                where('mes', date('n'))->
+                                where('year', date('Y'))->first();
+                
+                if($visita){
+                    $visita->total += 1;
+                    $visita->update();
+                }
+                else{
+                    $visita = new Edicion_Descarga();
+                    $visita->mes = date('n');
+                    $visita->year = date('Y');
+                    $visita->total = 1;
+                    $visita->FK_id_edicion = $id_edicion;
+                    $visita->save();
+                }
+            }
+            DB::commit();
+        }catch(QueryException $e){DB::rollBack();}
 
         return Response(file_get_contents($file), 200, [
             'Content-Type' => $extension,

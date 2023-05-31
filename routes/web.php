@@ -27,13 +27,13 @@ Route::prefix('/revista')->group(function () {
     //Articulos
     Route::get('/articulo/codigo/{id}', [RevistaController::class, 'getArticle'])->name('user.articulo');
     Route::get('/articulo/getImage/{filename?}', [ArticuloController::class, 'getImage'])->name('user.articulo.imagen');
-    Route::get('/articulos/getArchive/{filename?}', [ArticuloController::class, 'getArchive'])->name('user.articulo.archivo');
+    Route::get('/articulos/getArchive/{filename?}/{id_articulo?}', [ArticuloController::class, 'getArchive'])->name('user.articulo.archivo');
 
     //Ediciones
     Route::get('/ediciones', [RevistaController::class, 'allEditions'])->name('user.ediciones');
     Route::get('/edicion/codigo/{id}', [RevistaController::class, 'getEdition'])->name('user.edicion');
     Route::get('/edicion/getImage/{filename?}', [EdicionController::class, 'getImage'])->name('user.edicion.imagen');
-    Route::get('/edicion/getArchive/{filename?}', [EdicionController::class, 'getArchive'])->name('user.edicion.archivo');
+    Route::get('/edicion/getArchive/{filename?}/{id_edicion?}', [EdicionController::class, 'getArchive'])->name('user.edicion.archivo');
 
     //Autores
     Route::get('/autores', [RevistaController::class, 'getAuthors'])->name('user.autores');

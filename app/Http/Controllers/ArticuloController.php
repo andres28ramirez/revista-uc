@@ -20,6 +20,7 @@ use App\Models\Comentario;
 use App\Models\Conocimiento;
 use App\Models\Edicion;
 use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 
 //HELPER DE NOTIFICACION
 
@@ -202,7 +203,7 @@ class ArticuloController extends Controller
     }
 
     //Retorno del Archivo del Storage
-    public function getArchive($filename = null){
+    public function getArchive($filename = null, $id_articulo = null){
 
         if($filename){
             $extension = pathinfo($filename)['extension'];
@@ -220,6 +221,34 @@ class ArticuloController extends Controller
             $file = storage_path('app/public/crash.png');
         
         $extension == "pdf" ? $extension = "application/pdf" : $extension = "image"; 
+
+        //Suma de descarga a la edición
+        DB::beginTransaction();
+        try{
+            $user = Auth::user();
+            $rol = $user ? $user->urol->rol->nombre : "visitante";
+            
+            if($rol != "Administrador" && $id_articulo){
+
+                $visita = Articulo_Descarga::where('FK_id_articulo', $id_articulo)->
+                                where('mes', date('n'))->
+                                where('year', date('Y'))->first();
+                
+                if($visita){
+                    $visita->total += 1;
+                    $visita->update();
+                }
+                else{
+                    $visita = new Articulo_Descarga();
+                    $visita->mes = date('n');
+                    $visita->year = date('Y');
+                    $visita->total = 1;
+                    $visita->FK_id_articulo = $id_articulo;
+                    $visita->save();
+                }
+            }
+            DB::commit();
+        }catch(QueryException $e){DB::rollBack();}
 
         return Response(file_get_contents($file), 200, [
             'Content-Type' => $extension,
