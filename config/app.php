@@ -228,6 +228,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'FormatTime' => App\Helpers\FormatTime::class,
+        'AdminNotificacion' => App\Helpers\AdminNotificacion::class,
     ])->toArray(),
 
 ];

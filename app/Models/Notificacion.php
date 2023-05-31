@@ -15,7 +15,7 @@ class Notificacion extends Model
         "id_notificacion",
         "titulo",
         "descripcion",
-        "id_evento",
+        "ruta",
         "FK_id_modulo",
     ];
 

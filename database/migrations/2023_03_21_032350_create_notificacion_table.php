@@ -14,7 +14,7 @@ return new class extends Migration
                 $table->id('id_notificacion');
                 $table->string('titulo',255);
                 $table->text('descripcion');
-                $table->bigInteger('id_evento')->nullable();
+                $table->text('ruta')->nullable();
                 $table->bigInteger('FK_id_modulo')->nullable()->unsigned();
                 $table->timestamps();
 

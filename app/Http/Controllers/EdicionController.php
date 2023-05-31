@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\QueryException;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 
 //MODELOS
 use App\Models\Edicion;
 use App\Models\Edicion_Descarga;
 use App\Models\Edicion_Visita;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Usuario_Notificacion;
+use App\Models\Notificacion;
 
-//HELPER DE NOTIFICACION
-
-//MAILABLE
+//NOTIFICACION Y MAILABLE
+use App\Notifications\EmailNotification;
+use Illuminate\Support\Facades\Notification;
+use App\Helpers\AdminNotificacion;
 
 class EdicionController extends Controller
 {
@@ -188,7 +192,6 @@ class EdicionController extends Controller
 
             //Siguio, entonces almacenamos la edición
             $datos = $request->all();
-            //Envio de la Notificación
 
             //Almacenamiento de la Imagen
             if($request->hasFile('ruta_imagen')){
@@ -201,6 +204,21 @@ class EdicionController extends Controller
             }
             
             $edicion = Edicion::create($datos);
+
+            //Envio de la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Creación de nueva edición!!";
+            $notificacion->descripcion = $edicion->titulo;
+            $notificacion->ruta = route('edicion.edit', $edicion->id_edicion);
+            $notificacion->icono = "fa-newspaper";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "!!Se ha creado una nueva edición!!";
+            $contenido = $edicion->titulo;
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
             
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
@@ -236,7 +254,6 @@ class EdicionController extends Controller
             $datos = $request->all();
             
             $edicion = Edicion::findOrFail($id_edicion);
-            //Envio de la Notificación
             
             //Almacenamiento de la Imagen
             if($request->hasFile('ruta_imagen')){
@@ -264,6 +281,21 @@ class EdicionController extends Controller
             }
             
             $edicion->update($datos);
+            
+            //Envio de la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Se ha actualizado una Edición!!";
+            $notificacion->descripcion = $edicion->titulo;
+            $notificacion->ruta = route('edicion.edit', $edicion->id_edicion);
+            $notificacion->icono = "fa-newspaper";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "!!Se ha actualizado una edición!!";
+            $contenido = $edicion->titulo;
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
             
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
@@ -312,6 +344,22 @@ class EdicionController extends Controller
                 Storage::delete(['public/'.$edicion->ruta_imagen]);
                 Storage::delete(['public/'.$edicion->ruta_archivo]);
                 $edicion->delete();
+
+            
+            //Envio de la Notificación
+                $notificacion = new Notificacion();
+                
+                //Información General de la Notificación
+                $notificacion->titulo = "Se ha eliminado una Edición!!";
+                $notificacion->descripcion = $edicion->titulo;
+                $notificacion->ruta = route('edicion.index');
+                $notificacion->icono = "fa-newspaper";
+                $notificacion->save();
+
+                //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+                $titulo = "!!Se ha eliminado una edición!!";
+                $contenido = $edicion->titulo;
+                AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
 
             //Aceptamos la eliminación de todo y redireccionamos
             DB::commit();

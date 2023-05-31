@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\QueryException;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 
 //MODELOS
@@ -19,12 +21,14 @@ use App\Models\Autor;
 use App\Models\Comentario;
 use App\Models\Conocimiento;
 use App\Models\Edicion;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Usuario_Notificacion;
+use App\Models\Notificacion;
 
-//HELPER DE NOTIFICACION
-
-//MAILABLE
+//NOTIFICACION Y MAILABLE
+use App\Notifications\EmailNotification;
+use Illuminate\Support\Facades\Notification;
+use App\Helpers\AdminNotificacion;
 
 class ArticuloController extends Controller
 {
@@ -277,7 +281,6 @@ class ArticuloController extends Controller
             
             //Siguio, entonces almacenamos la edición
             $datos = $request->all();
-            //Envio de la Notificación
 
             //Almacenamiento de la Imagen
             if($request->hasFile('ruta_imagen_es')){
@@ -298,6 +301,21 @@ class ArticuloController extends Controller
 
                 $save_archive->save();
             }
+
+            //Envio de la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Creación de un nuevo artículo!!";
+            $notificacion->descripcion = $articulo->titulo;
+            $notificacion->ruta = route('articulo.view', $articulo->id_articulo);
+            $notificacion->icono = "fa-book";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "!!Se ha creado un nuevo artículo!!";
+            $contenido = $articulo->titulo;
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
 
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
@@ -332,7 +350,6 @@ class ArticuloController extends Controller
             $datos = $request->all();
             
             $articulo = Articulo::find($id_articulo);
-            //Envio de la Notificación
 
             //Almacenamiento de la Imagen
             if($request->hasFile('ruta_imagen')){
@@ -368,6 +385,21 @@ class ArticuloController extends Controller
                 }
             }
             
+            //Envio de la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Edición de un artículo!!";
+            $notificacion->descripcion = $articulo->titulo;
+            $notificacion->ruta = route('articulo.view', $articulo->id_articulo);
+            $notificacion->icono = "fa-book";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "!!Se ha editado un artículo!!";
+            $contenido = $articulo->titulo;
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
+
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
             return redirect()->route('articulo.index')->with('success', 'El Artículo fue editado de manera exitosa ya puedes ver sus cambios entre los registros');
@@ -406,6 +438,21 @@ class ArticuloController extends Controller
 
             Storage::delete(['public/'.$articulo->ruta_imagen_es]);
             $articulo->delete();
+
+            //Envio de la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Eliminación de un artículo!!";
+            $notificacion->descripcion = $articulo->titulo;
+            $notificacion->ruta = route('articulo.index');
+            $notificacion->icono = "fa-book";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "!!Se ha eliminado un artículo!!";
+            $contenido = $articulo->titulo;
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
 
             //Aceptamos la eliminación de todo y redireccionamos
             DB::commit();

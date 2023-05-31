@@ -12,7 +12,7 @@
         @include('layouts.admin.alertas')
 
         <!-- Nav Item - Mensajes -->
-        @include('layouts.admin.mensajes')
+        {{-- @include('layouts.admin.mensajes') --}}
 
         <!-- Divisor de Nav Items -->
         <div class="topbar-divider d-none d-sm-block"></div>

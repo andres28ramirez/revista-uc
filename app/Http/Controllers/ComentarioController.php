@@ -9,18 +9,21 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\QueryException;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 
 //MODELOS
 use App\Models\Comentario;
+use App\Models\Notificacion;
 use App\Models\Respuesta;
 use App\Models\User;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Usuario_Notificacion;
 
-//HELPER DE NOTIFICACION
-
-//MAILABLE
+//NOTIFICACION Y MAILABLE
+use App\Notifications\EmailNotification;
+use Illuminate\Support\Facades\Notification;
+use App\Helpers\AdminNotificacion;
 
 class ComentarioController extends Controller
 {
@@ -81,7 +84,7 @@ class ComentarioController extends Controller
 
     //Visual de Editar Comentario
     public function coEdit($id_comentario){
-        $info = Comentario::findOrFail($id_comentario);
+        $info = Comentario::find($id_comentario);
 
         if(!$info)
             return redirect()->route('comentario.index')->with('warning', 'El comentario no pudo ser editado debido a que no pudo ser encontrado');
@@ -186,7 +189,12 @@ class ComentarioController extends Controller
                 return redirect()->route('comentario.index')->with('warning', 'El comentario no pudo ser editado debido a que no pudo ser encontrado');
 
             //Envio de la Notificación
-            
+            $user = $comentario->usuario;
+            $ruta = route('user.articulo', $comentario->articulo->id_articulo);
+            $titulo = "Tu comentario ya fue evaluado por un moderador en la plataforma";
+            $contenido = "Tu comentario quedo en estado ".$comentario->estado.", dandole click al boton seras redireccionado al artículo de tu comentario";
+            AdminNotificacion::UserNotifica($user, $ruta, $titulo, $contenido, $comentario);
+
             //Hacemos el Update
             $comentario->update($datos);
             
@@ -248,6 +256,11 @@ class ComentarioController extends Controller
                 return redirect()->route('comentario.index')->with('warning', 'La respuesta no pudo ser editada debido a que no pudo ser encontrado');
 
             //Envio de la Notificación
+            $user = $respuesta->usuario;
+            $ruta = route('user.articulo', $respuesta->comentario->articulo->id_articulo);
+            $titulo = "Tu repuesta ya fue evaluado por un moderador en la plataforma";
+            $contenido = "Tu respuesta quedo en estado ".$respuesta->estado.", dandole click al boton seras redireccionado al artículo de tu respuesta";
+            AdminNotificacion::UserNotifica($user, $ruta, $titulo, $contenido, $respuesta);
             
             //Hacemos el Update
             $respuesta->update($datos);
@@ -310,6 +323,21 @@ class ComentarioController extends Controller
             $datos["FK_id_usuario"] = Auth::user()->id;
             $comentario = Comentario::create($datos);
             
+            //Generamos la Notificación
+            $notificacion = new Notificacion();
+            
+            //Información General de la Notificación
+            $notificacion->titulo = "Creación de nuevo comentario, por usuario de nombre ".Auth::user()->name;
+            $notificacion->descripcion = "En espera de hacerse update del estado del comentario";
+            $notificacion->ruta = route('comentario.edit', $comentario->id_comentario);
+            $notificacion->icono = "fa-comment";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "Nuevo evento sobre la revista por comentario cargado en Artículo: ".$comentario->articulo->titulo;
+            $contenido = "Dale click sobre el link entregado para redireccionarte al evento a través del Panel Administrativo";
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
+
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
             return Redirect::back()->with('success', 'Tu comentario fue enviado con exito, estara en evaluación para ser convalidado la visualización del mismo por varios usuarios');
@@ -340,8 +368,23 @@ class ComentarioController extends Controller
             $datos = $request->all();
             $datos["nombre"] = Auth::user()->name;
             $datos["FK_id_usuario"] = Auth::user()->id;
-            $Respuesta = Respuesta::create($datos);
+            $respuesta = Respuesta::create($datos);
+
+            //Generamos la Notificación
+            $notificacion = new Notificacion();
             
+            //Información General de la Notificación
+            $notificacion->titulo = "Creación de nueva respuesta, por usuario de nombre ".Auth::user()->name;
+            $notificacion->descripcion = "En espera de hacerse update del estado de la respuesta";
+            $notificacion->ruta = route('respuesta.edit', $respuesta->id_respuesta);
+            $notificacion->icono = "fa-comment";
+            $notificacion->save();
+
+            //Enviamos el Helper que asigna la notificación a los usuarios Admin y Editor
+            $titulo = "Nuevo evento sobre la revista por respuesta cargada";
+            $contenido = "Dale click sobre el link entregado para redireccionarte al evento a través del Panel Administrativo";
+            AdminNotificacion::Notifica($notificacion, $titulo, $contenido);
+
             //Aceptamos la creación de todo y redireccionamos
             DB::commit();
             return Redirect::back()->with('success', 'Tu respuesta fue enviada con exito, estara en evaluación para ser convalidada la visualización del mismo por varios usuarios');

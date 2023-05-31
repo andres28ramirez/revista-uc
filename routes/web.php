@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 //RUTAS DE CONTROL Y MODIFICACIONES
 Route::get('/lang/{locale}', [ConfiguracionController::class, 'setlocale'])->name('change.lang');
 
+Route::get('/correo/test', [ConfiguracionController::class, 'testing'])->name('change.testing');
+
 //RUTAS DE LA PÁGINA DE USUARIOS | NAVEGACIÓN INTERNA
 Route::get('/', [RevistaController::class, 'index'])->name('welcome');
 

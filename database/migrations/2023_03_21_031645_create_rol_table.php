@@ -16,6 +16,24 @@ return new class extends Migration
                 $table->timestamps();
             });
         });
+
+        DB::table('rol')->insert(array(
+            array(
+                'nombre' => 'Administrador'
+            ),
+            array(
+                'nombre' => 'Moderador'
+            ),
+            array(
+                'nombre' => 'Editor'
+            ),
+            array(
+                'nombre' => 'Usuario'
+            ),
+            array(
+                'nombre' => 'Super Administrador'
+            ),
+        ));
     }
 
     public function down()

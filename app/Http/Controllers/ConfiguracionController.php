@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
+use Illuminate\Contracts\Cache\Store;
 
 //MODELOS
 use App\Models\Informacion;
@@ -17,9 +18,10 @@ use App\Models\Rol;
 use App\Models\User;
 use App\Models\Usuario_Rol;
 use App\Models\Usuario_Tipo;
-use Illuminate\Contracts\Cache\Store;
 
 //HELPER DE NOTIFICACION
+use App\Notifications\EmailNotification;
+use Illuminate\Support\Facades\Notification;
 
 //MAILABLE
 
@@ -31,6 +33,28 @@ class ConfiguracionController extends Controller
         session()->put('locale', $locale);
 
         return redirect()->back();
+    }
+
+    //Testeo de correo electronicos
+    public function testing() 
+    {
+        //VAMOS A PROBAR AQUI CORREOS MASIVOS
+        $user = User::first();
+        //$users = User::all();
+        $email = [
+            'greeting' => 'Hi '.$user->name.',',
+            'body' => 'This is the project assigned to you.',
+            'thanks' => 'Thank you this is from codeanddeploy.com',
+            'actionText' => 'View Project',
+            'actionURL' => url('/'),
+            'id' => 57
+        ];
+
+        for($i = 0; $i <= 1000; $i++)
+            $user->notify((new EmailNotification($email)));
+        //Notification::send($user, new EmailNotification($email));
+
+        dd('Notification sent!');
     }
 
     //VALIDACIONES
