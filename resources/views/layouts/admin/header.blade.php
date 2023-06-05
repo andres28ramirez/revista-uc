@@ -48,8 +48,10 @@
         @if(request()->is('*/configuracion/informaciones')) Panel de Informaciones @endif
         @if(request()->is('*/configuracion/info/*')) Panel de Informaciones @endif
         @if(request()->is('*/configuracion/modulos')) Panel de Modulos @endif
+
+        <!-- Notificaciones -->
+        @if(request()->is('*/usuarios')) Panel de Notificaciones @endif
+        @if(request()->is('*/usuarios/*')) Panel de Notificaciones @endif
     </h1>
 
-    <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
 </div>

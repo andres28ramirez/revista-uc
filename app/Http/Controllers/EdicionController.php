@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Articulo;
-use App\Models\Conocimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 
 //MODELOS
+use App\Models\Articulo;
+use App\Models\Conocimiento;
 use App\Models\Edicion;
 use App\Models\Edicion_Descarga;
 use App\Models\Edicion_Visita;

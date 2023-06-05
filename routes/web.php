@@ -7,6 +7,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ConocimientoController;
 use App\Http\Controllers\EdicionController;
+use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProfileController;
@@ -156,6 +157,16 @@ Route::prefix('/panel')->middleware(['auth', 'verified', 'admin'])->group(functi
         Route::post('/configuracion/info/store', [ConfiguracionController::class, 'storeInfo'])->name('configuración.info.store');
         Route::post('/configuracion/info/update/{id}', [ConfiguracionController::class, 'updateInfo'])->name('configuración.info.update');
         Route::post('/configuracion/info/delete/{id}', [ConfiguracionController::class, 'destroyInfo'])->name('configuración.info.delete');
+
+    //NOTIFICACIONES
+    Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificacion.index');
+    Route::post('/notificaciones/redireccion', [NotificacionController::class, 'redireccion'])->name('notificacion.redireccion');
+    Route::post('/notificaciones/read/{id}', [NotificacionController::class, 'read'])->name('notificacion.read');
+    Route::post('/notificaciones/delete/{id}', [NotificacionController::class, 'destroy'])->name('notificacion.delete');
+
+    
+    Route::post('/notificaciones/readAll/{id}', [NotificacionController::class, 'readAll'])->name('notificacion.readAll');
+    Route::post('/notificaciones/deleteAll/{id}', [NotificacionController::class, 'destroyAll'])->name('notificacion.deleteAll');
 });
 
 //RUTAS DE AUTENTICACIÓN

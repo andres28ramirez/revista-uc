@@ -105,7 +105,7 @@
     <hr class="sidebar-divider">
 
     <!-- Nav Item - Reportes -->
-    <li class="nav-item">
+    <li class="nav-item {{ request()->is('*/notificaciones/*') || request()->is('*/notificaciones') ? 'active' : ''  }}">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-bell"></i>
             <span>Notificaciones</span></a>
