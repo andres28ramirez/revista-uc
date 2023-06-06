@@ -106,7 +106,7 @@
 
     <!-- Nav Item - Reportes -->
     <li class="nav-item {{ request()->is('*/notificaciones/*') || request()->is('*/notificaciones') ? 'active' : ''  }}">
-        <a class="nav-link" href="tables.html">
+        <a class="nav-link" href="{{ route('notificacion.index') }}">
             <i class="fas fa-fw fa-bell"></i>
             <span>Notificaciones</span></a>
     </li>

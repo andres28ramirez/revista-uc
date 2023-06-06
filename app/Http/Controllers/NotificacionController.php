@@ -166,21 +166,20 @@ class NotificacionController extends Controller
         DB::beginTransaction();
         try{
 
-            $notificacion = Usuario_Notificacion::find($id_notificación);
-
-            if(!$notificacion)
-                return redirect()->route('notificacion.index')->with('warning', 'La notificación no pudo ser encontrada, por favor intentalo de nuevo');
-
-            //Actualizo su estado de acuerdo a si esta leido o no
-                $notificacion->read_at ? $notificacion->read_at = null : $notificacion->read_at = date('Y-m-d h:i:s');
-                $notificacion->save();
+            //Revisamos si eliminamos todos o no
+            if($request->all){
+                Usuario_Notificacion::where('FK_id_user', $id_usuario)->delete();
+            }
+            else{ //en este caso no todos quedan en leidos
+                Usuario_Notificacion::whereIn('id_usuario_notificacion', $request->boxes)->delete();
+            }
 
             DB::commit();
-            return redirect()->route('notificacion.index')->with('success', 'El estado de la notificación fue actualizada de forma exitosa');
+            return redirect()->route('notificacion.index')->with('success', 'Las notificaciones seleccionadas fueron eliminadas de forma exitosa');
 
         }catch(QueryException $e){
             DB::rollBack();
-            return Redirect::back()->with('bderror', 'La Notificación no pudo modificarse su estado, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
+            return Redirect::back()->with('bderror', 'Las Notificaciones no pudieorn eliminarse, por favor intentalo más tarde. \nMensaje: '. $e->getMessage());
         }
     }
 }

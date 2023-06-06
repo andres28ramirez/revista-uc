@@ -24,6 +24,9 @@
             <form id="form_delete_all" action="{{ route('notificacion.deleteAll', auth()->user()->id) }}" method="POST" style="display: none;">
                 @csrf
                 <input type="hidden" class="all-check" name="all" value="">
+                <div id="form_delete_values">
+
+                </div>
             </form>
 
             <!-- Checkbox Global -->
@@ -37,7 +40,7 @@
             </div>
 
             <!-- Eliminar -->
-            <div class="text-right notificacion_alert" style="cursor: pointer">
+            <div class="text-right notificacion_alert eliminar-todos" style="cursor: pointer">
                 <button type="button" class="btn btn-danger btn-sm">Eliminar</button>
             </div>
         </div>
@@ -180,6 +183,41 @@
 
                 if(selected.length > 0){
                     $("#form_read_all").submit();
+                }
+            });
+
+            //Enviar a Eliminar todos los seleccionados
+            $('.eliminar-todos').click(function(){
+                var selected = [];
+
+                $( "#form_delete_values" ).empty();
+                $('.div-check input:checked').each(function() {
+                    selected.push($(this).val());
+                    $( "#form_delete_values" ).append('<input type="hidden" class="" name="boxes[]" value="'+$(this).val()+'">');
+                });
+
+                if(selected.length > 0){
+                    Swal.fire({
+                        title: 'Estas seguro de elimnar las notificaciones?',
+                        text: "No podras revertir esta elección, esto borrara las notificaciones seleccionadas!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#084456',
+                        cancelButtonColor: '#bbbbbb',
+                        confirmButtonText: 'Si, eliminalo!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire(
+                                'Eliminando!',
+                                'Las notificaciones seran procesadas para ser eliminadas de los registros del usuario.',
+                                'success'
+                            );
+                            setTimeout(function() { 
+                                $("#form_delete_all").submit();
+                            }, 2000);
+                        }
+                    });
                 }
             });
     });
