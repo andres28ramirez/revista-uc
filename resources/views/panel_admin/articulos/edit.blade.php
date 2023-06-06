@@ -13,7 +13,7 @@
             </h6>
         </div>
 
-        <!-- CREAR NUEVA EDICIÓN -->
+        <!-- VOLVER A LOS ARTICULOS -->
         <div class="card-header py-3" style="border-bottom: 0px;">
             <a href="{{ route('articulo.all') }}" class="btn btn-secondary btn-icon-split">
                 <span class="icon text-white-50">
@@ -79,19 +79,36 @@
 
                         <!-- Autor del Artículo -->
                         <div class="form-group">
-                            <label for="autor">Autor del Artículo: Opcional*</label>
-                            <select id="autor" class="form-control @error('FK_id_autor') is-invalid @enderror" name="FK_id_autor">
-                                <option value="">Selecciona un Autor...</option>
-                                @foreach($autores as $autor)
-                                    <option value="{{ $autor->id_autor }}" {{ old('FK_id_autor', $articulo->FK_id_autor) == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
-                                @endforeach
-                            </select>
+                            <label for="autor">Autor o Autores del Artículo: Opcional*</label>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <select id="autor" class="form-control @error('autores.*') is-invalid @enderror" name="FK_id_autor">
+                                    <option value="">Selecciona un Autor...</option>
+                                    @foreach($autores as $autor)
+                                        <option value="{{ $autor->id_autor }}" {{ old('FK_id_autor', $articulo->FK_id_autor) == $autor->id_autor ? "selected" : ""}}>{{ $autor->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                <a id="autor-add" class="btn btn-success btn-circle btn-sm mx-1 my-auto">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
                             
                             @error('FK_id_autor')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+
+                            <div id="autores_selected">
+                                @foreach($articulo->autores as $key => $autor)
+                                    <div class="col d-flex justify-content-start p-0 mt-1" id="autor-{{ $key }}">
+                                        <input type="hidden" value="{{ $autor->FK_id_autor }}" name="autores[]">
+                                        <a class="btn btn-danger btn-circle btn-sm mx-1" onclick="eliminarA('{{ $key }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        <label class="">{{ $autor->autor->nombre }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
 
                         <!-- Area de Conocimiento del Artículo -->
@@ -277,8 +294,19 @@
                                 </div>
                                 <div class="text-center">
                                     <h6 class="text-dark">
-                                        <span id="preAutor">{{ old("autor", $articulo->autor ? $articulo->autor->nombre : "Sin Autor") }}</span> - 
-                                        <span id="preArea" class="badge badge-pill badge-primary">{{ old("area", $articulo->conocimiento->nombre) }}</span>
+                                        <div id="preAutor">
+                                            @forelse($articulo->autores as $key => $autor)
+                                                <span class="d-block" id="text-{{ $key }}">{{ $autor->autor->nombre }}</span>
+                                            @empty
+                                                <span>Sin Autor</span>
+                                            @endforelse
+                                        </div>
+                                        <hr>
+                                        <div class="d-block">
+                                            <span id="preArea" class="badge badge-pill badge-primary">
+                                                {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
+                                            </span>
+                                        </div>
                                     </h6>
                                 </div>
                                 <h6 class="text-dark">
@@ -309,11 +337,15 @@
 </div>
 
 <input type="hidden" id="imagenPreview" value="{{ asset('images/nodisponible.png') }}">
+<input type="hidden" id="cantidadAutor" value="{{ $key }}">
 @endsection
 
 <script src="{{ asset('jquery/jquery.min.js') }}"></script>
 <script>
+    var acantidad = 0;
     $(document).ready(function() {
+        acantidad = $('#cantidadAutor').val();
+
         //Edicion de la previsualizacion
             $('#titulo').change(function() {
                 $('#preTitulo').text($(this).val());
@@ -328,9 +360,27 @@
                 $('#preEdicion').text(texto);
             });
             
-            $('#autor').change(function() {
+            //Apartado de Añadir Autores con Previsualización
+            $('#autor-add').click(function() {
+                //Añadiendo autor nuevo en div
+                let value = $( "#autor option:selected" ).val();
                 let texto = $( "#autor option:selected" ).text();
-                $('#preAutor').text(texto);
+                acantidad++;
+                
+                if(value){
+                    //Agregamos el input de autores
+                    $('#autores_selected').append(
+                        '<div class="col d-flex justify-content-start p-0 mt-1" id="autor-'+acantidad+'">'+
+                            '<input type="hidden" value="'+value+'" name="autores[]">'+
+                            '<a class="btn btn-danger btn-circle btn-sm mx-1" onclick="eliminarA('+acantidad+')">'+
+                                '<i class="fas fa-trash"></i>'+
+                            '</a>'+
+                            '<label class="">'+texto+'</label>'+
+                        '</div>');
+
+                    //Ajuste de previsualizacion
+                    $('#preAutor').append("<span class='d-block' id='text-"+acantidad+"'>"+texto+"</span>");
+                }
             });
             
             $('#area').change(function() {
@@ -404,4 +454,13 @@
                 });
             });
     });
+
+    //Apartado de Eliminar autorez seleccionados con previsualizacion
+    function eliminarA(id){
+        //Eliminar div del input
+        $('#autor-'+id).remove();
+
+        //Eliminar Previsualización
+        $('#text-'+id).remove();
+    };
 </script>

@@ -44,6 +44,10 @@ class Articulo extends Model
         return $this->belongsTo('App\Models\Conocimiento', 'FK_id_conocimiento');
     }
 
+    public function autores(){
+        return $this->hasMany('App\Models\ArticuloAutores', 'FK_id_articulo');
+    }
+
     public function archivos(){
         return $this->hasMany('App\Models\Archivo', 'FK_id_articulo');
     }

@@ -59,7 +59,7 @@
                             <th>Imagen</th>
                             <th>Título</th>
                             <th>Edición</th>
-                            <th>Autor</th>
+                            <th>Autores</th>
                             <th>Area</th>
                             <th>Fecha de Publicación</th>
                             <th>Nro. de Comentarios</th>
@@ -83,7 +83,12 @@
                                 {{ $articulo->edicion->titulo }}
                             </td>
                             <td class="align-middle">
-                                {{ $articulo->FK_id_autor ? $articulo->autor->nombre : "Sin Autor" }}
+                                    <hr>
+                                @forelse($articulo->autores as $autor)
+                                    <span class="d-block">{{ $autor->autor->nombre }}</span><hr>
+                                @empty
+                                    <span>Sin Autor</span>
+                                @endforelse
                             </td>
                             <td class="align-middle">
                                 {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}

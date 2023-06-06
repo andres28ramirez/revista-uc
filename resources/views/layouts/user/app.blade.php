@@ -69,6 +69,9 @@
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 <script src="{{ asset('js/script.js') }}"></script>
+<!-- Recursos de los charts -->
+<script src="{{ asset('chart.js/Chart.min.js') }}"></script>
+@yield('scripts')
 
 <script>
     $(document).ready(function() {

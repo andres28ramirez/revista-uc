@@ -21,8 +21,14 @@
                 <!-- Título -->
                 <h5><b>{{ App::isLocale('en') && $articulo->titulo_en ? $articulo->titulo_en : $articulo->titulo  }}</b></h5>
 
-                <!-- Autor -->
-                <p style="white-space: pre-line">{{ $articulo->autor ? $articulo->autor->nombre : "N/A" }}</p>
+                <!-- Autores -->
+                <p style="white-space: pre-line">
+                    @forelse($articulo->autores as $autor)
+                        <span class="d-block my-0">{{ $autor->autor->nombre }}</span>
+                    @empty
+                        <span>N/A</span>
+                    @endforelse
+                </p>
 
                 <!-- Fecha de creación del Artículo -->
                 <p class="card-text" style="white-space: pre-line">

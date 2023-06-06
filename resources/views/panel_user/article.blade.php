@@ -9,6 +9,29 @@
 			<div class="col-sm-9">
                 @include('layouts.open_article', ['articulo' => $articulo])
 
+                <!-- Tabla con número de descargas -->
+                <div class="col-xl-8 m-auto">
+                    @php
+                    $data = array_fill(0, 12, 0);
+
+                    foreach($d_articulo as $descarga){
+                        $data[($descarga->mes - 1)] = $descarga->total;
+                    }
+
+                    $chart_data = array(
+                        'titulo' => "Descargas periodo año ".date('Y'),
+                        'canva' => 'c0',
+                        'labels' => array("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"),
+                        'datos' => $data,
+                        'tipo' => "normal",
+                        'bgColors' => 'rgba(255,48,23,0.7)',
+                        'brColors' => 'rgba(128,23,11,0.8)'
+                    );
+
+                    @endphp
+                    @include('layouts.open_bar', ['datos' => $chart_data])
+                </div>
+
                 <!-- Comentarios -->
                 <div class=".container-xl">
                     <div class="article-comments">
@@ -43,7 +66,11 @@
 
             <!-- Información del Autor -->
 			<div class="col-sm-3" id="content_bar_right">
-                @include('layouts.open_author', ['autor' => $articulo->autor, 'articulo' => $articulo])
+                @forelse($articulo->autores as $autor)
+                    @include('layouts.open_author', ['autor' => $autor->autor, 'articulo' => $articulo])
+                @empty
+                    <span>N/A</span>
+                @endforelse
 			</div>
 		</div>
 	</div>
@@ -163,3 +190,6 @@
         }
     });
 </script>
+@section('scripts')
+<script src="{{ asset('js/graficos/singleBar.js') }}"></script>
+@endsection

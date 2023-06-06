@@ -184,12 +184,12 @@
                 <div class="card-body">
                     @forelse($autores as $autor)
                         <h4 class="small font-weight-bold">{{ $autor->nombre }} 
-                            <span class="float-right">{{ $autor->articulos->count() }}</span>
+                            <span class="float-right">{{ $autor->articles->count() }}</span>
                         </h4>
                         <div class="progress mb-4">
                             <div class="progress-bar bg-gradient-info" role="progressbar" 
-                                style="width: <?php echo $articulos->count() ? $autor->articulos->count() * 100 / $articulos->count() : '0' ?>%"
-                                aria-valuenow="{{ $articulos->count() ? $autor->articulos->count() * 100 / $articulos->count() : '0' }}" 
+                                style="width: <?php echo $articulos->count() ? $autor->articles->count() * 100 / $articulos->count() : '0' ?>%"
+                                aria-valuenow="{{ $articulos->count() ? $autor->articles->count() * 100 / $articulos->count() : '0' }}" 
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>

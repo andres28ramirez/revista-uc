@@ -41,11 +41,11 @@
                         <br>
                         <h6>{{ __('Artículos del Autor') }}:</h6>
                         <hr>
-                        @foreach($autor->articulos as $articulo)
+                        @foreach($autor->articles as $articulo)
                             <p>
-                                <a id="link-author" href="{{ route('user.articulo', $articulo->id_articulo) }}" 
+                                <a id="link-author" href="{{ route('user.articulo', $articulo->FK_id_articulo) }}" 
                                     style= "color: inherit;">
-                                    {{ $articulo->titulo }}
+                                    {{ $articulo->articulo->titulo }}
                                 </a>
                             </p>
                         @endforeach

@@ -109,10 +109,17 @@
                                 </div>
                                 <div class="text-center">
                                     <h6 class="text-dark">
-                                        <span>{{ $articulo->FK_id_autor ? $articulo->autor->nombre : "Sin Autor" }}</span> - 
-                                        <span class="badge badge-pill badge-primary">
-                                            {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
-                                        </span>
+                                            <hr>
+                                        @forelse($articulo->autores as $autor)
+                                            <span class="d-block">{{ $autor->autor->nombre }}</span><hr>
+                                        @empty
+                                            <span>Sin Autor</span>
+                                        @endforelse
+                                        <div class="d-block">
+                                            <span class="badge badge-pill badge-primary">
+                                                {{ $articulo->FK_id_conocimiento ? $articulo->conocimiento->nombre : "Sin Area" }}
+                                            </span>
+                                        </div>
                                     </h6>
                                 </div>
                                 <h6 class="text-dark">

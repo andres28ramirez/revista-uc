@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 
 //MODELOS
 use App\Models\Articulo;
+use App\Models\Articulo_Descarga;
 use App\Models\Articulo_Visita;
 use App\Models\Autor;
 use App\Models\Conocimiento;
@@ -45,12 +46,20 @@ class RevistaController extends Controller
         if(!$articulo)
             return redirect()->route('welcome')->with('warning', 'El artículo seleccionado no pudo ser encontrado, por favor intentalo nuevamente');
 
+        //Información de Número de Descargas
+        $d_articulo = Articulo_Descarga::select('mes', 'FK_id_articulo', DB::raw('sum(total) as total'))->
+                                    where('year', 2023)->
+                                    where('FK_id_articulo', $articulo->id_articulo)->
+                                    orderBy('mes', 'asc')->
+                                    groupBy('mes', 'FK_id_articulo')->get();
+
         //Sumamos la visita
         DB::beginTransaction();
         try{
             $user = Auth::user();
             $rol = $user ? $user->urol->rol->nombre : "visitante";
             
+            //Almacenamiento de Visita
             if($rol != "Administrador"){
                 
                 $visita = Articulo_Visita::where('FK_id_articulo', $id_articulo)->
@@ -73,7 +82,7 @@ class RevistaController extends Controller
             DB::commit();
         }catch(QueryException $e){DB::rollBack();}
 
-        return view('panel_user.article', compact('articulo'));
+        return view('panel_user.article', compact('articulo', 'd_articulo'));
     }
 
     //Apartado de areas de conocimiento

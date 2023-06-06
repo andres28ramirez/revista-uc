@@ -29,6 +29,7 @@ use App\Models\Notificacion;
 use App\Notifications\EmailNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Helpers\AdminNotificacion;
+use App\Models\ArticuloAutores;
 
 class ArticuloController extends Controller
 {
@@ -98,8 +99,13 @@ class ArticuloController extends Controller
         $query = Articulo::query();
 
         //Autor
-        $query->when($id_autor, function ($q, $id_autor) {
+        /* $query->when($id_autor, function ($q, $id_autor) {
             return $q->where('FK_id_autor', $id_autor);
+        }); */
+        $search_autores = ArticuloAutores::where('FK_id_autor', $id_autor)->pluck('FK_id_articulo')->toArray();
+        
+        $query->when($search_autores, function ($q, $search_autores) {
+            return $q->whereIn('id_articulo', $search_autores);
         });
 
         //Conocimiento
@@ -289,17 +295,29 @@ class ArticuloController extends Controller
             
             $articulo = Articulo::create($datos);
             
+            //Almacenamiento de Autores
+            if($request->autores){
+                foreach($request->autores as $autor){
+                    $save_autor = new ArticuloAutores();
+                    $save_autor->FK_id_articulo  = $articulo->id_articulo;
+                    $save_autor->FK_id_autor = $autor;
+                    $save_autor->save();
+                }
+            }
+
             //Almacenamiento de los Archivos
-            foreach($request->archivos as $archivo){
-                $save_archive = new Archivo();
-                $save_archive->FK_id_articulo  = $articulo->id_articulo;
-                $save_archive->nombre = $archivo->getClientOriginalName();
-                $save_archive->tipo = $archivo->extension();
+            if($request->archivos){
+                foreach($request->archivos as $archivo){
+                    $save_archive = new Archivo();
+                    $save_archive->FK_id_articulo  = $articulo->id_articulo;
+                    $save_archive->nombre = $archivo->getClientOriginalName();
+                    $save_archive->tipo = $archivo->extension();
 
-                //Guardo el Archivo
-                $save_archive->ruta_archivo_es = $archivo->store('archivos', 'public');
+                    //Guardo el Archivo
+                    $save_archive->ruta_archivo_es = $archivo->store('archivos', 'public');
 
-                $save_archive->save();
+                    $save_archive->save();
+                }
             }
 
             //Envio de la Notificación
@@ -360,6 +378,18 @@ class ArticuloController extends Controller
                 unset($datos['ruta_imagen_es']);
             }
             
+            //Almacenamiento de Autores
+            if($request->autores){
+                ArticuloAutores::where('FK_id_articulo', $articulo->id_articulo)->delete();
+
+                foreach($request->autores as $autor){
+                    $save_autor = new ArticuloAutores();
+                    $save_autor->FK_id_articulo  = $articulo->id_articulo;
+                    $save_autor->FK_id_autor = $autor;
+                    $save_autor->save();
+                }
+            }
+
             $articulo->update($datos);
 
             if($request->editArchive){

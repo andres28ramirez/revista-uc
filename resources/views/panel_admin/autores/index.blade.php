@@ -62,7 +62,7 @@
                             <td class="align-middle">
                                 <a href="{{ route('articulo.all', $autor->id_autor) }}" class="btn btn-warning btn-icon-split">
                                     <span class="icon text-white font-weight-bold">
-                                        {{ $autor->articulos->count() }}
+                                        {{ $autor->articles->count() }}
                                     </span>
                                     <span class="text">Ver</span>
                                 </a>

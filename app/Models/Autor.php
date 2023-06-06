@@ -29,4 +29,8 @@ class Autor extends Model
     public function articulos(){
         return $this->hasMany('App\Models\Articulo', 'FK_id_autor');
     }
+
+    public function articles(){
+        return $this->hasMany('App\Models\ArticuloAutores', 'FK_id_autor');
+    }
 }
