@@ -24,6 +24,9 @@ return new class extends Migration
             array(
                 'nombre' => 'Profesor'
             ),
+            array(
+                'nombre' => 'Administrador'
+            ),
         ));
     }
 

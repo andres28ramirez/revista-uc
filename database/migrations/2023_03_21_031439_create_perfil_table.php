@@ -24,6 +24,15 @@ return new class extends Migration
                 $table->foreign('FK_id_tipo')->references('id_tipo')->on('usuario_tipo');
             });
         });
+
+        DB::table('perfil')->insert(array(
+            array(
+                'nombre' => 'Unimar',
+                'apellido' => 'Administrativo',
+                'FK_id_usuario' => 1,
+                'FK_id_tipo' => 3,
+            )
+        ));
     }
 
     public function down()

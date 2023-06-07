@@ -20,6 +20,13 @@ return new class extends Migration
                 $table->foreign('FK_id_rol')->references('id_rol')->on('rol');
             });
         });
+
+        DB::table('usuario_rol')->insert(array(
+            array(
+                'FK_id_usuario' => 1,
+                'FK_id_rol' => 1,
+            )
+        ));
     }
 
     public function down()

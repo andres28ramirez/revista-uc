@@ -56,8 +56,8 @@ class ComentarioController extends Controller
     //Visual primer Index
     public function index(){
         $comentarios = Comentario::orderBy('created_at', 'desc')->get();
-
-        if($comentarios){
+        
+        if($comentarios->count() > 0){
             //Articulo con más Comentarios
             $articulo = Comentario::select('FK_id_articulo', DB::raw('count(*) as total'))
                         ->groupBy('FK_id_articulo')->orderBy('total', 'desc')->first();
@@ -192,7 +192,7 @@ class ComentarioController extends Controller
             $user = $comentario->usuario;
             $ruta = route('user.articulo', $comentario->articulo->id_articulo);
             $titulo = "Tu comentario ya fue evaluado por un moderador en la plataforma";
-            $contenido = "Tu comentario quedo en estado ".$comentario->estado.", dandole click al boton seras redireccionado al artículo de tu comentario";
+            $contenido = "Tu comentario quedo en estado ".$request->estado.", dandole click al boton seras redireccionado al artículo de tu comentario";
             AdminNotificacion::UserNotifica($user, $ruta, $titulo, $contenido, $comentario);
 
             //Hacemos el Update

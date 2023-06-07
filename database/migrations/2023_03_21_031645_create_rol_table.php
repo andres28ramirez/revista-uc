@@ -30,9 +30,6 @@ return new class extends Migration
             array(
                 'nombre' => 'Usuario'
             ),
-            array(
-                'nombre' => 'Super Administrador'
-            ),
         ));
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
                 $table->string('titulo',255);
                 $table->text('descripcion');
                 $table->text('ruta')->nullable();
+                $table->string('icono', 255);
                 $table->bigInteger('FK_id_modulo')->nullable()->unsigned();
                 $table->timestamps();
 

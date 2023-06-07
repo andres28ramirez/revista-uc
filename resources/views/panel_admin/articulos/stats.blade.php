@@ -117,7 +117,7 @@
         <div class="col-xl-8 col-lg-7">
             @php
             $data = array_fill(0, 12, 0);
-            $nombre = $articulos->find($id_article)->titulo;
+            $nombre = $articulos->find($id_article) ? $articulos->find($id_article)->titulo : "N/A";
 
             foreach($d_articulo as $descarga){
                 $data[($descarga->mes - 1)] = $descarga->total;
@@ -207,20 +207,23 @@
         <!-- Doble Barras - Visita y Decargas por edición con sus articulos -->
         <div class="col">
             @php
+                $edi_title = $edicion ? $edicion->titulo : "N/A";
                 $labels = array();
                 $b_descargas = array();
                 $b_visitas = array();
 
-                if($edicion->articulos){
-                    foreach($edicion->articulos as $articulo){
-                        array_push($labels, $articulo->titulo);
-                        array_push($b_descargas, $articulo->descargas->sum('total'));
-                        array_push($b_visitas, $articulo->visitas->sum('total'));
+                if($edicion){
+                    if($edicion->articulos){
+                        foreach($edicion->articulos as $articulo){
+                            array_push($labels, $articulo->titulo);
+                            array_push($b_descargas, $articulo->descargas->sum('total'));
+                            array_push($b_visitas, $articulo->visitas->sum('total'));
+                        }
                     }
                 }
 
                 $chart_data = array(
-                    'titulo' => "Relación de Descargas y Visitas por Edición - ".$edicion->titulo,
+                    'titulo' => "Relación de Descargas y Visitas por Edición - ".$edi_title,
                     'canva' => 'c5',
                     'labels' => $labels,
                     'bar1_datos' => $b_descargas,
@@ -232,7 +235,7 @@
                     'bar2_bgColors' => 'rgba(114,122,235,0.7)',
                     'bar2_brColors' => 'rgba(135,122,235,0.8)'
                 );
-
+                
                 
             $opciones = array();
             foreach($ediciones as $edicion){

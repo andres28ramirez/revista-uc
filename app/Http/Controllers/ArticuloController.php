@@ -179,8 +179,12 @@ class ArticuloController extends Controller
 
         //Descargas del artículo seleccionado mes a mes
         $per_descarga = $request->descargas_periodo ? $request->descargas_periodo : date('Y');
-        $id_article = $request->form_article ? $request->form_article : $articulos->first()->id_articulo;
-        
+
+        if($articulos->first())
+            $id_article = $request->form_article ? $request->form_article : $articulos->first()->id_articulo;
+        else
+            $id_article = 0;
+
         $d_articulo = Articulo_Descarga::select('mes', 'FK_id_articulo', DB::raw('sum(total) as total'))->
                         where('year', $per_descarga)->
                         where('FK_id_articulo', $id_article)->
