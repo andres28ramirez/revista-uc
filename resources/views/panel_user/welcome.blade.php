@@ -6,7 +6,7 @@
         <div class="container-fluid py-3">
             
             <!-- Aviso Inicial -->
-            <div class="col-12 .col-sm-12 col-md-12 .col-lg-12 .col-xl-12">
+            <!-- <div class="col-12 .col-sm-12 col-md-12 .col-lg-12 .col-xl-12">
                 <div class="informative text-center text-dark py-1 shadow box rounded-pill" style="background-color: #F6E5C0;">
                     <h5 class="font-weight-bold">AVISO</h5>
                     <p class="font-weight-bold">
@@ -16,7 +16,7 @@
                         </i>
                     </p>
                 </div>
-            </div>
+            </div> -->
 
             <!-- informació de la edicion -->
             @include('layouts.open_edition', ["edicion" => $edicion])
