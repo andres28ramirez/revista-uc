@@ -12,6 +12,10 @@
     <div class="col-12 .col-sm-12 col-md-6 .col-lg-6 .col-xl-6" id="popular">
         <div class="list-group">
             
+            <div class="text-center alert alert-sm text-white" style="background-color: #084456">
+                <h5 class="font-weight-bold">Número Actual</h5>
+            </div>
+
             <div class="list-group-item list-group-item-action" id="popular_header_barside">
                 <div class="d-flex w-100 justify-content-between">
                     <h5><b>{{ __('Indice') }}</b></h5>

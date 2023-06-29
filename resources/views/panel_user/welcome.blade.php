@@ -21,6 +21,17 @@
             <!-- informació de la edicion -->
             @include('layouts.open_edition', ["edicion" => $edicion])
 
+            <!-- Boton de Descarga de la Edición Completa -->
+            @if($edicion->ruta_archivo)
+                <div class="edition_title text-center"> 
+                    <a href="{{ route('user.edicion.archivo', ['filename' => basename($edicion->ruta_archivo), 'id_edicion' => $edicion->id_edicion]) }}" type="button" 
+                        class="btn btn-outline-dark" target="_blank">
+                        <i class="fas fa-download"></i> {{ __('Edición Completa') }}
+                    </a>
+                </div>
+                <hr>
+            @endif
+
             <!-- Nombre de la Edición -->
             <div class="edition_title">
                 <h4><b>{{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}</b></h4>
