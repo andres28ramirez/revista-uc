@@ -2,7 +2,7 @@
     <div class="row no-gutters">
         <div class="col-md-4">
             <a href="{{ route('user.articulo', $articulo->id_articulo) }}">
-                <img src="{{ route('user.articulo.imagen', ['filename' => basename($articulo->ruta_imagen_es)]) }}" class="img-fluid">
+                <img src="{{ route('user.articulo.imagen', ['filename' => basename($articulo->ruta_imagen_es)]) }}" class="img-fluid" style="width: 100%; height: 100%">
             </a>
         </div>
         <div class="col-md-8">
@@ -24,7 +24,7 @@
                 <!-- Autores -->
                 <p style="white-space: pre-line">
                     @forelse($articulo->autores as $autor)
-                        <span class="d-block my-0">{{ $autor->autor->nombre }}</span>
+                        <span class="my-0">{{ $autor->autor->nombre }}</span>
                     @empty
                         <span>N/A</span>
                     @endforelse
