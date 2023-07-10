@@ -1,5 +1,9 @@
 @extends('layouts.admin.app')
 
+@section('title')
+    {{ "Dashboard" }}
+@endsection
+
 @section('content')
     <!-- Bloque de Totales -->
     <div class="row">

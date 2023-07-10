@@ -1,5 +1,9 @@
 @extends('layouts.admin.app')
 
+@section('title')
+{{ "Artículos" }}
+@endsection
+
 @section('content')
 <link  rel="stylesheet" href="{{asset('css/input_files.css')}}"/>
 

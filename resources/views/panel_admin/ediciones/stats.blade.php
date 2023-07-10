@@ -1,5 +1,9 @@
 @extends('layouts.admin.app')
 
+@section('title')
+{{ "Ediciones" }}
+@endsection
+
 @section('content')
     <!-- TOTALES DE BLOQUES -->
     <div class="row">

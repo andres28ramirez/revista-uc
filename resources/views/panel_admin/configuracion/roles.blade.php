@@ -1,5 +1,9 @@
 @extends('layouts.admin.app')
 
+@section('title')
+{{ "Roles" }}
+@endsection
+
 @section('content')
 <div class="container-fluid">
     
