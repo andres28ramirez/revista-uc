@@ -109,13 +109,13 @@
                         <h4 class="small font-weight-bold">Descargas de Ediciones <span
                                 class="float-right">{{ $relacion["e_des"] }} veces</span></h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="background-color: #084456; width: <?php echo ($relacion['e_des']*100)/$relacion['global'] ?>%"
+                            <div class="progress-bar" role="progressbar" style="background-color: #084456; width: <?php echo ($relacion['e_des']*100)/($relacion['global'] ? $relacion['global'] : 1) ?>%"
                                 aria-valuenow="{{$relacion['e_des']}}" aria-valuemin="0" aria-valuemax="{{ $relacion['global'] }}"></div>
                         </div>
                         <h4 class="small font-weight-bold">Descargas de Artículos <span
                                 class="float-right">{{ $relacion["a_des"] }} veces</span></h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="background-color: #084456; width: <?php echo ($relacion['a_des']*100)/$relacion['global'] ?>%"
+                            <div class="progress-bar" role="progressbar" style="background-color: #084456; width: <?php echo ($relacion['a_des']*100)/($relacion['global'] ? $relacion['global'] : 1) ?>%"
                                 aria-valuenow="{{ $relacion['a_des'] }}" aria-valuemin="0" aria-valuemax="{{ $relacion['global'] }}"></div>
                         </div>
 
@@ -123,13 +123,13 @@
                         <h4 class="small font-weight-bold">Visitas de Ediciones <span
                                 class="float-right">{{ $relacion['e_vis'] }} veces</span></h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="background-color: #FA9555; width: <?php echo ($relacion['e_vis']*100)/$relacion['global'] ?>%"
+                            <div class="progress-bar" role="progressbar" style="background-color: #FA9555; width: <?php echo ($relacion['e_vis']*100)/($relacion['global'] ? $relacion['global'] : 1) ?>%"
                                 aria-valuenow="{{ $relacion['e_vis'] }}" aria-valuemin="0" aria-valuemax="{{ $relacion['global'] }}"></div>
                         </div>
                         <h4 class="small font-weight-bold">Visitas de Artículos <span
                                 class="float-right">{{ $relacion['a_vis'] }} veces</span></h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="background-color: #FA9555; width: <?php echo ($relacion['a_vis']*100)/$relacion['global'] ?>%"
+                            <div class="progress-bar" role="progressbar" style="background-color: #FA9555; width: <?php echo ($relacion['a_vis']*100)/($relacion['global'] ? $relacion['global'] : 1) ?>%"
                                 aria-valuenow="{{ $relacion['a_vis'] }}" aria-valuemin="0" aria-valuemax="{{ $relacion['global'] }}"></div>
                         </div>
                 </div>
