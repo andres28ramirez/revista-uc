@@ -36,7 +36,8 @@
                 <div class="card-body p-0">
                     <div class="row">
                         <!-- IMAGEN DE RESETAR CONTRASEÑA -->
-                        <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
+                        <div style="background-image: url({{asset('images/logo-unimar.png')}}) !important; background-size: 75%; background-repeat: no-repeat;"
+                            class="col-lg-6 d-none d-lg-block bg-password-image"></div>
                         <div class="col-lg-6 bg-white">
                             <div class="p-5">
                                 <form class="user" method="POST" action="{{ route('password.store') }}">
