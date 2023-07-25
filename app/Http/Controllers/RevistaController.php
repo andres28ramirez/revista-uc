@@ -158,7 +158,7 @@ class RevistaController extends Controller
         $articulos = Articulo::where(function($query) use ($param) {
             $query->where('titulo', 'like', '%'.$param.'%')
                 ->orWhere('contenido', 'like', '%'.$param.'%');
-        })->paginate(1);
+        })->paginate(10);
 
         return view('panel_user.buscador', compact('articulos', 'param'));
     }

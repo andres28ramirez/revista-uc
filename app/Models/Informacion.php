@@ -14,7 +14,9 @@ class Informacion extends Model
     protected $fillable = [
         "id_informacion",
         "titulo",
+        "titulo_en",
         "contenido",
+        "contenido_en",
         "ruta_archivo",
     ];
 

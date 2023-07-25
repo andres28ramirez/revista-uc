@@ -24,12 +24,14 @@
                     <span></span>
                 </a>
                 <!-- Opciones -->
-                <div class=" dropdown-menu" id="lineas" arial-labelledby="dropdown_target">
+                <div class="dropdown-menu" id="lineas" arial-labelledby="dropdown_target">
+                    <ul class="p-0 scrollable-menu" role="menu">
                     @foreach($conocimientos as $conocimiento)
-                        <a class="dropdown-item" href="{{route('user.conocimiento.articulos', $conocimiento->id_conocimiento)}}">
-                            {{ $conocimiento->nombre }}
+                        <a class="d-block overflow-hidden" href="{{route('user.conocimiento.articulos', $conocimiento->id_conocimiento)}}">
+                            {{  App::isLocale('en') && $conocimiento->nombre_en ? $conocimiento->nombre_en : $conocimiento->nombre }}
                         </a>
                     @endforeach
+                    </ul>
                 </div>
             </li>
 
@@ -43,7 +45,7 @@
             <!-- Ediciones -->
             <li class="navbar-item">
                 <a class="nav-link" href="{{ route('user.ediciones') }}">
-                    {{__('Listado de Ediciones')}}
+                    {{__('Archivos')}}
                 </a>
             </li>
 

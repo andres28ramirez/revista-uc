@@ -13,7 +13,7 @@
         <div class="list-group">
             
             <div class="text-center alert alert-sm text-white" style="background-color: #084456">
-                <h5 class="font-weight-bold">Número Actual</h5>
+                <h5 class="font-weight-bold">{{ __('Número Actual') }}</h5>
             </div>
 
             <div class="list-group-item list-group-item-action" id="popular_header_barside">

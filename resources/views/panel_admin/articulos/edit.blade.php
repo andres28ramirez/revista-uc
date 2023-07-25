@@ -341,7 +341,7 @@
 </div>
 
 <input type="hidden" id="imagenPreview" value="{{ asset('images/nodisponible.png') }}">
-<input type="hidden" id="cantidadAutor" value="{{ $key }}">
+<input type="hidden" id="cantidadAutor" value="{{ isset($key) ? $key : 0 }}">
 @endsection
 
 <script src="{{ asset('jquery/jquery.min.js') }}"></script>

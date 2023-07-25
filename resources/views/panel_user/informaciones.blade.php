@@ -18,7 +18,7 @@
                                 href="#collapse{{ $informacion->id_informacion }}" aria-expanded="false" 
                                 aria-controls="collapse{{ $informacion->id_informacion }}">
                                 <h6 class="font-weight-bold">
-                                    {{ $informacion->titulo }}<i class="fas fa-chevron-down"></i>
+                                    {{ App::isLocale('en') && $informacion->titulo_en ? $informacion->titulo_en : $informacion->titulo }}<i class="fas fa-chevron-down"></i>
                                 </h6>
                             </button> 
                         </h2>
@@ -29,8 +29,8 @@
                         data-parent="#collapse{{ $informacion->id_informacion }}">
                         <div class="card-body">
                             <!-- Contenido -->
-                            <p style="white-space: pre-line">
-                                {{ $informacion->contenido }}
+                            <p style="white-space: pre-line" class="text-justify">
+                                {{ App::isLocale('en') && $informacion->contenido_en ? $informacion->contenido_en : $informacion->contenido }}
                             </p>
 
                             <!-- Archivo -->

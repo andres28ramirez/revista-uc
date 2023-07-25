@@ -13,7 +13,9 @@ return new class extends Migration
             Schema::create('informacion', function (Blueprint $table) {
                 $table->id('id_informacion');
                 $table->string('titulo',255);
+                $table->string('titulo_en',255);
                 $table->text('contenido');
+                $table->text('contenido_en');
                 $table->text('ruta_archivo')->nullable();
                 $table->timestamps();
             });

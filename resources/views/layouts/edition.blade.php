@@ -29,8 +29,11 @@
                             <h5 class="font-weight-bold">
                                 {{ App::isLocale('en') && $edicion->titulo_en ? $edicion->titulo_en : $edicion->titulo }}
                             </h5>
-                            <p class="mb-0" style="white-space: pre-line">
+                            <p class="my-0 py-0" style="white-space: pre-line">
                                 <b>{{ __('Fecha de Publicación') }}:</b> {{ $edicion->created_at }}
+                            </p>
+                            <p class="my-0 py-0" style="white-space: pre-line">
+                                <b>{{ __('Periodo') }}:</b> {{ __($edicion->periodo) }}
                             </p>
                             <p class="mt-0" style="white-space: pre-line">
                                 {{ App::isLocale('en') && $edicion->descripcion_en ? $edicion->descripcion_en : $edicion->descripcion }}
